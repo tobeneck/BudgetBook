@@ -1,5 +1,5 @@
 import React from "react"
-import { CategoryElement } from "./CategoryListElement"
+import { CategoryElement } from "../CategoryScreenComponents/CategoryListElement"
 import { Text } from "react-native"
 
 export interface BookingElement{
