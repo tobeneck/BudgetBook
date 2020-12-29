@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Button, Text, TextInput, Modal, Alert, Picker } from "react-native"
-import { BookingElement } from "./BookingListElement"
-import { CategoryElement } from "../CategoryScreenComponents/CategoryListElement"
+import { BookingElement } from "./BookingList"
+import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 
 interface Props{
     categorys: CategoryElement[],

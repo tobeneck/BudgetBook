@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Text, Modal, Button, Picker, TextInput } from "react-native"
-import { CategoryElement } from "../CategoryScreenComponents/CategoryListElement"
-import { BookingElement } from "./BookingListElement"
+import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
+import { BookingElement } from "./BookingList"
 
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -15,16 +15,10 @@ interface Props{
 
 export const EditBookingPopup = (props: Props): JSX.Element => {
     // const [booking, setBooking] = useState<BookingElement>(props.booking)
-    const [date, setDate] = useState<Date>(props.booking.date);
-    const [amount, setAmount] = useState<string>(props.booking.amount+"");
-    const [name, setName] = useState<string>(props.booking.name);
-    const [category, setCategory] = useState<CategoryElement>(props.booking.category);
-
-
-
-    const onCategoryChanged = (newCategoryElementIndex: number): void => {
-        setCategory(props.categorys[newCategoryElementIndex])
-    }
+    const [date, setDate] = useState<Date>(props.booking.date)
+    const [amount, setAmount] = useState<string>(props.booking.amount+"")
+    const [name, setName] = useState<string>(props.booking.name)
+    const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 
     useEffect(() => {
         setDate(props.booking.date)
@@ -46,6 +40,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                 onChangeText={text => onAmountChanged(text)}
                 value={props.booking.amount+""}
             /> */}
+
             <Text>amount:</Text>
             <TextInput
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -53,12 +48,14 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                 onChangeText={newAmount => setAmount(newAmount)}
                 value={amount}
             />
+
             <Text>name:</Text>
             <TextInput
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                 onChangeText={newName => setName(newName)}
                 value={name}
             />
+
             <Text>category:</Text>
             <Picker
                 selectedValue={category.id}

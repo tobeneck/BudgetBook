@@ -4,7 +4,7 @@ import { Button, Text, TextInput, Modal, Alert } from "react-native"
 interface Props{
     visible: boolean,
     addCategory: (categoryName: string) => void,
-    setModalVisible: (visible: boolean) => void
+    setVisible: (visible: boolean) => void
 }
 
 export const AddCategoryPopup = (props: Props): JSX.Element => {
@@ -12,11 +12,11 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
 
     const onAddPressed = (e: Event): void => {
         props.addCategory(categoryName)
-        props.setModalVisible(false)
+        props.setVisible(false)
     }
 
     const onCancelPressed = (e: Event): void => {
-        props.setModalVisible(false)
+        props.setVisible(false)
     }
 
     return (
