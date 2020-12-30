@@ -97,6 +97,20 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         setReassureDeleteCategoryPopupVisible(false)
     }
 
+    const renderEditCategoryButton = (id: number): JSX.Element | null => {
+        if(id > 0){ //do not allow to edit or delete the first category (uncategorized)
+            return(
+                <Button
+                            onPress={() => onEditCategoryItem(id)}
+                            title="Edit"
+                            color="#841584"
+                            accessibilityLabel="Add Item to the budget list" />
+            )
+        } else {
+            return null
+        }
+    }
+
     return (
         <SafeAreaView>
             <AddCategoryPopup
@@ -127,11 +141,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                 {props.categorys.map((ce: CategoryElement) => (
                 <>
                     <Text> {ce.id} - {ce.name} </Text>
-                    <Button
-                        onPress={() => onEditCategoryItem(ce.id)}
-                        title="Edit"
-                        color="#841584"
-                        accessibilityLabel="Add Item to the budget list" />
+                    {renderEditCategoryButton(ce.id)}
                 </>
                 ))}
                 <Button
