@@ -12,7 +12,7 @@ interface Props{
 }
 
 const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
-    const [ replacementCategoryIndex, setReplacementCategoryIndex ] = useState<number>(0) //TODO: 0 or the last element?
+    const [ replacementCategoryIndex, setReplacementCategoryIndex ] = useState<number>(0)
 
     /**
      * returns a promt to pick the new category the bookings get if they are in the category to delete.
@@ -24,7 +24,7 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
                 <>
                     <Text>The category is used {props.timesUsed} times.The the category using this booking will be changed to: </Text>
                     <Picker
-                        selectedValue={replacementCategoryIndex}
+                        selectedValue={props.remainingCategorys.length - 1 - replacementCategoryIndex}  //TODO: this is alsi ugly! Think aboud how to assign IDs for categorys, or how to add them
                         style={{ height: 50, width: 150 }}
                         onValueChange={(itemValue, itemIndex) => (setReplacementCategoryIndex(itemIndex))}
                         mode="dropdown"

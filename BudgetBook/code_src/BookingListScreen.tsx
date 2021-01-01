@@ -20,9 +20,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     const [ addPopupVisible, setAddPopupVisible ] = useState<boolean>(false)
     const [ editPopupVisible, setEditPopupVisible ] = useState<boolean>(false)
     const [ reassureDeleteBookingPopupVisible, setReassureDeleteBookingPopupVisible ] = useState<boolean>(false)
-
-    console.log(props.bookings, currentBookingIndex)
-
+    
     /**
      * handles the Add Booking button press event
      * @param e the pressEvent returned from the test
