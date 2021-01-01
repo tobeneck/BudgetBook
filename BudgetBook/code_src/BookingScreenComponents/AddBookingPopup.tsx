@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { Button, Text, TextInput, Modal, Alert } from "react-native"
+import { Button, Text, TextInput, Modal, Alert, View, Keyboard } from "react-native"
 import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { BookingElement } from "./BookingList"
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 
@@ -15,11 +16,14 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     const [date, setDate] = useState(new Date());
     const [amount, setAmount] = useState("");
     const [name, setName] = useState("");
-    const [category, setCategory] = useState<CategoryElement>(props.categorys[props.categorys.length-1]);
+    const [category, setCategory] = useState<CategoryElement>(props.categorys[props.categorys.length-1]); //TODO: ugly indexing
 
-    const onDateChanged = (newDate: string): void => {
-        //TODO: implement
-        //setDate(newDate)
+    const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
+
+    const onDateChanged = (e: Event, selectedDate: Date | undefined): void => {
+        if(selectedDate)
+            setDate(selectedDate)
+        setDatePickerVisible(false)
     }
 
     const onAmountChanged = (newAmount: string): void => {
@@ -36,7 +40,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     }
 
     const onAddPressed = (e: Event): void => {
-        props.addItem({date: new Date(), amount: +amount, name, category} as BookingElement)
+        props.addItem({date, amount: +amount, name, category} as BookingElement)
         props.setVisible(false)
     }
 
@@ -45,56 +49,77 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
         props.setVisible(false)
     }
 
+    useEffect(() => {
+        setAmount("")
+        setName("")
+        setCategory(props.categorys[props.categorys.length-1]) //TODO: ugly indexing
+        setDate(new Date)
+        setDatePickerVisible(false)
+    }, [props])
+
     return (
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
-            onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            }}
-        >
-            <Text>date:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                keyboardType = 'numeric'
-                onChangeText={text => onAmountChanged(text)}
-                value={amount+""}
-            />
-            <Text>amount:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                keyboardType = 'numeric'
-                onChangeText={text => onAmountChanged(text)}
-                value={amount+""}
-            />
-            <Text>name:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                onChangeText={text => onNameChanged(text)}
-                value={name}
-            />
-            <Text>category:</Text>
-            <Picker
-                selectedValue={category.id}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue, itemIndex) => (onCategoryChanged(itemIndex))}
-                mode="dropdown"
+        <View>
+            {
+                datePickerVisible &&
+                (<DateTimePicker
+                    value={date}
+                    mode={"date"}
+                    onChange={(e: Event, selectedDate: Date | undefined) => onDateChanged(e, selectedDate)}//OK or cancel is pressed
+                />)
+            }
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={props.visible}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
             >
-                {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-            </Picker>
-            <Button
-                onPress={(e: Event) => onAddPressed(e)}
-                title="Add"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-            <Button
-                onPress={(e: Event) => onCancelPressed(e)}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-        </Modal>
+                <Text>date:</Text>
+                <Text
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    onPress={() => {
+                        setDatePickerVisible(true)
+                        Keyboard.dismiss()
+                    }}
+                >
+                    {date.toDateString()}
+                </Text>
+                <Text>amount:</Text>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    keyboardType = 'numeric'
+                    onChangeText={text => onAmountChanged(text)}
+                    value={amount+""}
+                />
+                <Text>name:</Text>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    onChangeText={text => onNameChanged(text)}
+                    value={name}
+                />
+                <Text>category:</Text>
+                <Picker
+                    selectedValue={category.id}
+                    style={{ height: 50, width: 150 }}
+                    onValueChange={(itemValue, itemIndex) => (onCategoryChanged(itemIndex))}
+                    mode="dropdown"
+                >
+                    {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                </Picker>
+                <Button
+                    onPress={(e: Event) => onAddPressed(e)}
+                    title="Add"
+                    color="#841584"
+                    accessibilityLabel="Add Item to the budget list"
+                />
+                <Button
+                    onPress={(e: Event) => onCancelPressed(e)}
+                    title="Cancel"
+                    color="#841584"
+                    accessibilityLabel="Add Item to the budget list"
+                />
+            </Modal>
+        </View>
     )
 }

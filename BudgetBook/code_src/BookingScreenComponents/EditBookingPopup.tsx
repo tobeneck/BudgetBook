@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { Text, Modal, Button, TextInput } from "react-native"
+import { Text, Modal, Button, TextInput, View, Keyboard } from "react-native"
 import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 
@@ -21,70 +22,93 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
     const [name, setName] = useState<string>(props.booking.name)
     const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 
+    const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
+
+
+    const onDateChanged = (e: Event, selectedDate: Date | undefined): void => {
+        if(selectedDate)
+            setDate(selectedDate)
+        setDatePickerVisible(false)
+    }
+
     useEffect(() => {
         setDate(props.booking.date)
         setAmount(props.booking.amount+"")
         setName(props.booking.name)
         setCategory(props.booking.category)
+        setDatePickerVisible(false)
     }, [props.booking])
 
     return(
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
-        >
-           {/* <Text>date:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                keyboardType = 'numeric'
-                onChangeText={text => onAmountChanged(text)}
-                value={props.booking.amount+""}
-            /> */}
-
-            <Text>amount:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                keyboardType = 'numeric'
-                onChangeText={newAmount => setAmount(newAmount)}
-                value={amount}
-            />
-
-            <Text>name:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                onChangeText={newName => setName(newName)}
-                value={name}
-            />
-
-            <Text>category:</Text>
-            <Picker
-                selectedValue={category.id}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
-                mode="dropdown"
+        <View>
+            {
+                datePickerVisible &&
+                (<DateTimePicker
+                    value={date}
+                    mode={"date"}
+                    onChange={(e: Event, selectedDate: Date | undefined) => onDateChanged(e, selectedDate)}//OK or cancel is pressed
+                />)
+            }
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={props.visible}
             >
-                {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-            </Picker>
+                <Text>date:</Text>
+                <Text
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    onPress={() => {
+                        setDatePickerVisible(true)
+                        Keyboard.dismiss()
+                    }}
+                >
+                    {date.toDateString()}
+                </Text>
 
-            <Button
-                onPress={() => props.onSavePressed({name, category, date, amount: +amount} as BookingElement)}
-                title="Save"
-                color="#841584"
-                accessibilityLabel="Save changes in the budget list"
-            />
-            <Button
-                onPress={() => props.onCancelPressed()}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Cancel operation"
-            />
-                        <Button
-                onPress={() => props.onDeletePressed()}
-                title="Delete"
-                color="#841584"
-                accessibilityLabel="Delete Item in the budget list"
-            />
-        </Modal>
+                <Text>amount:</Text>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    keyboardType = 'numeric'
+                    onChangeText={newAmount => setAmount(newAmount)}
+                    value={amount}
+                />
+
+                <Text>name:</Text>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    onChangeText={newName => setName(newName)}
+                    value={name}
+                />
+
+                <Text>category:</Text>
+                <Picker
+                    selectedValue={category.id}
+                    style={{ height: 50, width: 150 }}
+                    onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
+                    mode="dropdown"
+                >
+                    {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                </Picker>
+
+                <Button
+                    onPress={() => props.onSavePressed({name, category, date, amount: +amount} as BookingElement)}
+                    title="Save"
+                    color="#841584"
+                    accessibilityLabel="Save changes in the budget list"
+                />
+                <Button
+                    onPress={() => props.onCancelPressed()}
+                    title="Cancel"
+                    color="#841584"
+                    accessibilityLabel="Cancel operation"
+                />
+                            <Button
+                    onPress={() => props.onDeletePressed()}
+                    title="Delete"
+                    color="#841584"
+                    accessibilityLabel="Delete Item in the budget list"
+                />
+            </Modal>
+            </View>
     )
 }
