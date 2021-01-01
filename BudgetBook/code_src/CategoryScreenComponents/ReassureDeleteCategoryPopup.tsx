@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Button, Text, Picker } from "react-native"
+import { Modal, Button, Text } from "react-native"
+import { Picker } from '@react-native-picker/picker';
 import { CategoryElement } from "./CategoryList"
 
 interface Props{

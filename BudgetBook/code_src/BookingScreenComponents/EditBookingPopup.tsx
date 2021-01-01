@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Text, Modal, Button, Picker, TextInput } from "react-native"
+import { Text, Modal, Button, TextInput } from "react-native"
+import { Picker } from '@react-native-picker/picker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 
