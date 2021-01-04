@@ -6,6 +6,7 @@ import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
 import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
+import { saveToCache, exportToDownloads } from './code_src/CSVHandler';
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -16,7 +17,6 @@ declare const global: {HermesInternal: null | {}}
 
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState<eCurrentScreen>(eCurrentScreen.BOOKING_LIST_SCREEN)
-
   const [categorys, setCategorys] = useState<CategoryElement[]>([{name: "test", id: 1}, defaultCategoryElement]) //TODO: load categorys here
 
   const [bookings, setBookings] = useState<BookingElement[]>([ //TODO: load items here
@@ -50,7 +50,7 @@ const App = () => {
       <Header
         leftComponent={{ icon:'menu', color: '#fff', onPress: () => handleScreenSwitch() }}
         centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
-        rightComponent={{ text: 'home', color: '#fff' }}
+        rightComponent={{ icon: 'home', color: '#fff', onPress: () => exportToDownloads(categorys, bookings) }}
       />
     )
 
