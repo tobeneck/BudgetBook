@@ -10,7 +10,7 @@ interface Props{
     categorys: CategoryElement[]
     setCategorys: (categorys: CategoryElement[]) => void
     bookings: BookingElement[],
-    setBookings: (bookings: BookingElement[]) => void
+    setCategorysAndBookings: (categorys: CategoryElement[], bookings: BookingElement[]) => void
 }
 
 
@@ -22,7 +22,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
     const [ currentCategoryIndex, setCurrentCategoryIndex ] = useState<number>(0) //TODO: again, is 0 the best way to initialize it?
 
     console.log(props.categorys)
-    
+
     /**
      * handles the addition of a booking itemarray
      * @param item the item to be added
@@ -53,16 +53,13 @@ const CategoryListScreen = (props: Props): JSX.Element => {
      * @param nce the new category element to be saved
      */
     const onSaveEditCategoryItem = (nce: CategoryElement): void => {
-
-        //set the category
         const newCategoryList: CategoryElement[] = valueCopyCategorys(props.categorys)
         newCategoryList[currentCategoryIndex] = nce
-        props.setCategorys(newCategoryList)
 
-        //set the bookings
         const oldCategory: CategoryElement = props.categorys[currentCategoryIndex]
         const newBookingList: BookingElement[] = updateCategory(props.bookings, oldCategory, nce)
-        props.setBookings(newBookingList)
+
+        props.setCategorysAndBookings(newCategoryList, newBookingList)
 
         setEditPopupVisible(false)
     }
@@ -96,7 +93,9 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         //let newBookings: BookingElement[] = timesUsed > 1 ? updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]) : valueCopyBookings(props.bookings)
         console.log("deletedCategory: ", deletedCategory, " newCategory: ", remainingCategorys[newID])
         if(timesUsed > 0)
-            props.setBookings(updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]))
+            props.setCategorysAndBookings(remainingCategorys, updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]))
+        else
+            props.setCategorys(remainingCategorys)
 
         setCurrentCategoryIndex(0)
         setReassureDeleteCategoryPopupVisible(false)
@@ -106,10 +105,10 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         if(id > 0){ //do not allow to edit or delete the first category (uncategorized)
             return(
                 <Button
-                            onPress={() => onEditCategoryItem(id)}
-                            title="Edit"
-                            color="#841584"
-                            accessibilityLabel="Add Item to the budget list" />
+                    onPress={() => onEditCategoryItem(id)}
+                    title="Edit"
+                    color="#841584"
+                    accessibilityLabel="Add Item to the budget list" />
             )
         } else {
             return null

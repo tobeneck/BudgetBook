@@ -1,10 +1,17 @@
-import { CategoryElement, valueCopyCategory } from "../CategoryScreenComponents/CategoryList"
+import { CategoryElement, valueCopyCategory, defaultCategoryElement } from "../CategoryScreenComponents/CategoryList"
 
 export interface BookingElement{
     date: Date;
     amount: number;
     name: string;
     category: CategoryElement;
+}
+
+export const defaultBookingElement: BookingElement = {
+    date: new Date(),
+    amount: 0,
+    name: "initial balance",
+    category: defaultCategoryElement
 }
 
 /**

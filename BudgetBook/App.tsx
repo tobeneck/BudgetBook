@@ -1,31 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { Header } from 'react-native-elements';
-import { BookingElement } from "./code_src/BookingScreenComponents/BookingList" //debugg purpose
+import { BookingElement, defaultBookingElement } from "./code_src/BookingScreenComponents/BookingList" //debugg purpose
 import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
 import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
-import { saveToCache, exportToDownloads } from './code_src/CSVHandler';
+import { saveToCache, exportToDownloads, readCache } from './code_src/CSVHandler';
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
   BOOKING_LIST_SCREEN
 }
 
-declare const global: {HermesInternal: null | {}}
-
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState<eCurrentScreen>(eCurrentScreen.BOOKING_LIST_SCREEN)
-  const [categorys, setCategorys] = useState<CategoryElement[]>([{name: "test", id: 1}, defaultCategoryElement]) //TODO: load categorys here
+  const [categorys, setCategorys] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
+  const [bookings, setBookings] = useState<BookingElement[]>([defaultBookingElement]) //there needs to be at least one booking!
 
-  const [bookings, setBookings] = useState<BookingElement[]>([ //TODO: load items here
-    {date: new Date(), amount: -15, name: "test5", category: defaultCategoryElement},
-    {date: new Date(), amount: -14, name: "test4", category: defaultCategoryElement},
-    {date: new Date(), amount: -13, name: "test3", category: defaultCategoryElement},
-    {date: new Date(), amount: -12, name: "test2", category: defaultCategoryElement},
-    {date: new Date(), amount: -11, name: "test1", category: defaultCategoryElement}
-  ])
+  useEffect(() => {
+    readCache(setCategorys, setBookings)
+
+    // return(
+    //   saveToCache(categorys, bookings) //save the data when closing the app
+    // )
+  }, [])
+
+  /**
+   * saves the new bookings to the cache and to the state
+   * @param newBookings the new bookings to be saved
+   */
+  const setAndSaveBookings = (newBookings: BookingElement[]): void => {
+    saveToCache(categorys, newBookings)
+    setBookings(newBookings)
+  }
+
+  /**
+   * saves the new categorys to the cache and to the state
+   * @param newCategorys the new categorys to be saved
+   */
+  const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
+    saveToCache(newCategorys, bookings)
+    setCategorys(newCategorys)
+  }
+
+  /**
+   * saves the new categorys and the new bookings to the cache and to the state. Use this if you wand to save both at once to avoid writing to the cache twice!
+   * @param newCategorys the new categorys to be saved
+   * @param newBookings the new bookings to be saved
+   */
+  const setAndSaveBookinbsAndCategorys = (newCategorys: CategoryElement[], newBookings: BookingElement[]): void => {
+    saveToCache(newCategorys, newBookings)
+    setBookings(newBookings)
+    setCategorys(newCategorys)
+  }
 
   /**
    * renders the header and contains its functionality
@@ -65,16 +93,16 @@ const App = () => {
         return (
         <CategoryListScreen
           categorys={categorys}
-          setCategorys={setCategorys}
+          setCategorys={setAndSaveCategorys}
           bookings={bookings}
-          setBookings={setBookings}
+          setCategorysAndBookings={setAndSaveBookinbsAndCategorys}
         />)
       case eCurrentScreen.BOOKING_LIST_SCREEN:
         return (
         <BookingListScreen
           categorys={categorys}
           bookings={bookings}
-          setBookings={setBookings}
+          setBookings={setAndSaveBookings}
         />)
       default:
         return (<Text>An error occured rendering the current screen</Text>)

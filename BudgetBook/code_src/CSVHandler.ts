@@ -3,10 +3,21 @@ import { CategoryElement } from './CategoryScreenComponents/CategoryList'
 import RNFS from 'react-native-fs'
 import moment from 'moment'
 import RNFetchBlob, { RNFetchBlobWriteStream } from "rn-fetch-blob"
+import { PermissionsAndroid } from 'react-native'
 
 const defaultStringDivider: string = "--------------------------------------------------------------------------------------------------\n"
 const defaultFilename: string = "BudgetBookData"
 const defaultFileEnding: string = ".csv"
+const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir
+const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir //"/storage/emulated/0/BudgetBook"
+
+
+const encoding = 'utf8'
+
+export interface CombinedData{
+    categorys: CategoryElement[],
+    bookings: BookingElement[]
+}
 
 /**
  * returns the date as a ISO 8601 formated string
@@ -49,7 +60,8 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
  */
 const saveStringToFile = (data: string, filepath: string): void => {
     if(!RNFetchBlob.fs.exists(filepath)){ //create the file if it does not exist
-        RNFetchBlob.fs.createFile(filepath, data, 'utf8')
+        console.log("file "+filepath+" does not exist, creating it...")
+        RNFetchBlob.fs.createFile(filepath, data, encoding)
     } else {//update the file if it exists
         RNFetchBlob.fs.writeStream(
             filepath,
@@ -59,6 +71,7 @@ const saveStringToFile = (data: string, filepath: string): void => {
             false
         )
         .then<RNFetchBlobWriteStream | never>((ofstream: RNFetchBlobWriteStream) => {
+            console.log("writing to file "+filepath)
             ofstream.write(data)
             return ofstream
         })
@@ -75,7 +88,7 @@ const saveStringToFile = (data: string, filepath: string): void => {
  * @param bookings the bookings to be saved
  */
 export const exportToDownloads = (categorys: CategoryElement[], bookings: BookingElement[]): void => {
-    const exportDir: string = RNFetchBlob.fs.dirs.DownloadDir //TODO: the downloadDir is android only! Change this for IOS!
+    const exportDir: string = defaultDownloadDir //TODO: the downloadDir is android only! Change this for IOS!
     var filePathIterator: number = 0
 
     const getCurrentIterationFilename = (): string => {
@@ -106,38 +119,67 @@ export const exportToDownloads = (categorys: CategoryElement[], bookings: Bookin
  * @param bookings the bookings to be saved
  */
 export const saveToCache = (categorys: CategoryElement[], bookings: BookingElement[]): void => {
-    const filepath: string = RNFetchBlob.fs.dirs.CacheDir + "/" + defaultFilename;
-    console.log(filepath)
+    const filepath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding;
 
     const data: string = dataToString(categorys, bookings)
     saveStringToFile(data, filepath)
 }
 
-//  const dataFromCsv = (): [CategoryElement[], BookingElement[]] => {
-//     const dirs = RNFetchBlob.fs.dirs
+/**
+ * reads the data stored in the cache, if it exists. After decrypting the data, the two setter methods are called
+ * @param setCategorys callback method to set the read categorys
+ * @param setBookings callback method to set the read bookings
+ */
+export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+    const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
 
-//     let data = ''
-//     RNFetchBlob.fs.readStream(
-//         // file path
-//         PATH_TO_THE_FILE,
-//         // encoding, should be one of `base64`, `utf8`, `ascii`
-//         'base64',
-//         // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-//         // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-//         4095)
-//     .then((ifstream) => {
-//         ifstream.open()
-//         ifstream.onData((chunk) => {
-//         // when encoding is `ascii`, chunk will be an array contains numbers
-//         // otherwise it will be a string
-//         data += chunk
-//         })
-//         ifstream.onError((err) => {
-//         console.log('oops', err)
-//         })
-//         ifstream.onEnd(() => {  
-//         <Image source={{ uri : 'data:image/png,base64' + data }}
-//         })
-//     })
-//  }
+    RNFetchBlob.fs.exists(filePath)
+    .then((exists: boolean) => {
+        if(exists){
+            console.log("file to read exists!")
+            RNFetchBlob.fs.readFile(filePath, encoding)
+            .then((data: string) => {//deconstruct the categorys and bookings here
+                const categorys: CategoryElement[] = []
+                const bookings: BookingElement[] = []
+
+                const categorysString: string[] = data.split(defaultStringDivider)[0].split("\n")
+                const bookingsString: string[] = data.split(defaultStringDivider)[1].split("\n")
+                console.log(categorysString)
+                console.log(bookingsString)
+
+                for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
+                    if(categorysString[i] !== ""){ //the last element always is "", avoid this!
+                        const currentRow: string[] = categorysString[i].split(",")
+                        categorys.push({
+                            id: +currentRow[0],
+                            name: currentRow[1]
+                        } as CategoryElement
+                        )
+                    }
+                }
+
+                for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
+                    if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
+                        const currentRow: string[] = bookingsString[i].split(",")
+                        console.log("currentBookingRow:", currentRow)
+                        bookings.push({
+                            date: new Date(currentRow[0]),
+                            amount: +currentRow[1],
+                            name: currentRow[2],
+                            category: {
+                                name: currentRow[3],
+                                id: +currentRow[4]
+                            } as CategoryElement
+                        } as BookingElement)
+                    }
+                }
+
+                setCategorys(categorys)
+                setBookings(bookings)
+            })
+            .catch(console.error)
+        }
+    })
+    .catch(console.error)
+ }
 
