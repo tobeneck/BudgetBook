@@ -1,9 +1,7 @@
 import { BookingElement } from './BookingScreenComponents/BookingList'
 import { CategoryElement } from './CategoryScreenComponents/CategoryList'
-import RNFS from 'react-native-fs'
 import moment from 'moment'
 import RNFetchBlob, { RNFetchBlobWriteStream } from "rn-fetch-blob"
-import { PermissionsAndroid } from 'react-native'
 
 const defaultStringDivider: string = "--------------------------------------------------------------------------------------------------\n"
 const defaultFilename: string = "BudgetBookData"

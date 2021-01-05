@@ -16,7 +16,6 @@
     "react": "16.13.1",
     "react-native": "0.63.3",
     "react-native-elements": "3.0.0",
-    "react-native-fs": "^2.16.6",
     "react-native-safe-area-context": "^3.1.9",
     "rn-fetch-blob": "^0.12.0"
   },
