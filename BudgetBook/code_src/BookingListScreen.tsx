@@ -1,12 +1,12 @@
 import React, { useState } from "react"
-import { Button, Text } from "react-native"
-
+import { Text } from "react-native"
+import { Button } from "react-native-elements"
 import { AddBookingPopup } from "./BookingScreenComponents/AddBookingPopup"
 import { BookingElement } from "./BookingScreenComponents/BookingList"
 import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
 import { CategoryElement } from "./CategoryScreenComponents/CategoryList"
-import { SafeAreaView, View, ScrollView } from "react-native"
-import { styles } from "./Styles/Styles"
+import { View, ScrollView } from "react-native"
+import { tableStyles, DefaultColors } from "./Styles/Styles"
 import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
 
 interface Props{
@@ -20,7 +20,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     const [ addPopupVisible, setAddPopupVisible ] = useState<boolean>(false)
     const [ editPopupVisible, setEditPopupVisible ] = useState<boolean>(false)
     const [ reassureDeleteBookingPopupVisible, setReassureDeleteBookingPopupVisible ] = useState<boolean>(false)
-    
+
     /**
      * handles the Add Booking button press event
      * @param e the pressEvent returned from the test
@@ -91,7 +91,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     }
 
     return(
-    <SafeAreaView>
+    <>
         <AddBookingPopup
             categorys={props.categorys}
             visible={addPopupVisible}
@@ -116,30 +116,50 @@ const BookingListScreen = (props: Props): JSX.Element => {
             onCancelPressed={() => onReassureDeleteBookingPopupCancelPressed()}
             onDeletePressed={() => onReassureDeleteBookingPopupDeletePressed()}
         />
-        <View>
+        <View style={tableStyles.table}>
+            <View style={tableStyles.tableHeader}>
+                {/* widths should combine to 87%: */}
+                <Text style={{width: "16%", fontWeight: 'bold'}}>Date</Text>
+                <Text style={{width: "15%", fontWeight: 'bold'}}>Amount</Text>
+                <Text style={{width: "28%", fontWeight: 'bold'}}>Name</Text>
+                <Text style={{width: "28%", fontWeight: 'bold'}}>Category</Text>
+            </View>
+
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
-                style={styles.scrollView}
+                style={tableStyles.tableContent}
             >
-                {props.bookings.map((be: BookingElement, index: number) => (
-                <>
-                    <Text>{be.date.toDateString()}, {be.amount}, {be.name}, {be.category.name}</Text>
-                    <Button
-                        onPress={(e: Event) => onOpenEditBookingItem(index)}
-                        title="Edit"
-                        color="#841584"
-                        accessibilityLabel="Add Item to the budget list" />
-                </>
-                ))}
 
+            {props.bookings.map((be: BookingElement, index: number) => (
+                <>
+                    <View style={tableStyles.tableRow}>
+                        <Text style={{width: "16%", color: "black" }}>{be.date.toLocaleDateString()}</Text>
+                        <Text style={{width: "15%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? " "+be.amount : be.amount}</Text>
+                        <Text style={{width: "28%", color: "black" }}>{be.name}</Text>
+                        <Text style={{width: "28%", color: "black" }}>{be.category.name}</Text>
+                        <Button
+                            onPress={(e: Event) => onOpenEditBookingItem(index)}
+                            title={"Edit"}
+                            type="clear"
+                            titleStyle={{color: DefaultColors.darkBlue}}
+                        />
+                    </View>
+                    <View style={{width: "100%", height: "0.5%"}} />{/* to add a margin */}
+                </>
+            ))}
+
+            </ScrollView>
+            <View style={tableStyles.tableButton}>
                 <Button
                     onPress={(e: Event) => onAddBookingPressed(e)}
                     title="Add Booking"
-                    color="#841584"
-                    accessibilityLabel="Add Item to the budget list" />
-            </ScrollView>
+                    buttonStyle={{backgroundColor: DefaultColors.orange}}
+                    titleStyle={{color: "black"}}
+                    accessibilityLabel="Add Item to the budget list"
+                />
+            </View>
         </View>
-    </SafeAreaView>
+    </>
     )
 }
 

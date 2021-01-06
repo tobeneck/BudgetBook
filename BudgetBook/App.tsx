@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'react-native';
-import { Header } from 'react-native-elements';
+import { StatusBar, SafeAreaView } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import { BookingElement, defaultBookingElement } from "./code_src/BookingScreenComponents/BookingList" //debugg purpose
 import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
 import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
 import { saveToCache, exportToDownloads, readCache } from './code_src/CSVHandler';
+import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -56,7 +57,7 @@ const App = () => {
   }
 
   /**
-   * renders the header and contains its functionality
+   * renders the status bar, header and contains its functionality
    */
   const renderHeader = (): JSX.Element => {
 
@@ -76,10 +77,22 @@ const App = () => {
 
     return (
       <Header
-        leftComponent={{ icon:'menu', color: '#fff', onPress: () => handleScreenSwitch() }}
-        centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
-        rightComponent={{ icon: 'home', color: '#fff', onPress: () => exportToDownloads(categorys, bookings) }}
-      />
+        statusBarProps={{ barStyle: 'light-content' }}
+        backgroundColor={DefaultColors.darkBlue}
+        containerStyle={headerStyles.header}
+      >
+        <Icon
+          name="menu"
+          color="#fff"
+          onPress={() => handleScreenSwitch()}
+        />
+        <Text style={ {color: '#fff', fontWeight: 'bold'} }>MY TITLE</Text>
+        <Icon
+          name="home"
+          color="#fff"
+          onPress={() => exportToDownloads(categorys, bookings)}
+        />
+      </Header>
     )
 
   }
@@ -111,11 +124,12 @@ const App = () => {
 
 
   return (
-    <>
-      <StatusBar barStyle="light-content" />
+    <SafeAreaView
+      style={{height: "100%", width: "100%"}}
+    >
       { renderHeader() }
       { renderCurrentScreen() }
-    </>
+    </SafeAreaView>
   );
 };
 

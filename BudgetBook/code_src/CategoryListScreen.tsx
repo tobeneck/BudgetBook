@@ -1,6 +1,8 @@
 import React, { useState } from "react"
-import { SafeAreaView, View, Button, Text } from "react-native"
-import { BookingElement, updateCategory, valueCopyBookings } from "./BookingScreenComponents/BookingList"
+import { View, Text, ScrollView } from "react-native"
+import { Button } from "react-native-elements"
+import { tableStyles, DefaultColors } from "./Styles/Styles"
+import { BookingElement, updateCategory } from "./BookingScreenComponents/BookingList"
 import { AddCategoryPopup } from "./CategoryScreenComponents/AddCategoryPopup"
 import EditCategoryPopup from "./CategoryScreenComponents/EditCategoryPopup"
 import ReassureDeleteCategoryPopup from "./CategoryScreenComponents/ReassureDeleteCategoryPopup"
@@ -101,22 +103,8 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         setReassureDeleteCategoryPopupVisible(false)
     }
 
-    const renderEditCategoryButton = (id: number): JSX.Element | null => {
-        if(id > 0){ //do not allow to edit or delete the first category (uncategorized)
-            return(
-                <Button
-                    onPress={() => onEditCategoryItem(id)}
-                    title="Edit"
-                    color="#841584"
-                    accessibilityLabel="Add Item to the budget list" />
-            )
-        } else {
-            return null
-        }
-    }
-
     return (
-        <SafeAreaView>
+        <>
             <AddCategoryPopup
                 visible={addPopupVisible}
                 setVisible={setAddPopupVisible} //TODO: coherent strategy where to put the setVisible and other methods
@@ -141,20 +129,43 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                 category={props.categorys[currentCategoryIndex]}
             />
 
-            <View>
-                {props.categorys.map((ce: CategoryElement) => (
-                <>
-                    <Text> {ce.id} - {ce.name} </Text>
-                    {renderEditCategoryButton(ce.id)}
-                </>
-                ))}
-                <Button
-                    onPress={() => setAddPopupVisible(true)}
-                    title="Add Category"
-                    color="#841584"
-                    accessibilityLabel="Add Item to the budget list" />
+            <View style={tableStyles.table}>
+                <View style={tableStyles.tableHeader}>
+                    {/* widths should combine to 87% */}
+                    <Text style={{width: "15%", fontWeight: 'bold'}}>ID</Text>
+                    <Text style={{width: "72%", fontWeight: 'bold'}}>Name</Text>
+                </View>
+
+                <ScrollView style={tableStyles.tableContent}>
+                    {props.categorys.map((ce: CategoryElement) => (
+                        <>
+                            <View style={tableStyles.tableRow}>
+                                <Text style={{width: "15%"}}>{ce.id}</Text>
+                                <Text style={{width: "72%"}}>{ce.name}</Text>
+                                <Button
+                                    disabled={ce.id===0}
+                                    onPress={() => onEditCategoryItem(ce.id)}
+                                    title={"Edit"}
+                                    type="clear"
+                                    titleStyle={{color: DefaultColors.darkBlue}}
+                                />
+                            </View>
+                            <View style={{width: "100%", height: "0.5%"}} />{/* to add a margin */}
+                        </>
+                    ))}
+                </ScrollView>
+
+                <View style={tableStyles.tableButton}>
+                    <Button
+                        onPress={() => setAddPopupVisible(true)}
+                        title="Add Category"
+                        buttonStyle={{backgroundColor: DefaultColors.orange}}
+                        titleStyle={{color: "black"}}
+                        accessibilityLabel="Add Item to the budget list"
+                    />
+                </View>
             </View>
-        </SafeAreaView>
+        </>
       )
 }
 
