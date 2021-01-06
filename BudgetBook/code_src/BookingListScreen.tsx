@@ -43,7 +43,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     /**
      * handles the "delete" operation when editing a booking list
      */
-    const onDeleteBookingItem = (): void => { //TODO: rename all of these functions to show 
+    const onDeleteBookingItem = (): void => { //TODO: rename all of these functions to show
         setEditPopupVisible(false)
         setReassureDeleteBookingPopupVisible(true)
     }
@@ -107,6 +107,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             onDeletePressed={onDeleteBookingItem}
             categorys={props.categorys}
             booking={props.bookings[currentBookingIndex]}
+            currentIndex={props.bookings.length - 1 - currentBookingIndex}
         />
 
         <ReassureDeleteBookingPopup

@@ -12,7 +12,8 @@ interface Props{
     onDeletePressed: () => void,
     onSavePressed: (nbe: BookingElement) => void,
     setVisible: (visible: boolean) => void,
-    visible: boolean
+    visible: boolean,
+    currentIndex: number //the list index of the current booking. Needed for the initial item
 }
 
 export const EditBookingPopup = (props: Props): JSX.Element => {
@@ -102,12 +103,16 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                     color="#841584"
                     accessibilityLabel="Cancel operation"
                 />
-                            <Button
-                    onPress={() => props.onDeletePressed()}
-                    title="Delete"
-                    color="#841584"
-                    accessibilityLabel="Delete Item in the budget list"
-                />
+                { props.currentIndex !== 0 ? //do not allow the initial element to be deleted
+                    <Button
+                        onPress={() => props.onDeletePressed()}
+                        title="Delete"
+                        color="#841584"
+                        accessibilityLabel="Delete Item in the budget list"
+                    />
+                    :
+                    <Text>The initial booking can not be deleted!</Text>
+                }
             </Modal>
             </View>
     )
