@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native"
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const defaultRadius: number = 3
 
@@ -17,13 +16,9 @@ export const DefaultColors = {
   darkBlue: "#16697A", //ming
 }
 
-export const buttonStyles = StyleSheet.create({
-  //TODO
-})
-
 export const headerStyles = StyleSheet.create({
   header: {
-    height: "9%",
+    height: "8%",
     width: "100%",
     backgroundColor: DefaultColors.darkBlue,
   }
@@ -52,7 +47,7 @@ export const tableStyles = StyleSheet.create({
     borderRadius: defaultRadius,
   },
   tableContent: {
-    height: "81%", //magic number: this is set with the "Add" button and the "Header" space in mind
+    height: "82%", //magic number: this is set with the "Add" button and the "Header" space in mind
     width: "99%",
     alignSelf: "center",
     backgroundColor: DefaultColors.nearWhite,

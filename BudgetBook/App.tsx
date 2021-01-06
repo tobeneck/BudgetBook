@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, SafeAreaView } from 'react-native';
-import { Header, Icon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native';
+import { Header } from 'react-native-elements';
 import { BookingElement, defaultBookingElement } from "./code_src/BookingScreenComponents/BookingList" //debugg purpose
 import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
@@ -8,6 +8,7 @@ import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
 import { saveToCache, exportToDownloads, readCache } from './code_src/CSVHandler';
 import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
+import Icon from 'react-native-vector-icons/Ionicons';
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -26,6 +27,20 @@ const App = () => {
     //   saveToCache(categorys, bookings) //save the data when closing the app
     // )
   }, [])
+
+  /**
+   * returns the right title for the right screen
+   */
+  const getHeaderTitle = (): string => {
+    switch(currentScreen){
+      case eCurrentScreen.BOOKING_LIST_SCREEN:
+        return "Booking List"
+      case eCurrentScreen.CATEGORY_LIST_SCREEN:
+        return "Category List"
+      default:
+        return "Error: Title not found"
+    }
+  }
 
   /**
    * saves the new bookings to the cache and to the state
@@ -82,15 +97,18 @@ const App = () => {
         containerStyle={headerStyles.header}
       >
         <Icon
-          name="menu"
-          color="#fff"
+          name='menu'
+          size={25}
+          color="white"
           onPress={() => handleScreenSwitch()}
         />
-        <Text style={ {color: '#fff', fontWeight: 'bold'} }>MY TITLE</Text>
+        <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18} }>{getHeaderTitle()}</Text>
         <Icon
           name="home"
+          size={21}
           color="#fff"
           onPress={() => exportToDownloads(categorys, bookings)}
+          style={{alignContent: "center"}}
         />
       </Header>
     )
