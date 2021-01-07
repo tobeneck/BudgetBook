@@ -6,7 +6,7 @@ import { BookingElement } from "./BookingScreenComponents/BookingList"
 import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
 import { CategoryElement } from "./CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
-import { tableStyles, DefaultColors } from "./Styles/Styles"
+import { tableStyles, DefaultColors, spacings } from "./Styles/Styles"
 import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
 
 interface Props{
@@ -144,7 +144,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
                             titleStyle={{color: DefaultColors.darkBlue}}
                         />
                     </View>
-                    <View style={{width: "100%", height: "0.5%"}} />{/* to add a margin */}
+                    <View style={spacings.defaultHorizontalSpacing} />{/* to add a margin */}
                 </>
             ))}
 

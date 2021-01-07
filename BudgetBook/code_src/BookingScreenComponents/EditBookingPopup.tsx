@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { Text, Modal, Button, TextInput, View, Keyboard } from "react-native"
+import { Text, TextInput, View, Keyboard, ScrollView } from "react-native"
+import { Button } from "react-native-elements"
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
+import { Overlay } from "react-native-elements";
+import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles";
 
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -50,70 +53,89 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                     onChange={(e: Event, selectedDate: Date | undefined) => onDateChanged(e, selectedDate)}//OK or cancel is pressed
                 />)
             }
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={props.visible}
+
+            <Overlay
+                isVisible={props.visible}
+                // onBackdropPress={() => props.setVisible(false)}
+                overlayStyle={bigPopupStyles.overlay}
+                statusBarTranslucent={true}
+                onRequestClose={() => props.onCancelPressed()}
             >
-                <Text>date:</Text>
-                <Text
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    onPress={() => {
-                        setDatePickerVisible(true)
-                        Keyboard.dismiss()
-                    }}
-                >
-                    {date.toDateString()}
-                </Text>
+                <View style={{height: "100%", justifyContent: "space-between"}}>
+                    <View style={{height: "90%", justifyContent: "flex-start"}}>
+                        <Text>Date</Text>
+                        <Text
+                            style={bigPopupStyles.text}
+                            onPress={() => {
+                                setDatePickerVisible(true)
+                                Keyboard.dismiss()
+                            }}
+                        >
+                            {" "+date.toDateString()}
+                        </Text>
 
-                <Text>amount:</Text>
-                <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    keyboardType = 'numeric'
-                    onChangeText={newAmount => setAmount(newAmount)}
-                    value={amount}
-                />
+                        <Text>Amount</Text>
+                        <TextInput
+                            style={bigPopupStyles.textInput}
+                            keyboardType = 'numeric'
+                            onChangeText={text => setAmount(text)}
+                            value={amount+""}
+                        />
 
-                <Text>name:</Text>
-                <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    onChangeText={newName => setName(newName)}
-                    value={name}
-                />
+                        <Text>Category</Text>
+                        <View style={bigPopupStyles.textInput}>
+                            <Picker
+                                selectedValue={category.id}
+                                style={{height: "100%", width: "100%"}}
+                                onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
+                                mode="dropdown"
+                            >
+                                {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                            </Picker>
+                        </View>
 
-                <Text>category:</Text>
-                <Picker
-                    selectedValue={category.id}
-                    style={{ height: 50, width: 150 }}
-                    onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
-                    mode="dropdown"
-                >
-                    {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-                </Picker>
+                        <Text>Description</Text>
+                        <TextInput
+                            style={bigPopupStyles.textField}
+                            onChangeText={text => setName(text)}
+                            value={name}
+                            multiline={true}
+                            textAlignVertical="top"
+                        />
 
-                <Button
-                    onPress={() => props.onSavePressed({name, category, date, amount: +amount} as BookingElement)}
-                    title="Save"
-                    color="#841584"
-                    accessibilityLabel="Save changes in the budget list"
-                />
-                <Button
-                    onPress={() => props.onCancelPressed()}
-                    title="Cancel"
-                    color="#841584"
-                    accessibilityLabel="Cancel operation"
-                />
-                { props.currentIndex !== 0 ? //do not allow the initial element to be deleted
-                    <Button
-                        onPress={() => props.onDeletePressed()}
-                        title="Delete"
-                        color="#841584"
-                        accessibilityLabel="Delete Item in the budget list"
-                    />
-                    :
-                    <Text>The initial booking can not be deleted!</Text>
-                }
-            </Modal>
-            </View>
+                    </View>
+
+                    <View style={{width: "100%", flexDirection: "row", justifyContent:"space-between"}}>
+                        <Button
+                            onPress={() => props.onDeletePressed()}
+                            title="Delete"
+                            titleStyle={buttonStyles.deleteButtonOutlineText}
+                            type="outline"
+                            buttonStyle={buttonStyles.deleteButtonOutlineStyle}
+                        />
+
+                        <View style={{flexDirection: "row"}}>
+                            <Button
+                                onPress={() => props.onSavePressed({name, category, date, amount: +amount} as BookingElement)}
+                                title="Save"
+                                buttonStyle={buttonStyles.saveButtonStyle}
+                                titleStyle={buttonStyles.saveButtonText}
+                                accessibilityLabel="Add Item to the budget list"
+                            />
+
+                            <View style={spacings.doubleVerticalSpacing}/>
+
+                            <Button
+                                onPress={() => props.onCancelPressed()}
+                                title="Cancel"
+                                titleStyle={buttonStyles.cancelButtonText}
+                                buttonStyle={buttonStyles.cancelButtonStyle}
+                            />
+                        </View>
+
+                    </View>
+                </View>
+            </Overlay>
+        </View>
     )
 }

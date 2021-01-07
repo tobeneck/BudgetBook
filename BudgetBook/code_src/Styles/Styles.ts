@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native"
 
 const defaultRadius: number = 3
+const defaultBorderWidth: number = 1//0.5
+
+const defaultSpacingPercent: number = 0.5
 
 export const DefaultColors = {
   lightGreen: "#9BC53D", //Android green
@@ -59,3 +62,148 @@ export const tableStyles = StyleSheet.create({
     alignSelf: "center",
   }
 });
+
+export const bigPopupStyles = StyleSheet.create({
+  overlay: {
+    height: "60%",
+    width: "70%",
+    backgroundColor: DefaultColors.nearWhite
+  },
+  text: {
+    width: "99%",
+    height: "9%",
+    alignSelf: "center",
+    borderWidth: defaultBorderWidth,
+    borderRadius: defaultRadius,
+    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    textAlignVertical: "center"
+  },
+  textInput: {
+    width: "99%",
+    height: "9%",
+    alignSelf: "center",
+    borderWidth: defaultBorderWidth,
+    borderRadius: defaultRadius,
+    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    alignContent:"center"
+  },
+  textField: {
+    width: "99%",
+    height: "36%",
+    alignSelf: "center",
+    borderWidth: defaultBorderWidth,
+    borderRadius: defaultRadius,
+    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    alignItems: "flex-start"
+  }
+})
+
+
+const smallPopupHeightPercentage: number = 30
+export const smallPopupStyles = StyleSheet.create({
+  overlay: {
+    height: smallPopupHeightPercentage+"%",
+    width: "70%",
+    backgroundColor: DefaultColors.nearWhite
+  },
+  headline: {
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center"
+  },
+  text: {
+    alignSelf: "center",
+    textAlign: "center"
+  },
+  picker: {
+    width: "99%",
+    height: "18%",
+    alignSelf: "center",
+    borderWidth: defaultBorderWidth,
+    borderRadius: defaultRadius,
+    borderColor: "grey", //TODO: remove these, maybe make it more grey
+  },
+})
+
+export const spacings = StyleSheet.create({
+  defaultHorizontalSpacing: {
+    height: defaultSpacingPercent+"%",
+    width: "100%",
+  },
+  doubleHorizontalSpacing: {
+    height: defaultSpacingPercent*2+"%",
+    width: "100%",
+  },
+
+  defaultVerticalSpacing: {
+    width: defaultSpacingPercent+"%",
+  },
+  doubleVerticalSpacing: {
+    width: defaultSpacingPercent*2+"%",
+  },
+})
+
+export const buttonStyles = StyleSheet.create({
+  orangeButtonStyle: {
+    backgroundColor: DefaultColors.orange
+  },
+  orangeButtonText: {
+    color: "black"
+  },
+
+  darkBlueButtonStyle: {
+    backgroundColor: DefaultColors.darkBlue
+  },
+  darkBlueButtonText: {
+    color: "white"
+  },
+
+  deleteButtonOutlineStyle: {
+    borderColor: "red",
+    borderWidth: defaultBorderWidth,
+  },
+  deleteButtonOutlineText: {
+    color: "red"
+  },
+
+  deleteButtonStyle: {
+    borderColor: "red",
+    borderWidth: defaultBorderWidth,
+    backgroundColor: "red"
+  },
+  deleteButtonText: {
+    color: "white"
+  },
+
+  saveButtonStyle: {
+    borderColor: DefaultColors.orange,
+    borderWidth: defaultBorderWidth,
+    backgroundColor: DefaultColors.orange
+  },
+  saveButtonText: {
+    color: "black"
+  },
+
+  cancelButtonStyle: {
+    borderColor: DefaultColors.darkBlue,
+    borderWidth: defaultBorderWidth,
+    backgroundColor: DefaultColors.darkBlue,
+  },
+  cancelButtonText: {
+    color: "white"
+  },
+})
+
+export const overlayStyles = StyleSheet.create({
+  overlay: {
+    height: "60%",
+    width: "70%",
+    backgroundColor: DefaultColors.nearWhite
+  },
+  smallOverlay: {
+    height: "30%",
+    width: "70%",
+    backgroundColor: DefaultColors.nearWhite
+  }
+})

@@ -1,7 +1,9 @@
 import React, { useState } from "react"
-import { Modal, Button, Text } from "react-native"
+import { Text, View } from "react-native"
 import { Picker } from '@react-native-picker/picker';
 import { CategoryElement } from "./CategoryList"
+import { buttonStyles, smallPopupStyles } from "../Styles/Styles";
+import { Overlay, Button } from "react-native-elements";
 
 interface Props{
     visible: boolean,
@@ -23,15 +25,18 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
         if(props.timesUsed > 0)
             return (
                 <>
-                    <Text>The category is used {props.timesUsed} times.The the category using this booking will be changed to: </Text>
-                    <Picker
-                        selectedValue={props.remainingCategorys.length - 1 - replacementCategoryIndex}  //TODO: this is alsi ugly! Think aboud how to assign IDs for categorys, or how to add them
-                        style={{ height: 50, width: 150 }}
-                        onValueChange={(itemValue, itemIndex) => (setReplacementCategoryIndex(itemIndex))}
-                        mode="dropdown"
-                    >
-                        {props.remainingCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-                    </Picker>
+                    <Text style={smallPopupStyles.text}>The category is used {props.timesUsed} {props.timesUsed === 1 ? "time" : "times"}.The the category using this booking will be changed to: </Text>
+
+                    <View style={smallPopupStyles.picker}>
+                        <Picker
+                            selectedValue={props.remainingCategorys.length - 1 - replacementCategoryIndex}  //TODO: this is alsi ugly! Think aboud how to assign IDs for categorys, or how to add them
+                            onValueChange={(itemValue, itemIndex) => (setReplacementCategoryIndex(itemIndex))}
+                            mode="dropdown"
+                            style={{height: "100%", width: "100%"}}
+                        >
+                            {props.remainingCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                        </Picker>
+                    </View>
                 </>
             )
         else
@@ -39,26 +44,36 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
     }
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
+
+        <Overlay
+        isVisible={props.visible}
+        // onBackdropPress={() => props.setVisible(false)}
+        overlayStyle={smallPopupStyles.overlay}
+        statusBarTranslucent={true}
+        onRequestClose={() => props.onCancelPressed()}
         >
-            <Text>Are you shure you wand to delete the category "{props.category.name}"?</Text>
-            {pickNewCategory()}
-            <Button
-                onPress={() => props.onDeletePressed(props.category.id, replacementCategoryIndex)}
-                title="Delete"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-            <Button
-                onPress={() => props.onCancelPressed()}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-        </Modal>
+            <View style={{height: "100%", width: "100%", justifyContent: "space-between"}}>
+                <Text style={smallPopupStyles.headline} numberOfLines={3}>Delete the category "{props.category.name}"?</Text>
+
+                {pickNewCategory()}
+
+                <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                    <Button
+                        onPress={() => props.onDeletePressed(props.category.id, replacementCategoryIndex)}
+                        title="Delete"
+                        buttonStyle={buttonStyles.deleteButtonStyle}
+                        titleStyle={buttonStyles.deleteButtonText}
+                    />
+
+                    <Button
+                        onPress={() => props.onCancelPressed()}
+                        title="Cancel"
+                        titleStyle={buttonStyles.cancelButtonText}
+                        buttonStyle={buttonStyles.cancelButtonStyle}
+                    />
+                </View>
+            </View>
+        </Overlay>
     )
 }
 

@@ -1,5 +1,7 @@
 import React from "react"
-import { Modal, Button, Text } from "react-native"
+import { Text, View } from "react-native"
+import { Overlay, Button } from "react-native-elements"
+import { buttonStyles, smallPopupStyles } from "../Styles/Styles"
 import { BookingElement } from "./BookingList"
 
 interface Props{
@@ -11,26 +13,35 @@ interface Props{
 
 const ReassureDeleteBookingPopup = (props: Props): JSX.Element => {
     return (
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
+        <Overlay
+            isVisible={props.visible}
+            // onBackdropPress={() => props.setVisible(false)}
+            overlayStyle={smallPopupStyles.overlay}
+            statusBarTranslucent={true}
+            onRequestClose={() => props.onCancelPressed()}
         >
-            <Text>Are you shure you wand to delete the category:</Text>
-            <Text>{props.booking.date.toDateString()}, {props.booking.amount}, {props.booking.name}, {props.booking.category.name} </Text>
-            <Button
-                onPress={() => props.onDeletePressed()}
-                title="Delete"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-            <Button
-                onPress={() => props.onCancelPressed()}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-        </Modal>
+            <View style={{height: "100%", justifyContent: "space-between"}}>
+                <Text style={smallPopupStyles.headline}>Delete the booking?</Text>
+
+                <Text style={smallPopupStyles.text}>{props.booking.date.toDateString()}, {props.booking.amount}, {props.booking.category.name} </Text>
+
+                <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                    <Button
+                        onPress={() => props.onDeletePressed()}
+                        title="Delete"
+                        buttonStyle={buttonStyles.deleteButtonStyle}
+                        titleStyle={buttonStyles.deleteButtonText}
+                    />
+
+                    <Button
+                        onPress={() => props.onCancelPressed()}
+                        title="Cancel"
+                        titleStyle={buttonStyles.cancelButtonText}
+                        buttonStyle={buttonStyles.cancelButtonStyle}
+                    />
+                </View>
+            </View>
+        </Overlay>
     )
 }
 

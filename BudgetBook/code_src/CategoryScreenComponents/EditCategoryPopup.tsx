@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { Modal, Text, TextInput, Button } from "react-native"
+import { Text, TextInput, View } from "react-native"
+import { Overlay, Button } from "react-native-elements"
+import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles"
 import { CategoryElement } from "./CategoryList"
 
 interface Props{
@@ -18,36 +20,67 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
     }, [props.category])
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
+        <Overlay
+        isVisible={props.visible}
+            // onBackdropPress={() => props.setVisible(false)}
+            overlayStyle={bigPopupStyles.overlay}
+            statusBarTranslucent={true}
+            onRequestClose={() => props.onCancelPressed()}
         >
-            <Text>category name:</Text>
-            <TextInput
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                onChangeText={newName => setCategoryName(newName)}
-                value={categoryName}
-            />
-            <Button
-                onPress={() => props.onSavePressed({name: categoryName, id: props.category.id} as CategoryElement)}
-                title="Save"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-            <Button
-                onPress={() => props.onCancelPressed()}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-            <Button
-                onPress={() => props.onDeletePressed()}
-                title="Delete"
-                color="#841584"
-                accessibilityLabel="Add Item to the budget list"
-            />
-        </Modal>
+            <View style={{height: "100%", width: "100%", justifyContent: "space-between"}}>
+                <View style={{height: "90%", justifyContent: "flex-start"}}>
+                    <Text>Name</Text>
+                    <TextInput
+                        style={bigPopupStyles.textInput}
+                        onChangeText={text => setCategoryName(text)}
+                        value={categoryName}
+                    />
+                    <Text>Description</Text>
+                    <TextInput
+                        style={bigPopupStyles.textField}
+                        onChangeText={text => setCategoryName(text)}
+                        value={categoryName}
+                        multiline={true}
+                        textAlignVertical="top"
+                    />
+                    <Text>Color</Text>
+                    <Text
+                        style={bigPopupStyles.textInput}
+                    >Placeholder!</Text>
+
+                </View>
+
+                <View style={{width: "100%", flexDirection: "row", justifyContent:"space-between"}}>
+                    <Button
+                        onPress={() => props.onDeletePressed()}
+                        title="Delete"
+                        titleStyle={buttonStyles.deleteButtonOutlineText}
+                        type="outline"
+                        buttonStyle={buttonStyles.deleteButtonOutlineStyle}
+                    />
+
+                    <View style={{flexDirection: "row"}}>
+                        <Button
+                            onPress={() => props.onSavePressed({id: props.category.id, name: categoryName} as CategoryElement)}
+                            title="Save"
+                            buttonStyle={buttonStyles.saveButtonStyle}
+                            titleStyle={buttonStyles.saveButtonText}
+                            accessibilityLabel="Add Item to the budget list"
+                        />
+
+                        <View style={spacings.doubleVerticalSpacing}/>
+
+                        <Button
+                            onPress={() => props.onCancelPressed()}
+                            title="Cancel"
+                            titleStyle={buttonStyles.cancelButtonText}
+                            buttonStyle={buttonStyles.cancelButtonStyle}
+                        />
+                    </View>
+
+                </View>
+            </View>
+        </Overlay>
     )
 }
 

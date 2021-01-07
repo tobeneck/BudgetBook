@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { Button } from "react-native-elements"
-import { tableStyles, DefaultColors } from "./Styles/Styles"
+import { tableStyles, DefaultColors, buttonStyles } from "./Styles/Styles"
 import { BookingElement, updateCategory } from "./BookingScreenComponents/BookingList"
 import { AddCategoryPopup } from "./CategoryScreenComponents/AddCategoryPopup"
 import EditCategoryPopup from "./CategoryScreenComponents/EditCategoryPopup"
@@ -132,7 +132,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
             <View style={tableStyles.table}>
                 <View style={tableStyles.tableHeader}>
                     {/* widths should combine to 87% */}
-                    <Text style={{width: "15%", fontWeight: 'bold'}}>ID</Text>
+                    <Text style={{width: "15%", fontWeight: 'bold'}}>Nr.</Text>
                     <Text style={{width: "72%", fontWeight: 'bold'}}>Name</Text>
                 </View>
 
@@ -159,8 +159,8 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                     <Button
                         onPress={() => setAddPopupVisible(true)}
                         title="Add Category"
-                        buttonStyle={{backgroundColor: DefaultColors.orange}}
-                        titleStyle={{color: "black"}}
+                        buttonStyle={buttonStyles.orangeButtonStyle}
+                        titleStyle={buttonStyles.orangeButtonText}
                         accessibilityLabel="Add Item to the budget list"
                     />
                 </View>
