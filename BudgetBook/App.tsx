@@ -6,9 +6,12 @@ import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
 import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
-import { saveToCache, exportToDownloads, readCache } from './code_src/CSVHandler';
+import { saveToCache, exportToDownloads, readCache } from './code_src/ExportImportData/CSVHandler';
 import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
+import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
+import { request, PERMISSIONS } from "react-native-permissions"
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -20,6 +23,9 @@ const App = () => {
   const [categorys, setCategorys] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
   const [bookings, setBookings] = useState<BookingElement[]>([defaultBookingElement]) //there needs to be at least one booking!
 
+  const [reassureExportPopupVisible, setReassureExportPopupVisible] = useState<boolean>(false)
+  const [errorExportingPopupVisible, setErrorExportingPopupVisible] = useState<boolean>(false)
+
   useEffect(() => {
     readCache(setCategorys, setBookings)
 
@@ -27,6 +33,46 @@ const App = () => {
     //   saveToCache(categorys, bookings) //save the data when closing the app
     // )
   }, [])
+
+  /**
+   * If a unexpected error occured, this callback can be called to open the generigErrorPopup
+   * @param e the error which occured
+   */
+  const genericErrorCallback = (e: Error) => {
+    //TODO: open a generic error popup
+  }
+
+  /**
+   * callback when an error occurs during exporting.
+   */
+  const errorExportingCallback = (e: Error) => {
+    //TODO: check if its really a permission error
+    // if(e.message.includes("Permission denied")){
+
+    // }
+
+    request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then((result) => {
+      switch(result){
+        case "denied":
+          setErrorExportingPopupVisible(true)
+          break;
+        case "blocked":
+          setErrorExportingPopupVisible(true)
+          break;
+        case "granted":
+          exportToDownloads(categorys, bookings, genericErrorCallback)
+          break;
+        // case "limited":
+        //   break;
+        // case "unavailable":
+        //   break;
+        default:
+          genericErrorCallback(e)
+      }
+      console.log(result)
+    });
+    //setErrorExportingPopupVisible(true)
+  }
 
   /**
    * returns the right title for the right screen
@@ -107,7 +153,7 @@ const App = () => {
           name="file-export-outline"
           size={25}
           color="#fff"
-          onPress={() => exportToDownloads(categorys, bookings)}
+          onPress={() => setReassureExportPopupVisible(true)}
           style={{alignContent: "center"}}
         />
       </Header>
@@ -145,6 +191,18 @@ const App = () => {
     <SafeAreaView
       style={{height: "100%", width: "100%"}}
     >
+      <ReassureExportPopup
+        visible={reassureExportPopupVisible}
+        onCancelPressed={() => setReassureExportPopupVisible(false)}
+        onExportPressed={() => {
+          exportToDownloads(categorys, bookings, errorExportingCallback)
+          setReassureExportPopupVisible(false)
+        }}
+      />
+      <ErrorExportingPopup
+        visible={errorExportingPopupVisible}
+        onCancelPressed={(() => setErrorExportingPopupVisible(false))}
+      />
       { renderHeader() }
       { renderCurrentScreen() }
     </SafeAreaView>

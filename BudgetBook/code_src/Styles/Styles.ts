@@ -110,7 +110,15 @@ export const smallPopupStyles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: "bold",
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
+    color: "black"
+  },
+  errorHeadline: {
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    color: DefaultColors.red
   },
   text: {
     alignSelf: "center",
