@@ -23,7 +23,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
     // const [booking, setBooking] = useState<BookingElement>(props.booking)
     const [date, setDate] = useState<Date>(props.booking.date)
     const [amount, setAmount] = useState<string>(props.booking.amount+"")
-    const [name, setName] = useState<string>(props.booking.name)
+    const [description, setDescription] = useState<string>(props.booking.description)
     const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
@@ -38,7 +38,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
     useEffect(() => {
         setDate(props.booking.date)
         setAmount(props.booking.amount+"")
-        setName(props.booking.name)
+        setDescription(props.booking.description)
         setCategory(props.booking.category)
         setDatePickerVisible(false)
     }, [props.booking])
@@ -97,8 +97,8 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                         <Text>Description</Text>
                         <TextInput
                             style={bigPopupStyles.textField}
-                            onChangeText={text => setName(text)}
-                            value={name}
+                            onChangeText={text => setDescription(text)}
+                            value={description}
                             multiline={true}
                             textAlignVertical="top"
                         />
@@ -116,7 +116,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
 
                         <View style={{flexDirection: "row"}}>
                             <Button
-                                onPress={() => props.onSavePressed({name, category, date, amount: +amount} as BookingElement)}
+                                onPress={() => props.onSavePressed({description, category, date, total: props.booking.total - props.booking.amount + +amount, amount: +amount} as BookingElement)}
                                 title="Save"
                                 buttonStyle={buttonStyles.saveButtonStyle}
                                 titleStyle={buttonStyles.saveButtonText}

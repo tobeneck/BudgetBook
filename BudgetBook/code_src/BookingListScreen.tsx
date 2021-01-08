@@ -2,12 +2,13 @@ import React, { useState } from "react"
 import { Text } from "react-native"
 import { Button } from "react-native-elements"
 import { AddBookingPopup } from "./BookingScreenComponents/AddBookingPopup"
-import { BookingElement } from "./BookingScreenComponents/BookingList"
+import { BookingElement, getCurrentTotal, adjustForTotalAmount } from "./BookingScreenComponents/BookingList"
 import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
 import { CategoryElement } from "./CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
 import { tableStyles, DefaultColors, spacings } from "./Styles/Styles"
 import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface Props{
     categorys: CategoryElement[],
@@ -36,8 +37,10 @@ const BookingListScreen = (props: Props): JSX.Element => {
     const onSaveEditBookingItem = (nbe: BookingElement): void => {
         const newBookingList: BookingElement[] = props.bookings
         newBookingList[currentBookingIndex] = nbe
-        props.setBookings(newBookingList)
+        const adjustedNewBookingList: BookingElement[] = adjustForTotalAmount(currentBookingIndex, newBookingList)
+        props.setBookings(adjustedNewBookingList)
         setEditPopupVisible(false)
+        setCurrentBookingIndex(0)
     }
 
     /**
@@ -97,6 +100,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             visible={addPopupVisible}
             setVisible={setAddPopupVisible}
             addItem={addBooking}
+            currentTotal={getCurrentTotal(props.bookings)}
         />
 
         <EditBookingPopup
@@ -118,11 +122,11 @@ const BookingListScreen = (props: Props): JSX.Element => {
         />
         <View style={tableStyles.table}>
             <View style={tableStyles.tableHeader}>
-                {/* widths should combine to 87%: */}
+                {/* widths should combine to 90%: */}
                 <Text style={{width: "16%", fontWeight: 'bold'}}>Date</Text>
-                <Text style={{width: "15%", fontWeight: 'bold'}}>Amount</Text>
-                <Text style={{width: "28%", fontWeight: 'bold'}}>Name</Text>
-                <Text style={{width: "28%", fontWeight: 'bold'}}>Category</Text>
+                <Text style={{width: "18%", fontWeight: 'bold'}}>Total</Text>
+                <Text style={{width: "18%", fontWeight: 'bold'}}>Amount</Text>
+                <Text style={{width: "38%", fontWeight: 'bold'}}>Category</Text>
             </View>
 
             <ScrollView
@@ -134,14 +138,20 @@ const BookingListScreen = (props: Props): JSX.Element => {
                 <>
                     <View style={tableStyles.tableRow}>
                         <Text style={{width: "16%", color: "black" }}>{be.date.toLocaleDateString()}</Text>
-                        <Text style={{width: "15%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? " "+be.amount : be.amount}</Text>
-                        <Text style={{width: "28%", color: "black" }}>{be.name}</Text>
-                        <Text style={{width: "28%", color: "black" }}>{be.category.name}</Text>
+                        <Text style={{width: "18%", color: be.total < 0 ? DefaultColors.red : be.total > 0 ? DefaultColors.green : "black"}}>{be.total >= 0 ? " "+be.total : be.total}</Text>
+                        <Text style={{width: "18%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? " "+be.amount : be.amount}</Text>
+                        <Text style={{width: "38%", color: "black" }}>{be.category.name}</Text>
                         <Button
                             onPress={(e: Event) => onOpenEditBookingItem(index)}
-                            title={"Edit"}
                             type="clear"
                             titleStyle={{color: DefaultColors.darkBlue}}
+                            icon={
+                                <Icon
+                                  name="file-document-edit-outline"
+                                  size={23}
+                                  color={DefaultColors.darkBlue}
+                                />
+                            }
                         />
                     </View>
                     <View style={spacings.defaultHorizontalSpacing} />{/* to add a margin */}

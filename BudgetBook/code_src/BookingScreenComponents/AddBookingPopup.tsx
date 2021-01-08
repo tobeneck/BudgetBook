@@ -10,6 +10,7 @@ import { buttonStyles, DefaultColors, bigPopupStyles, spacings } from "../Styles
 interface Props{
     categorys: CategoryElement[],
     visible: boolean,
+    currentTotal: number,
     addItem: (element: BookingElement) => void,
     setVisible: (visible: boolean) => void
 }
@@ -29,7 +30,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     }
 
     const onAddPressed = (): void => {
-        props.addItem({date, amount: +amount, name, category} as BookingElement)
+        props.addItem({date, total: props.currentTotal + +amount, amount: +amount, description: name, category} as BookingElement)
         props.setVisible(false)
     }
 

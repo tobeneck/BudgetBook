@@ -11,6 +11,7 @@ const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir //"/storage/emu
 
 
 const encoding = 'utf8'
+const separator: string = ";"
 
 export interface CombinedData{
     categorys: CategoryElement[],
@@ -37,7 +38,7 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     //parse category data
     outString += "categoryID,categoryName\n"
     categorys.forEach((ce) => {
-        outString += ce.id+","+ce.name+"\n"
+        outString += ce.id+separator+ce.name+"\n"
 
     })
 
@@ -45,7 +46,7 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     outString += defaultStringDivider
     outString += "bookingDate,bookingAmount,bookingName,bokingCategoryName,bookingCategoryID \n"
     bookings.forEach((be) => {
-        outString += toISOStringWithTimezone(be.date)+","+be.amount+","+be.name+","+be.category.name+","+be.category.id+"\n"
+        outString += toISOStringWithTimezone(be.date)+separator+be.total+separator+be.amount+separator+be.description+separator+be.category.name+separator+be.category.id+"\n"
     })
 
     return outString
@@ -147,7 +148,7 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
 
                 for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
                     if(categorysString[i] !== ""){ //the last element always is "", avoid this!
-                        const currentRow: string[] = categorysString[i].split(",")
+                        const currentRow: string[] = categorysString[i].split(separator)
                         categorys.push({
                             id: +currentRow[0],
                             name: currentRow[1]
@@ -158,15 +159,16 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
 
                 for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
                     if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
-                        const currentRow: string[] = bookingsString[i].split(",")
+                        const currentRow: string[] = bookingsString[i].split(separator)
                         console.log("currentBookingRow:", currentRow)
                         bookings.push({
                             date: new Date(currentRow[0]),
-                            amount: +currentRow[1],
-                            name: currentRow[2],
+                            total: +currentRow[1],
+                            amount: +currentRow[2],
+                            description: currentRow[3],
                             category: {
-                                name: currentRow[3],
-                                id: +currentRow[4]
+                                name: currentRow[4],
+                                id: +currentRow[5]
                             } as CategoryElement
                         } as BookingElement)
                     }

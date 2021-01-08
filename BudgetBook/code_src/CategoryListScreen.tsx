@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { Button } from "react-native-elements"
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { tableStyles, DefaultColors, buttonStyles } from "./Styles/Styles"
 import { BookingElement, updateCategory } from "./BookingScreenComponents/BookingList"
 import { AddCategoryPopup } from "./CategoryScreenComponents/AddCategoryPopup"
@@ -131,9 +132,9 @@ const CategoryListScreen = (props: Props): JSX.Element => {
 
             <View style={tableStyles.table}>
                 <View style={tableStyles.tableHeader}>
-                    {/* widths should combine to 87% */}
+                    {/* widths should combine to 90%: */}
                     <Text style={{width: "15%", fontWeight: 'bold'}}>Nr.</Text>
-                    <Text style={{width: "72%", fontWeight: 'bold'}}>Name</Text>
+                    <Text style={{width: "75%", fontWeight: 'bold'}}>Name</Text>
                 </View>
 
                 <ScrollView style={tableStyles.tableContent}>
@@ -141,13 +142,19 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                         <>
                             <View style={tableStyles.tableRow}>
                                 <Text style={{width: "15%"}}>{ce.id}</Text>
-                                <Text style={{width: "72%"}}>{ce.name}</Text>
+                                <Text style={{width: "75%"}}>{ce.name}</Text>
                                 <Button
                                     disabled={ce.id===0}
                                     onPress={() => onEditCategoryItem(ce.id)}
-                                    title={"Edit"}
                                     type="clear"
                                     titleStyle={{color: DefaultColors.darkBlue}}
+                                    icon={
+                                        <Icon
+                                          name="file-document-edit-outline"
+                                          size={23}
+                                          color={DefaultColors.darkBlue}
+                                        />
+                                    }
                                 />
                             </View>
                             <View style={{width: "100%", height: "0.5%"}} />{/* to add a margin */}

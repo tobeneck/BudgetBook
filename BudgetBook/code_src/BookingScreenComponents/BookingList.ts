@@ -3,15 +3,43 @@ import { CategoryElement, valueCopyCategory, defaultCategoryElement } from "../C
 export interface BookingElement{
     date: Date;
     amount: number;
-    name: string;
+    total: number; //the total booking amount at that place
+    description: string;
     category: CategoryElement;
 }
 
 export const defaultBookingElement: BookingElement = {
     date: new Date(),
     amount: 0,
-    name: "initial balance",
+    total: 0, //needs to be same as the amount
+    description: "initial balance",
     category: defaultCategoryElement
+}
+
+
+/**
+ * returns the current total amount of the bookingList
+ * @param bookings the bookings the total amount should be extracted from
+ */
+export const getCurrentTotal = (bookings: BookingElement[]): number => {
+    return bookings[0].total;//TODO: think aboud the indexing
+}
+
+/**
+ * returns an adjusted amount of totals for the bookings, beginning at startingIndex.
+ * @param startingIndex the starting index
+ * @param bookings the bookings to be adjusted
+ */
+export const adjustForTotalAmount = (startingIndex: number, bookings: BookingElement[]): BookingElement[] => {
+    var bookingsToEdit: BookingElement[] = valueCopyBookings(bookings)
+
+    let previousTotal: number = bookingsToEdit[startingIndex].total
+    for(let i: number = startingIndex-1; i >= 0; i--){//the most recent bookings are at index 0, therefore we need to iterate down //TODO: think aboud indexing
+        bookingsToEdit[i].total = previousTotal + bookingsToEdit[i].amount
+        previousTotal = bookingsToEdit[i].total
+    }
+
+    return bookingsToEdit
 }
 
 /**
@@ -35,8 +63,9 @@ export const valueCopyBookings = (bookings: BookingElement[]): BookingElement[] 
 export const valueCopyBooking = (booking: BookingElement): BookingElement => {
     return {
         date: new Date(booking.date),
-        name: booking.name,
+        description: booking.description,
         amount: booking.amount,
+        total: booking.total,
         category: valueCopyCategory(booking.category)
     } as BookingElement
 }

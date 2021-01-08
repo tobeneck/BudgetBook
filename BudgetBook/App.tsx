@@ -8,7 +8,7 @@ import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
 import { saveToCache, exportToDownloads, readCache } from './code_src/CSVHandler';
 import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -104,8 +104,8 @@ const App = () => {
         />
         <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18} }>{getHeaderTitle()}</Text>
         <Icon
-          name="home"
-          size={21}
+          name="file-export-outline"
+          size={25}
           color="#fff"
           onPress={() => exportToDownloads(categorys, bookings)}
           style={{alignContent: "center"}}
