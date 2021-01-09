@@ -146,7 +146,7 @@ export const exportToDownloads = (categorys: CategoryElement[], bookings: Bookin
  * @param bookings the bookings to be saved
  */
 export const saveToCache = (categorys: CategoryElement[], bookings: BookingElement[]): void => {
-    const filepath: string = defaultExportDir + "/" + defaultFilename + currentDateAppendix() + defaultFileEnding;
+    const filepath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding;
 
     const data: string = dataToString(categorys, bookings)
     saveStringToFile(data, filepath)

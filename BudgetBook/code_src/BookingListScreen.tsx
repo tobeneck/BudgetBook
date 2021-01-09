@@ -154,7 +154,6 @@ const BookingListScreen = (props: Props): JSX.Element => {
                             }
                         />
                     </View>
-                    <View style={spacings.defaultHorizontalSpacing} />{/* to add a margin */}
                 </>
             ))}
 

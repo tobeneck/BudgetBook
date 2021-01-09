@@ -137,7 +137,9 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                     <Text style={{width: "75%", fontWeight: 'bold'}}>Name</Text>
                 </View>
 
-                <ScrollView style={tableStyles.tableContent}>
+                <ScrollView
+                    style={tableStyles.tableContent}
+                >
                     {props.categorys.map((ce: CategoryElement) => (
                         <>
                             <View style={tableStyles.tableRow}>
@@ -157,7 +159,6 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                                     }
                                 />
                             </View>
-                            <View style={{width: "100%", height: "0.5%"}} />{/* to add a margin */}
                         </>
                     ))}
                 </ScrollView>

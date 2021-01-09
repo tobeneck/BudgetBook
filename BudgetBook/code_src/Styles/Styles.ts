@@ -30,6 +30,7 @@ export const headerStyles = StyleSheet.create({
 export const tableStyles = StyleSheet.create({
   table: {
     backgroundColor: DefaultColors.nearWhite,
+    height: "92%"
   },
   tableHeader: {
     flexDirection: 'row',
@@ -48,6 +49,8 @@ export const tableStyles = StyleSheet.create({
 
     flexWrap: "nowrap",
     borderRadius: defaultRadius,
+    marginVertical: defaultSpacingPercent,
+    marginHorizontal: defaultSpacingPercent
   },
   tableContent: {
     height: "82%", //magic number: this is set with the "Add" button and the "Header" space in mind
@@ -59,6 +62,7 @@ export const tableStyles = StyleSheet.create({
     backgroundColor: DefaultColors.nearWhite,
     height: "6%",
     width: "99%",
+    margin: defaultSpacingPercent,
     alignSelf: "center",
   }
 });
