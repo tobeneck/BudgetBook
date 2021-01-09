@@ -144,7 +144,6 @@ const BookingListScreen = (props: Props): JSX.Element => {
                         <Button
                             onPress={(e: Event) => onOpenEditBookingItem(index)}
                             type="clear"
-                            titleStyle={{color: DefaultColors.darkBlue}}
                             icon={
                                 <Icon
                                   name="file-document-edit-outline"

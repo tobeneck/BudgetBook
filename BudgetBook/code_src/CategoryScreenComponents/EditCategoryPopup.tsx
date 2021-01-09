@@ -34,6 +34,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                         style={bigPopupStyles.textInput}
                         onChangeText={text => setCategoryName(text)}
                         value={categoryName}
+                        editable={props.category.id !== 0}
                     />
                     <Text>Description</Text>
                     <TextInput
@@ -42,6 +43,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                         value={categoryName}
                         multiline={true}
                         textAlignVertical="top"
+                        editable={props.category.id !== 0}
                     />
                     <Text>Color</Text>
                     <Text
@@ -57,6 +59,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                         titleStyle={buttonStyles.deleteButtonOutlineText}
                         type="outline"
                         buttonStyle={buttonStyles.deleteButtonOutlineStyle}
+                        disabled={props.category.id === 0}
                     />
 
                     <View style={{flexDirection: "row"}}>

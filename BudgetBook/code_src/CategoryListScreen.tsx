@@ -146,10 +146,8 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                                 <Text style={{width: "15%"}}>{ce.id}</Text>
                                 <Text style={{width: "75%"}}>{ce.name}</Text>
                                 <Button
-                                    disabled={ce.id===0}
                                     onPress={() => onEditCategoryItem(ce.id)}
                                     type="clear"
-                                    titleStyle={{color: DefaultColors.darkBlue}}
                                     icon={
                                         <Icon
                                           name="file-document-edit-outline"

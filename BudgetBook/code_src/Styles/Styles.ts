@@ -178,6 +178,13 @@ export const buttonStyles = StyleSheet.create({
   deleteButtonOutlineText: {
     color: "red"
   },
+  deleteButtonOutlineDisabledStyle: {
+    borderColor: "lightgrey",
+    borderWidth: defaultBorderWidth,
+  },
+  deleteButtonOutlineDisabledText: {
+    color: "lightgrey"
+  },
 
   deleteButtonStyle: {
     borderColor: "red",

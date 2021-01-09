@@ -112,6 +112,9 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                             titleStyle={buttonStyles.deleteButtonOutlineText}
                             type="outline"
                             buttonStyle={buttonStyles.deleteButtonOutlineStyle}
+                            disabled={props.currentIndex === 0}
+                            disabledStyle={buttonStyles.deleteButtonOutlineDisabledStyle}
+                            disabledTitleStyle={buttonStyles.deleteButtonOutlineDisabledText}
                         />
 
                         <View style={{flexDirection: "row"}}>
