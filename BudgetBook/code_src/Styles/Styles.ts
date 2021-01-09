@@ -71,7 +71,9 @@ export const bigPopupStyles = StyleSheet.create({
   overlay: {
     height: "60%",
     width: "70%",
-    backgroundColor: DefaultColors.nearWhite
+    backgroundColor: DefaultColors.nearWhite,
+    top: "-6%",
+    // bottomm: "5%"
   },
   text: {
     width: "99%",
@@ -108,7 +110,8 @@ export const smallPopupStyles = StyleSheet.create({
   overlay: {
     height: smallPopupHeightPercentage+"%",
     width: "70%",
-    backgroundColor: DefaultColors.nearWhite
+    backgroundColor: DefaultColors.nearWhite,
+    top: "-6%",
   },
   headline: {
     alignSelf: "center",
