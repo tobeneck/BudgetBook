@@ -69,9 +69,9 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     var outString: string = ""
 
     //parse category data
-    outString += "categoryID,categoryName\n"
+    outString += "categoryID,categoryName,categoryDesription,categoryColor(Hex)\n"
     categorys.forEach((ce) => {
-        outString += ce.id+defaultSeparator+ce.name+"\n"
+        outString += ce.id+defaultSeparator+ce.name+defaultSeparator+ce.description+defaultSeparator+ce.color+"\n"
 
     })
 
@@ -179,7 +179,7 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
                         const currentRow: string[] = categorysString[i].split(defaultSeparator)
                         categorys.push({
                             id: +currentRow[0],
-                            name: currentRow[1]
+                            name: currentRow[1],
                         } as CategoryElement
                         )
                     }

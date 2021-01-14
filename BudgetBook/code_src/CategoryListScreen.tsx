@@ -27,11 +27,11 @@ const CategoryListScreen = (props: Props): JSX.Element => {
     console.log(props.categorys)
 
     /**
-     * handles the addition of a booking itemarray
+     * handles the addition of a category item
      * @param item the item to be added
      */
-    const addBookingItem = (categoryName: string): void => {
-        props.setCategorys([{id: props.categorys.length, name: categoryName} as CategoryElement, ...props.categorys])
+    const addBookingItem = (categoryName: string, categoryDescription: string, categoryColor: string): void => {
+        props.setCategorys([{id: props.categorys.length, name: categoryName, description: categoryDescription, color: categoryColor} as CategoryElement, ...props.categorys])
     }
 
     /**

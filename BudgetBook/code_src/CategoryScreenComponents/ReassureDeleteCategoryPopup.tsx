@@ -46,11 +46,11 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
     return (
 
         <Overlay
-        isVisible={props.visible}
-        // onBackdropPress={() => props.setVisible(false)}
-        overlayStyle={smallPopupStyles.overlay}
-        statusBarTranslucent={true}
-        onRequestClose={() => props.onCancelPressed()}
+            isVisible={props.visible}
+            // onBackdropPress={() => props.setVisible(false)}
+            overlayStyle={smallPopupStyles.overlay}
+            statusBarTranslucent={true}
+            onRequestClose={() => props.onCancelPressed()}
         >
             <View style={{height: "100%", width: "100%", justifyContent: "space-between"}}>
                 <Text style={smallPopupStyles.headline} numberOfLines={3}>Delete the category "{props.category.name}"?</Text>

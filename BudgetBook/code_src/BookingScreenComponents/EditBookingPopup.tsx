@@ -63,6 +63,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
             >
                 <View style={{height: "100%", justifyContent: "space-between"}}>
                     <View style={{height: "90%", justifyContent: "flex-start"}}>
+                        <Text style={bigPopupStyles.headline}>Edit Booking</Text>
                         <Text>Date</Text>
                         <Text
                             style={bigPopupStyles.text}

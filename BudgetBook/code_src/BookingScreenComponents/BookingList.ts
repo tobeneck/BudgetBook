@@ -12,7 +12,7 @@ export const defaultBookingElement: BookingElement = {
     date: new Date(),
     amount: 0,
     total: 0, //needs to be same as the amount
-    description: "initial balance",
+    description: "Initial balance. Can not be deleted.",
     category: defaultCategoryElement
 }
 
@@ -82,7 +82,7 @@ export const updateCategory = (bookings: BookingElement[], oldCategory: Category
 
     for(let i: number = 0; i < newBookings.length; i++){
         if(newBookings[i].category.id === oldCategory.id)
-        newBookings[i].category = valueCopyCategory(newCategory)
+            newBookings[i].category = valueCopyCategory(newCategory)
     }
 
     return newBookings

@@ -17,6 +17,8 @@ export const DefaultColors = {
   lightBlue: "#82C0CC",
   normalBlue: "#489FB5", //pacific blue
   darkBlue: "#16697A", //ming
+
+  lightGrey: "#D3D3D3"
 }
 
 export const headerStyles = StyleSheet.create({
@@ -78,11 +80,15 @@ export const bigPopupStyles = StyleSheet.create({
   text: {
     width: "99%",
     height: "9%",
-    alignSelf: "center",
+    alignSelf: "flex-start",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
-    textAlignVertical: "center"
+    alignItems: "flex-start",
+    justifyContent:"center",
+  },
+  iconAndText: {
+    flexDirection: 'row',
   },
   textInput: {
     width: "99%",
@@ -101,7 +107,19 @@ export const bigPopupStyles = StyleSheet.create({
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
     alignItems: "flex-start"
-  }
+  },
+  headline: {
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    color: "black"
+  },
+  subHeadline: {
+    alignSelf: "center",
+    textAlign: "center",
+    color: "black"
+  },
 })
 
 
