@@ -12,10 +12,17 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
 import { request, PERMISSIONS } from "react-native-permissions"
+import ScreenSwitcher from "./code_src/ScreenSwitcherComponents/ScreenSwitcher"
 
-enum eCurrentScreen{
+export enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
-  BOOKING_LIST_SCREEN
+  BOOKING_LIST_SCREEN,
+  SCREEN_SWITCHER_SCREEN,
+  EXPORT_DATA_SCREEN,
+  IMPORT_DATA_SCREEN,
+  GRAPHS_SCREEN,
+  INFO_SCREEN,
+  SUPER_CATEGORY_LIST_SCREEN,
 }
 
 const App = () => {
@@ -83,6 +90,10 @@ const App = () => {
         return "Booking List"
       case eCurrentScreen.CATEGORY_LIST_SCREEN:
         return "Category List"
+      case eCurrentScreen.INFO_SCREEN:
+        return "App Info"
+      case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
+          return "Budget Book"
       default:
         return "Error: Title not found"
     }
@@ -125,7 +136,7 @@ const App = () => {
     /**
      * handles pressing the screenSwitch button in the header
      */
-    const handleScreenSwitch = (): void => {
+    const handleScreenSwitch = (): void => { //TODO: delete?
       switch(currentScreen){
         case eCurrentScreen.CATEGORY_LIST_SCREEN:
           setCurrentScreen(eCurrentScreen.BOOKING_LIST_SCREEN)
@@ -142,20 +153,15 @@ const App = () => {
         backgroundColor={DefaultColors.darkBlue}
         containerStyle={headerStyles.header}
       >
-        <Icon
-          name='menu'
+        { currentScreen !== eCurrentScreen.SCREEN_SWITCHER_SCREEN &&
+          <Icon
+          name='arrow-left'
           size={25}
           color="white"
-          onPress={() => handleScreenSwitch()}
+          onPress={() => setCurrentScreen(eCurrentScreen.SCREEN_SWITCHER_SCREEN)}
         />
+        }
         <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18} }>{getHeaderTitle()}</Text>
-        <Icon
-          name="file-export-outline"
-          size={25}
-          color="#fff"
-          onPress={() => setReassureExportPopupVisible(true)}
-          style={{alignContent: "center"}}
-        />
       </Header>
     )
 
@@ -181,6 +187,13 @@ const App = () => {
           bookings={bookings}
           setBookings={setAndSaveBookings}
         />)
+      case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
+        return(
+          <ScreenSwitcher
+            openScreen={(newScreen: eCurrentScreen) => setCurrentScreen(newScreen)}
+            openExportPopup={() => setReassureExportPopupVisible(true)}
+          />
+        )
       default:
         return (<Text>An error occured rendering the current screen</Text>)
     }
