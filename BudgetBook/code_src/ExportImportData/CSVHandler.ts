@@ -7,7 +7,9 @@ export const defaultFilename: string = "BudgetBookData"
 export const defaultFileEnding: string = ".csv"
 
 const defaultSeparator: string = ";"
+const defaultSeparatorReplacement: string = ","
 const defaultLineEnd: string = defaultSeparator+"\n"
+const defaultLineEndReplacement: string = defaultSeparatorReplacement+"\n"
 const defaultStringDivider: string = "---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultLineEnd
 const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir
 const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir
@@ -33,6 +35,25 @@ export const currentDateAppendix = (): string => {
  */
 const toISOStringWithTimezone = (date: Date): string => {
     return moment(date).format()//use moment to include timezone offset
+}
+
+/**
+ * replaces all illegal characters in a string.
+ * @param input the string to be altered
+ */
+const replaceAllIllegalCharacters = (input: string): string => {
+    if(input === "")
+        return input
+    if(input === undefined)
+        return ""
+
+    const out: string = input.replace(defaultSeparator, defaultSeparatorReplacement)
+
+    //the defaultLineEnd is automatically replaced with the defaultLineReplacement
+    //the defaultStringDivider also is automatically replaced with the defaultLineReplacement
+
+    console.log("replace ", input, " with ", out)
+    return out
 }
 
 /**
@@ -73,7 +94,11 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     //parse category data
     outString += "categoryID"+defaultSeparator+"categoryName"+defaultSeparator+"categoryDesription"+defaultSeparator+"categoryColor(Hex)"+defaultLineEnd
     categorys.forEach((ce) => {
-        outString += ce.id+defaultSeparator+ce.name+defaultSeparator+ce.description+defaultSeparator+ce.color+defaultLineEnd
+        const id: string = replaceAllIllegalCharacters(ce.id+"")
+        const name: string = replaceAllIllegalCharacters(ce.name)
+        const description: string = replaceAllIllegalCharacters(ce.description)
+        const color: string = replaceAllIllegalCharacters(ce.color)
+        outString += id+defaultSeparator+name+defaultSeparator+description+defaultSeparator+color+defaultLineEnd
 
     })
 
@@ -81,7 +106,12 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     outString += defaultStringDivider
     outString += "bookingDate"+defaultSeparator+"bookingAmount"+defaultSeparator+"bookingName"+defaultSeparator+"bookingCategoryID"+defaultLineEnd
     bookings.forEach((be) => {
-        outString += toISOStringWithTimezone(be.date)+defaultSeparator+be.total+defaultSeparator+be.amount+defaultSeparator+be.description+defaultSeparator+be.category.id+defaultLineEnd
+        const date: string = replaceAllIllegalCharacters(toISOStringWithTimezone(be.date))
+        const total: string = replaceAllIllegalCharacters(be.total+"")
+        const amount: string = replaceAllIllegalCharacters(be.amount+"")
+        const description: string = replaceAllIllegalCharacters(be.description)
+        const categoryID: string = replaceAllIllegalCharacters(be.category.id+"")
+        outString += date+defaultSeparator+total+defaultSeparator+amount+defaultSeparator+description+defaultSeparator+categoryID+defaultLineEnd
     })
 
     return outString
