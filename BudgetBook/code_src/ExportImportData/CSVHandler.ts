@@ -77,9 +77,9 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
 
     //parse booking data
     outString += defaultStringDivider
-    outString += "bookingDate,bookingAmount,bookingName,bokingCategoryName,bookingCategoryID \n"
+    outString += "bookingDate,bookingAmount,bookingName,bookingCategoryID \n"
     bookings.forEach((be) => {
-        outString += toISOStringWithTimezone(be.date)+defaultSeparator+be.total+defaultSeparator+be.amount+defaultSeparator+be.description+defaultSeparator+be.category.name+defaultSeparator+be.category.id+"\n"
+        outString += toISOStringWithTimezone(be.date)+defaultSeparator+be.total+defaultSeparator+be.amount+defaultSeparator+be.description+defaultSeparator+be.category.id+"\n"
     })
 
     return outString
@@ -180,6 +180,8 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
                         categorys.push({
                             id: +currentRow[0],
                             name: currentRow[1],
+                            description: currentRow[2],
+                            color: currentRow[3]
                         } as CategoryElement
                         )
                     }
@@ -188,16 +190,13 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
                 for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
                     if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
                         const currentRow: string[] = bookingsString[i].split(defaultSeparator)
-                        console.log("currentBookingRow:", currentRow)
+                        const currentCategoryID = +currentRow[4]
                         bookings.push({
                             date: new Date(currentRow[0]),
                             total: +currentRow[1],
                             amount: +currentRow[2],
                             description: currentRow[3],
-                            category: {
-                                name: currentRow[4],
-                                id: +currentRow[5]
-                            } as CategoryElement
+                            category: categorys[categorys.length - 1 - currentCategoryID] //TODO: this is uggly indexing!
                         } as BookingElement)
                     }
                 }

@@ -12,7 +12,8 @@ interface Props{
     visible: boolean,
     currentTotal: number,
     addItem: (element: BookingElement) => void,
-    setVisible: (visible: boolean) => void
+    setVisible: (visible: boolean) => void,
+    minimumPossibleDate: Date
 }
 
 export const AddBookingPopup = (props: Props): JSX.Element => {
@@ -55,6 +56,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                     value={date}
                     mode={"date"}
                     onChange={(e: Event, selectedDate: Date | undefined) => onDateChanged(e, selectedDate)}//OK or cancel is pressed
+                    minimumDate={props.minimumPossibleDate}
                 />)
             }
 

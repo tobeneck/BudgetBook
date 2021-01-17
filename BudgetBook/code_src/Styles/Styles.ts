@@ -18,7 +18,9 @@ export const DefaultColors = {
   normalBlue: "#489FB5", //pacific blue
   darkBlue: "#16697A", //ming
 
-  lightGrey: "#D3D3D3"
+  lightGrey: "#D3D3D3",
+
+  disabled: "#00000040" //the last two digits mean 25% opacity
 }
 
 export const headerStyles = StyleSheet.create({
@@ -86,6 +88,7 @@ export const bigPopupStyles = StyleSheet.create({
     borderColor: "grey", //TODO: remove these, maybe make it more grey
     alignItems: "flex-start",
     justifyContent:"center",
+    textAlignVertical: "center"
   },
   iconAndText: {
     flexDirection: 'row',
@@ -200,11 +203,11 @@ export const buttonStyles = StyleSheet.create({
     color: "red"
   },
   deleteButtonOutlineDisabledStyle: {
-    borderColor: "lightgrey",
+    borderColor: DefaultColors.disabled,
     borderWidth: defaultBorderWidth,
   },
   deleteButtonOutlineDisabledText: {
-    color: "lightgrey"
+    color: DefaultColors.disabled
   },
 
   deleteButtonStyle: {

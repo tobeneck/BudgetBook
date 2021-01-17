@@ -101,6 +101,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             setVisible={setAddPopupVisible}
             addItem={addBooking}
             currentTotal={getCurrentTotal(props.bookings)}
+            minimumPossibleDate={props.bookings[props.bookings.length - 1].date} //TODO: ugly indexing. The initial item is ment
         />
 
         <EditBookingPopup
@@ -109,6 +110,8 @@ const BookingListScreen = (props: Props): JSX.Element => {
             onCancelPressed={onCancelEditBookingItem}
             onSavePressed={onSaveEditBookingItem}
             onDeletePressed={onDeleteBookingItem}
+            minimumPossibleDate={props.bookings.length - 1 - currentBookingIndex !== 0 ? props.bookings[props.bookings.length - 1].date : undefined} //TODO: ugly indexing
+            maximumPossibleDate={props.bookings.length - 1 - currentBookingIndex === 0 && props.bookings.length > 1 ? props.bookings[props.bookings.length - 2].date : undefined} //TODO: ugly indexing
             categorys={props.categorys}
             booking={props.bookings[currentBookingIndex]}
             currentIndex={props.bookings.length - 1 - currentBookingIndex}

@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 import { Overlay } from "react-native-elements";
-import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles";
+import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles/Styles";
 
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -16,7 +16,9 @@ interface Props{
     onSavePressed: (nbe: BookingElement) => void,
     setVisible: (visible: boolean) => void,
     visible: boolean,
-    currentIndex: number //the list index of the current booking. Needed for the initial item
+    currentIndex: number, //the list index of the current booking. Needed for the initial item
+    minimumPossibleDate?: Date,
+    maximumPossibleDate?: Date
 }
 
 export const EditBookingPopup = (props: Props): JSX.Element => {
@@ -50,6 +52,8 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                 (<DateTimePicker
                     value={date}
                     mode={"date"}
+                    minimumDate={props.minimumPossibleDate}
+                    maximumDate={props.maximumPossibleDate}
                     onChange={(e: Event, selectedDate: Date | undefined) => onDateChanged(e, selectedDate)}//OK or cancel is pressed
                 />)
             }
@@ -102,6 +106,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                             value={description}
                             multiline={true}
                             textAlignVertical="top"
+                            editable={props.currentIndex !== 0}
                         />
 
                     </View>

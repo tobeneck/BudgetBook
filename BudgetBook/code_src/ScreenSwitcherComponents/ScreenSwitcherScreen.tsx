@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { eCurrentScreen } from "../../App"
 
 interface Props{
-    openScreen: (newScreen: eCurrentScreen) => voidm
+    openScreen: (newScreen: eCurrentScreen) => void
     openExportPopup: () => void
 }
 

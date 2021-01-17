@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
 import { request, PERMISSIONS } from "react-native-permissions"
-import ScreenSwitcher from "./code_src/ScreenSwitcherComponents/ScreenSwitcher"
+import ScreenSwitcherScreen from "./code_src/ScreenSwitcherComponents/ScreenSwitcherScreen"
 
 export enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -189,7 +189,7 @@ const App = () => {
         />)
       case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
         return(
-          <ScreenSwitcher
+          <ScreenSwitcherScreen
             openScreen={(newScreen: eCurrentScreen) => setCurrentScreen(newScreen)}
             openExportPopup={() => setReassureExportPopupVisible(true)}
           />
