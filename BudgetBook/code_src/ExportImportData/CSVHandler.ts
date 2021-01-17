@@ -3,12 +3,14 @@ import { CategoryElement } from '../CategoryScreenComponents/CategoryList'
 import moment from 'moment'
 import RNFetchBlob, { RNFetchBlobWriteStream } from "rn-fetch-blob"
 
-const defaultStringDivider: string = "--------------------------------------------------------------------------------------------------\n"
 export const defaultFilename: string = "BudgetBookData"
 export const defaultFileEnding: string = ".csv"
-const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir
-const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir //"/storage/emulated/0/BudgetBook"
+
 const defaultSeparator: string = ";"
+const defaultLineEnd: string = defaultSeparator+"\n"
+const defaultStringDivider: string = "---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultLineEnd
+const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir
+const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir
 
 const encoding = 'utf8'
 
@@ -69,17 +71,17 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
     var outString: string = ""
 
     //parse category data
-    outString += "categoryID,categoryName,categoryDesription,categoryColor(Hex)\n"
+    outString += "categoryID"+defaultSeparator+"categoryName"+defaultSeparator+"categoryDesription"+defaultSeparator+"categoryColor(Hex)"+defaultLineEnd
     categorys.forEach((ce) => {
-        outString += ce.id+defaultSeparator+ce.name+defaultSeparator+ce.description+defaultSeparator+ce.color+"\n"
+        outString += ce.id+defaultSeparator+ce.name+defaultSeparator+ce.description+defaultSeparator+ce.color+defaultLineEnd
 
     })
 
     //parse booking data
     outString += defaultStringDivider
-    outString += "bookingDate,bookingAmount,bookingName,bookingCategoryID \n"
+    outString += "bookingDate"+defaultSeparator+"bookingAmount"+defaultSeparator+"bookingName"+defaultSeparator+"bookingCategoryID"+defaultLineEnd
     bookings.forEach((be) => {
-        outString += toISOStringWithTimezone(be.date)+defaultSeparator+be.total+defaultSeparator+be.amount+defaultSeparator+be.description+defaultSeparator+be.category.id+"\n"
+        outString += toISOStringWithTimezone(be.date)+defaultSeparator+be.total+defaultSeparator+be.amount+defaultSeparator+be.description+defaultSeparator+be.category.id+defaultLineEnd
     })
 
     return outString
@@ -96,7 +98,7 @@ const saveStringToFile = (data: string, filepath: string, errorCallback?: (e: Er
     RNFetchBlob.fs.exists(filepath)
     .then((exists: boolean) => {
         console.log("exists: ", exists)
-        if(!exists){ //create the file if it does not exist //TODO: make a .then
+        if(!exists){ //create the file if it does not exist
             console.log("file "+filepath+" does not exist, creating it...")
             RNFetchBlob.fs.createFile(filepath, data, encoding)
         } else {//update the file if it exists
@@ -169,9 +171,9 @@ export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, 
                 const categorys: CategoryElement[] = []
                 const bookings: BookingElement[] = []
 
-                const categorysString: string[] = data.split(defaultStringDivider)[0].split("\n")
-                const bookingsString: string[] = data.split(defaultStringDivider)[1].split("\n")
-                console.log(categorysString)
+                const categorysString: string[] = data.split(defaultStringDivider)[0].split(defaultLineEnd)
+                const bookingsString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
+                console.log("category string", categorysString)
                 console.log(bookingsString)
 
                 for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
