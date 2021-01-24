@@ -6,13 +6,14 @@ import { Text } from 'react-native';
 import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList';
 import BookingListScreen from "./code_src/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryListScreen"
-import { saveToCache, exportToDownloads, readCache } from './code_src/ExportImportData/CSVHandler';
+import { saveToCache, exportToDownloads, readFile, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler';
 import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
 import { request, PERMISSIONS } from "react-native-permissions"
 import ScreenSwitcherScreen from "./code_src/ScreenSwitcherComponents/ScreenSwitcherScreen"
+import ImportScreen from "./code_src/ExportImportData/ImportScreen"
 
 export enum eCurrentScreen{
   CATEGORY_LIST_SCREEN = 0,
@@ -34,7 +35,7 @@ const App = () => {
   const [errorExportingPopupVisible, setErrorExportingPopupVisible] = useState<boolean>(false)
 
   useEffect(() => {
-    readCache(setCategorys, setBookings)
+    readCacheData(setCategorys, setBookings)
 
     // return(
     //   saveToCache(categorys, bookings) //save the data when closing the app
@@ -94,6 +95,8 @@ const App = () => {
         return "App Info"
       case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
           return "Budget Book"
+      case eCurrentScreen.IMPORT_DATA_SCREEN:
+          return "Import Data"
       default:
         return "Error: Title not found"
     }
@@ -132,21 +135,6 @@ const App = () => {
    * renders the status bar, header and contains its functionality
    */
   const renderHeader = (): JSX.Element => {
-
-    /**
-     * handles pressing the screenSwitch button in the header
-     */
-    const handleScreenSwitch = (): void => { //TODO: delete?
-      switch(currentScreen){
-        case eCurrentScreen.CATEGORY_LIST_SCREEN:
-          setCurrentScreen(eCurrentScreen.BOOKING_LIST_SCREEN)
-          break;
-        case eCurrentScreen.BOOKING_LIST_SCREEN:
-          setCurrentScreen(eCurrentScreen.CATEGORY_LIST_SCREEN)
-          break;
-      }
-    }
-
     return (
       <Header
         statusBarProps={{ barStyle: 'light-content' }}
@@ -192,6 +180,12 @@ const App = () => {
           <ScreenSwitcherScreen
             openScreen={(newScreen: eCurrentScreen) => setCurrentScreen(newScreen)}
             openExportPopup={() => setReassureExportPopupVisible(true)}
+          />
+        )
+      case eCurrentScreen.IMPORT_DATA_SCREEN:
+        return(
+          <ImportScreen
+            loadCsvFile={(fileName: string) => readDownloadsData(fileName, setCategorys, setBookings)}
           />
         )
       default:

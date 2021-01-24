@@ -11,7 +11,7 @@ const defaultSeparatorReplacement: string = ","
 const defaultLineEnd: string = defaultSeparator+"\n"
 const defaultLineEndReplacement: string = defaultSeparatorReplacement+"\n"
 const defaultStringDivider: string = "---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultLineEnd
-const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir
+const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir //TODO: the downloadDir is android only! Change this for IOS!
 const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir
 
 const encoding = 'utf8'
@@ -56,11 +56,28 @@ const replaceAllIllegalCharacters = (input: string): string => {
     return out
 }
 
+export const getCsvFilesInDownloads = (): Promise<string[]> => {
+    const exportDir: string = defaultDownloadDir
+
+    return (
+        RNFetchBlob.fs.ls(exportDir)
+        .then<string[]>((filenames: string[]) => {
+            const filteredFilenames: string[] = []
+            filenames.forEach(element => {
+                if(element.includes(".csv"))
+                    filteredFilenames.push(element+"")
+            });
+            console.log("getCsvFiles: ", filteredFilenames) //TODO: debugg
+            return filteredFilenames
+        })
+    )
+}
+
 /**
  * returns the next free filename in the downloads directory
  */
 export const getFreeFilePath = (): Promise<string> => {
-    const exportDir: string = defaultDownloadDir //TODO: the downloadDir is android only! Change this for IOS!
+    const exportDir: string = defaultDownloadDir
     var filePathIterator: number = 0
 
     const getCurrentIterationFilename = (): string => {
@@ -71,12 +88,13 @@ export const getFreeFilePath = (): Promise<string> => {
     }
 
     return (
-        RNFetchBlob.fs.ls(exportDir)
+        getCsvFilesInDownloads()
         .then<string>((filenames: string[]) => {
             console.log(filenames, getCurrentIterationFilename())
             while(filenames.includes(getCurrentIterationFilename())){
                 filePathIterator += 1
             }
+            console.log("getFreePath: ", exportDir+"/"+getCurrentIterationFilename()) //TODO: debugg
             return exportDir+"/"+getCurrentIterationFilename()
         })
     )
@@ -88,7 +106,6 @@ export const getFreeFilePath = (): Promise<string> => {
  * @param bookings the bookings to be converted
  */
 const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]): string => {
-    //TODO: think aboud commas in the names (common bugg!) (and the stringDivider)
     var outString: string = ""
 
     //parse category data
@@ -185,12 +202,31 @@ export const saveToCache = (categorys: CategoryElement[], bookings: BookingEleme
 }
 
 /**
- * reads the data stored in the cache, if it exists. After decrypting the data, the two setter methods are called
+ * reads the data from the default downloads directory. Used for importing.
+ * @param setCategorys the callback method for categorys
+ * @param setBookings the callback method for bookings
+ */
+export const readDownloadsData = (fileName: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+    const filePath: string = defaultDownloadDir + "/" + fileName
+    readFile(filePath, setCategorys, setBookings)
+}
+
+/**
+ * reads the data from the default cache. Used when starting the app.
+ * @param setCategorys the callback method for categorys
+ * @param setBookings the callback method for bookings
+ */
+export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+    const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
+    readFile(filePath, setCategorys, setBookings)
+}
+
+/**
+ * reads the in filepath, if it exists. After decrypting the data, the two setter methods are called
  * @param setCategorys callback method to set the read categorys
  * @param setBookings callback method to set the read bookings
  */
-export const readCache = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
-    const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
+export const readFile = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
 
     RNFetchBlob.fs.exists(filePath)
     .then((exists: boolean) => {

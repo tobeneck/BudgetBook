@@ -160,6 +160,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             ))}
 
             </ScrollView>
+
             <View style={tableStyles.tableButton}>
                 <Button
                     onPress={(e: Event) => onAddBookingPressed(e)}

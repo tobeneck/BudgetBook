@@ -2,7 +2,7 @@ import React from "react"
 import { Text, TouchableOpacity, View, Modal } from "react-native"
 import { DefaultColors } from "../Styles/Styles"
 import { ScreenSwitcherStyles } from "./ScreenSwitcherStyle"
-import { spacings } from "./../Styles/Styles"
+import { spacings } from "../Styles/Styles"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { eCurrentScreen } from "../../App"
 
@@ -11,7 +11,7 @@ interface Props{
     openExportPopup: () => void
 }
 
-const ScreenSwitcher = (props: Props): JSX.Element => {
+const ScreenSwitcherScreen = (props: Props): JSX.Element => {
     return(
         <View
             style={ScreenSwitcherStyles.background}
@@ -100,8 +100,8 @@ const ScreenSwitcher = (props: Props): JSX.Element => {
             <View style={spacings.defaultHorizontalSpacing}/>
 
             <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTileDisabled}
-                disabled={true}
+                style={ScreenSwitcherStyles.screenPickerTile}
+                onPress={() => props.openScreen(eCurrentScreen.IMPORT_DATA_SCREEN)}
             >
                 <Icon
                     name="file-import-outline"
@@ -134,4 +134,4 @@ const ScreenSwitcher = (props: Props): JSX.Element => {
     )
 }
 
-export default ScreenSwitcher
+export default ScreenSwitcherScreen
