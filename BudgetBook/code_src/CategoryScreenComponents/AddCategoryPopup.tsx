@@ -1,13 +1,13 @@
 import React, { useState } from "react"
-import { ColorValue, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Text, TextInput, TouchableOpacity, View, Switch } from "react-native"
 import { Overlay, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { buttonStyles, overlayStyles, bigPopupStyles, spacings, smallPopupStyles, DefaultColors } from "../Styles/Styles";
+import { buttonStyles, bigPopupStyles, spacings, DefaultColors } from "../Styles/Styles";
 import ColorPickerPopup from "./ColorPickerPopup";
 
 interface Props{
     visible: boolean,
-    addCategory: (categoryName: string, categoryDescription: string, categoryColor: string) => void,
+    addCategory: (categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number) => void,
     setVisible: (visible: boolean) => void
 }
 
@@ -15,10 +15,13 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
     const [categoryName, setCategoryName] = useState<string>("")
     const [categoryDescription, setCategoryDescription] = useState<string>("")
     const [categoryColor, setCategoryColor] = useState<string>(DefaultColors.lightGrey)
+    const [categoryActive, setCategoryActive] = useState<boolean>(true)
+    const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(false)
+    const [categoryMaxBudget, setCategoryMaxBudget] = useState<string>(0+"")
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
 
     const onAddPressed = (): void => {
-        props.addCategory(categoryName, categoryDescription, categoryColor)
+        props.addCategory(categoryName, categoryDescription, categoryColor, categoryActive, categoryHasMaxBudget, categoryMaxBudget)
         props.setVisible(false)
     }
 
@@ -74,6 +77,35 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
                                 <Text>{categoryColor}</Text>
                             </TouchableOpacity>
                         </View>
+
+                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                            <Text>MaxBudget</Text>
+                            <Switch
+                                value={categoryHasMaxBudget}
+                                onValueChange={() => setCategoryHasMaxBudget(!categoryHasMaxBudget)}
+                                thumbColor={DefaultColors.darkBlue}
+                                trackColor={{true: DefaultColors.lightBlue, false: DefaultColors.disabled}}
+                            />
+                        </View>
+
+                        <TextInput
+                            style={bigPopupStyles.textInput}
+                            keyboardType = 'numeric'
+                            onChangeText={text => setCategoryMaxBudget(text)}
+                            value={categoryMaxBudget+""}
+                            editable={categoryHasMaxBudget}
+                        />
+
+                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                            <Text>Active</Text>
+                            <Switch
+                                value={categoryActive}
+                                onValueChange={() => setCategoryActive(!categoryActive)}
+                                thumbColor={DefaultColors.darkBlue}
+                                trackColor={{true: DefaultColors.lightBlue, false: DefaultColors.disabled}}
+                            />
+                        </View>
+
                     </View>
 
                     <View style={{width: "100%", flexDirection: "row", justifyContent:"flex-end"}}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Text, TextInput, TouchableOpacity, View, Switch } from "react-native"
 import { Overlay, Button } from "react-native-elements"
 import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles/Styles"
 import { CategoryElement } from "./CategoryList"
@@ -16,15 +16,21 @@ interface Props{
 }
 
 const EditCategoryPopup = (props: Props): JSX.Element => {
-    const [ categoryName, setCategoryName ] = useState<string>(props.category.name)
+    const [categoryName, setCategoryName] = useState<string>(props.category.name)
     const [categoryDescription, setCategoryDescription] = useState<string>(props.category.description)
     const [categoryColor, setCategoryColor] = useState<string>(props.category.color)
+    const [categoryActive, setCategoryActive] = useState<boolean>(props.category.activated)
+    const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(props.category.hasBudget)
+    const [categoryMaxBudget, setCategoryMaxBudget] = useState<string>(props.category.maxBudget+"")
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
 
     useEffect(() => {
         setCategoryName(props.category.name)
         setCategoryDescription(props.category.description)
         setCategoryColor(props.category.color)
+        setCategoryActive(props.category.activated)
+        setCategoryHasMaxBudget(props.category.hasBudget)
+        setCategoryMaxBudget(props.category.maxBudget+"")
     }, [props.category])
 
     return (
@@ -79,6 +85,36 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                             </TouchableOpacity>
                         </View>
 
+                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                            <Text>MaxBudget</Text>
+                            <Switch
+                                value={categoryHasMaxBudget}
+                                onValueChange={() => setCategoryHasMaxBudget(!categoryHasMaxBudget)}
+                                thumbColor={props.category.id === 0 ? DefaultColors.lightGrey : DefaultColors.darkBlue}
+                                trackColor={{true: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.lightBlue, false: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.disabled}}
+                                disabled={props.category.id === 0}
+                            />
+                        </View>
+
+                        <TextInput
+                            style={bigPopupStyles.textInput}
+                            keyboardType = 'numeric'
+                            onChangeText={text => setCategoryMaxBudget(text)}
+                            value={categoryMaxBudget+""}
+                            editable={categoryHasMaxBudget}
+                        />
+
+                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                            <Text>Active</Text>
+                            <Switch
+                                value={categoryActive}
+                                onValueChange={() => setCategoryActive(!categoryActive)}
+                                thumbColor={props.category.id === 0 ? DefaultColors.lightGrey : DefaultColors.darkBlue}
+                                trackColor={{true: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.lightBlue, false: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.disabled}}
+                                disabled={props.category.id === 0}
+                            />
+                        </View>
+
                     </View>
 
                     <View style={{width: "100%", flexDirection: "row", justifyContent:"space-between"}}>
@@ -93,7 +129,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
 
                         <View style={{flexDirection: "row"}}>
                             <Button
-                                onPress={() => props.onSavePressed({id: props.category.id, name: categoryName, description: categoryDescription, color: categoryColor } as CategoryElement)}
+                                onPress={() => props.onSavePressed({id: props.category.id, name: categoryName, description: categoryDescription, color: categoryColor, activated: categoryActive, hasBudget: categoryHasMaxBudget, maxBudget: +categoryMaxBudget } as CategoryElement)}
                                 title="Save"
                                 buttonStyle={buttonStyles.saveButtonStyle}
                                 titleStyle={buttonStyles.saveButtonText}

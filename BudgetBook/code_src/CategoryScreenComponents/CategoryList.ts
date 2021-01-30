@@ -7,13 +7,19 @@ export interface CategoryElement{
     name: string,
     description: string,
     color: string, //hex value of the color
+    activated: boolean,
+    hasBudget: boolean,
+    maxBudget: number,
 }
 
 export const defaultCategoryElement: CategoryElement = {
     id: 0,
     name: "uncategorized",
     description: "For all bookings not fitting in any cateAgory. This category can not be edited or deleted.",
-    color: DefaultColors.lightGrey
+    color: DefaultColors.lightGrey,
+    activated: true,
+    hasBudget: false,
+    maxBudget: 0
 }
 
 

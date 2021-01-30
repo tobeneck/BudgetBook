@@ -27,7 +27,7 @@ const ImportScreen = (props: Props): JSX.Element => {
 
             { availableFiles.length === 0 ?
                 <Text>
-                    No files available
+                    No files available. Put the wanted ".csv" file in your "Downloads" directory.
                 </Text>
                 :
                 <ScrollView //TODO: style

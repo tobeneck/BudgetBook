@@ -9,12 +9,13 @@ export const defaultFileEnding: string = ".csv"
 const defaultSeparator: string = ";"
 const defaultSeparatorReplacement: string = ","
 const defaultLineEnd: string = defaultSeparator+"\n"
-const defaultLineEndReplacement: string = defaultSeparatorReplacement+"\n"
 const defaultStringDivider: string = "---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultLineEnd
 const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir //TODO: the downloadDir is android only! Change this for IOS!
 const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir
 
 const encoding = 'utf8'
+
+const currentDataFormatVersion: string = "BudgetBook Data Export Version 1.0"
 
 export interface CombinedData{
     categorys: CategoryElement[],
@@ -108,15 +109,20 @@ export const getFreeFilePath = (): Promise<string> => {
 const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]): string => {
     var outString: string = ""
 
+    outString += currentDataFormatVersion+defaultLineEnd
+    outString += defaultStringDivider
+
     //parse category data
-    outString += "categoryID"+defaultSeparator+"categoryName"+defaultSeparator+"categoryDesription"+defaultSeparator+"categoryColor(Hex)"+defaultLineEnd
+    outString += "categoryID"+defaultSeparator+"categoryName"+defaultSeparator+"categoryDesription"+defaultSeparator+"categoryColor(Hex)"+defaultSeparator+"Active"+defaultSeparator+"HasMaxBudget"+defaultSeparator+"MaxBudget"+defaultLineEnd
     categorys.forEach((ce) => {
         const id: string = replaceAllIllegalCharacters(ce.id+"")
         const name: string = replaceAllIllegalCharacters(ce.name)
         const description: string = replaceAllIllegalCharacters(ce.description)
         const color: string = replaceAllIllegalCharacters(ce.color)
-        outString += id+defaultSeparator+name+defaultSeparator+description+defaultSeparator+color+defaultLineEnd
-
+        const active: string = replaceAllIllegalCharacters(ce.activated+"")
+        const hasMaxBudget: string = replaceAllIllegalCharacters(ce.hasBudget+"")
+        const maxBudget: string = replaceAllIllegalCharacters(ce.maxBudget+"")
+        outString += id+defaultSeparator+name+defaultSeparator+description+defaultSeparator+color+defaultSeparator+active+defaultSeparator+hasMaxBudget+defaultSeparator+maxBudget+defaultLineEnd
     })
 
     //parse booking data
@@ -237,8 +243,17 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
                 const categorys: CategoryElement[] = []
                 const bookings: BookingElement[] = []
 
-                const categorysString: string[] = data.split(defaultStringDivider)[0].split(defaultLineEnd)
-                const bookingsString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
+                const dataFormatVersion: string = data.split(defaultStringDivider)[0].replace(defaultLineEnd, "")
+                switch(dataFormatVersion){
+                    case currentDataFormatVersion: //TODO: check for other file versions and read them accodringly in the future!
+                        //move on
+                        break;
+                    default:
+                        console.error("Error reading the file! The data format version \"", dataFormatVersion, "\" is not supportet in this version of the app.") //TODO: throw error!
+                }
+
+                const categorysString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
+                const bookingsString: string[] = data.split(defaultStringDivider)[2].split(defaultLineEnd)
                 console.log("category string", categorysString)
                 console.log(bookingsString)
 
@@ -249,7 +264,10 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
                             id: +currentRow[0],
                             name: currentRow[1],
                             description: currentRow[2],
-                            color: currentRow[3]
+                            color: currentRow[3],
+                            activated: currentRow[4] === "true",
+                            hasBudget: currentRow[5] === "true",
+                            maxBudget: +currentRow[6],
                         } as CategoryElement
                         )
                     }

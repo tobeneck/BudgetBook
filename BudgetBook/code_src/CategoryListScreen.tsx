@@ -30,8 +30,8 @@ const CategoryListScreen = (props: Props): JSX.Element => {
      * handles the addition of a category item
      * @param item the item to be added
      */
-    const addBookingItem = (categoryName: string, categoryDescription: string, categoryColor: string): void => {
-        props.setCategorys([{id: props.categorys.length, name: categoryName, description: categoryDescription, color: categoryColor} as CategoryElement, ...props.categorys])
+    const addCategoryItem = (categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number): void => {
+        props.setCategorys([{id: props.categorys.length, name: categoryName, description: categoryDescription, color: categoryColor, activated: active, hasBudget: hasMaxBudget, maxBudget: maxBudget} as CategoryElement, ...props.categorys])
     }
 
     /**
@@ -109,7 +109,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
             <AddCategoryPopup
                 visible={addPopupVisible}
                 setVisible={setAddPopupVisible} //TODO: coherent strategy where to put the setVisible and other methods
-                addCategory={addBookingItem}
+                addCategory={addCategoryItem}
             />
 
             <EditCategoryPopup

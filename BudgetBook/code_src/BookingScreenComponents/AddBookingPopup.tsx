@@ -86,7 +86,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                             style={bigPopupStyles.textInput}
                             keyboardType = 'numeric'
                             onChangeText={text => setAmount(text)}
-                            value={amount+""}
+                            value={amount}
                         />
 
                         <Text>Category</Text>
