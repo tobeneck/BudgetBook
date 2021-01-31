@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { BookingElement } from "./BookingList"
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
-import { buttonStyles, DefaultColors, bigPopupStyles, spacings } from "../Styles/Styles";
+import { buttonStyles, bigPopupStyles, spacings } from "../Styles/Styles";
 
 interface Props{
     categorys: CategoryElement[],
@@ -23,8 +23,6 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     const [category, setCategory] = useState<CategoryElement>(props.categorys[props.categorys.length-1]); //TODO: ugly indexing
 
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
-
-    const activeCategorys: CategoryElement[] = props.categorys.filter((ce: CategoryElement) => {return ce.activated})
 
     const onDateChanged = (e: Event, selectedDate: Date | undefined): void => {
         if(selectedDate)
@@ -99,7 +97,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                                 onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
                                 mode="dropdown"
                             >
-                                {activeCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                                {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
                             </Picker>
                         </View>
 

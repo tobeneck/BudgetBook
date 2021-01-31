@@ -52,8 +52,6 @@ const replaceAllIllegalCharacters = (input: string): string => {
 
     //the defaultLineEnd is automatically replaced with the defaultLineReplacement
     //the defaultStringDivider also is automatically replaced with the defaultLineReplacement
-
-    console.log("replace ", input, " with ", out)
     return out
 }
 
@@ -68,7 +66,6 @@ export const getCsvFilesInDownloads = (): Promise<string[]> => {
                 if(element.includes(".csv"))
                     filteredFilenames.push(element+"")
             });
-            console.log("getCsvFiles: ", filteredFilenames) //TODO: debugg
             return filteredFilenames
         })
     )
@@ -91,11 +88,9 @@ export const getFreeFilePath = (): Promise<string> => {
     return (
         getCsvFilesInDownloads()
         .then<string>((filenames: string[]) => {
-            console.log(filenames, getCurrentIterationFilename())
             while(filenames.includes(getCurrentIterationFilename())){
                 filePathIterator += 1
             }
-            console.log("getFreePath: ", exportDir+"/"+getCurrentIterationFilename()) //TODO: debugg
             return exportDir+"/"+getCurrentIterationFilename()
         })
     )
@@ -147,12 +142,9 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
  */
 const saveStringToFile = (data: string, filepath: string, errorCallback?: (e: Error) => void): void => {
 
-    //console.log(RNFetchBlob.fs.exists(filepath))
     RNFetchBlob.fs.exists(filepath)
     .then((exists: boolean) => {
-        console.log("exists: ", exists)
         if(!exists){ //create the file if it does not exist
-            console.log("file "+filepath+" does not exist, creating it...")
             RNFetchBlob.fs.createFile(filepath, data, encoding)
         } else {//update the file if it exists
             RNFetchBlob.fs.writeStream(
@@ -163,7 +155,6 @@ const saveStringToFile = (data: string, filepath: string, errorCallback?: (e: Er
                 false
             )
             .then<RNFetchBlobWriteStream | never>((ofstream: RNFetchBlobWriteStream) => {
-                console.log("writing to file "+filepath)
                 ofstream.write(data)
                 return ofstream
             })
@@ -237,7 +228,6 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
     RNFetchBlob.fs.exists(filePath)
     .then((exists: boolean) => {
         if(exists){
-            console.log("file to read exists!")
             RNFetchBlob.fs.readFile(filePath, encoding)
             .then((data: string) => {//deconstruct the categorys and bookings here
                 const categorys: CategoryElement[] = []
@@ -254,8 +244,6 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
 
                 const categorysString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
                 const bookingsString: string[] = data.split(defaultStringDivider)[2].split(defaultLineEnd)
-                console.log("category string", categorysString)
-                console.log(bookingsString)
 
                 for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
                     if(categorysString[i] !== ""){ //the last element always is "", avoid this!
@@ -270,16 +258,6 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
                             maxBudget: +currentRow[6],
                         } as CategoryElement
                         )
-
-                        console.log("add category: ", {
-                            id: +currentRow[0],
-                            name: currentRow[1],
-                            description: currentRow[2],
-                            color: currentRow[3],
-                            activated: currentRow[4] === "true",
-                            hasBudget: currentRow[5] === "true",
-                            maxBudget: +currentRow[6],
-                        } as CategoryElement)
                     }
                 }
 

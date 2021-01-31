@@ -26,11 +26,38 @@ export const getCurrentTotal = (bookings: BookingElement[]): number => {
 }
 
 /**
+ * sorts a booking list after its dates and adjusts the total amount.
+ * @param bookings the booking elements to be sortet
+ */
+export const sortBookings = (bookings: BookingElement[]): BookingElement[] => {
+
+    var bookingsToEdit: BookingElement[] = []
+
+    bookingsToEdit = bookings.slice(0, bookings.length-1).sort((beA: BookingElement, beB: BookingElement) => { //slice the array to preserv the initial booking as the first element. Otherwise it might be sorted as the second or third element, depending on the time the booking is created
+        const dateA: number = beA.date.getTime()
+        const dateB: number = beB.date.getTime()
+
+        console.log(dateA, dateB)
+
+        if(dateA > dateB)
+            return -1
+        if(dateA < dateB)
+            return 1
+        //if(dateA === dateB)
+        return 0
+    })
+
+    bookingsToEdit = [...bookingsToEdit, bookings[bookings.length-1]] //re add the initial element
+
+    return adjustForTotalAmount(bookingsToEdit, bookings.length-1)
+}
+
+/**
  * returns an adjusted amount of totals for the bookings, beginning at startingIndex.
- * @param startingIndex the starting index
+ * @param startingIndex the starting index (in reverse order)
  * @param bookings the bookings to be adjusted
  */
-export const adjustForTotalAmount = (startingIndex: number, bookings: BookingElement[]): BookingElement[] => {
+const adjustForTotalAmount = (bookings: BookingElement[], startingIndex: number = 0): BookingElement[] => {
     var bookingsToEdit: BookingElement[] = valueCopyBookings(bookings)
 
     let previousTotal: number = bookingsToEdit[startingIndex].total

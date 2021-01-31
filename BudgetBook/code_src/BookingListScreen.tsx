@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import { Text } from "react-native"
 import { Button } from "react-native-elements"
 import { AddBookingPopup } from "./BookingScreenComponents/AddBookingPopup"
-import { BookingElement, getCurrentTotal, adjustForTotalAmount } from "./BookingScreenComponents/BookingList"
+import { BookingElement, getCurrentTotal, sortBookings } from "./BookingScreenComponents/BookingList"
 import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
 import { CategoryElement, getActiveCategorys } from "./CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
-import { tableStyles, DefaultColors, spacings } from "./Styles/Styles"
+import { tableStyles, DefaultColors } from "./Styles/Styles"
 import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
@@ -37,8 +37,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     const onSaveEditBookingItem = (nbe: BookingElement): void => {
         const newBookingList: BookingElement[] = props.bookings
         newBookingList[currentBookingIndex] = nbe
-        const adjustedNewBookingList: BookingElement[] = adjustForTotalAmount(currentBookingIndex, newBookingList)
-        props.setBookings(adjustedNewBookingList)
+        props.setBookings(sortBookings(newBookingList))
         setEditPopupVisible(false)
         setCurrentBookingIndex(0)
     }
@@ -64,7 +63,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
      * @param item the item to be added
      */
     const addBooking = (item: BookingElement): void => {
-        props.setBookings([item, ...props.bookings])
+        props.setBookings(sortBookings([item, ...props.bookings]))
     }
 
     /**
