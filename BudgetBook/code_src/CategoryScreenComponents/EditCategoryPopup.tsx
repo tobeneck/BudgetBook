@@ -19,7 +19,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
     const [categoryName, setCategoryName] = useState<string>(props.category.name)
     const [categoryDescription, setCategoryDescription] = useState<string>(props.category.description)
     const [categoryColor, setCategoryColor] = useState<string>(props.category.color)
-    const [categoryActive, setCategoryActive] = useState<boolean>(props.category.activated)
+    const [categoryActivated, setCategoryActivated] = useState<boolean>(props.category.activated)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(props.category.hasBudget)
     const [categoryMaxBudget, setCategoryMaxBudget] = useState<string>(props.category.maxBudget+"")
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
@@ -28,7 +28,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
         setCategoryName(props.category.name)
         setCategoryDescription(props.category.description)
         setCategoryColor(props.category.color)
-        setCategoryActive(props.category.activated)
+        setCategoryActivated(props.category.activated)
         setCategoryHasMaxBudget(props.category.hasBudget)
         setCategoryMaxBudget(props.category.maxBudget+"")
     }, [props.category])
@@ -107,8 +107,8 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                         <View style={{flexDirection: "row", alignItems: "center"}}>
                             <Text>Active</Text>
                             <Switch
-                                value={categoryActive}
-                                onValueChange={() => setCategoryActive(!categoryActive)}
+                                value={categoryActivated}
+                                onValueChange={() => setCategoryActivated(!categoryActivated)}
                                 thumbColor={props.category.id === 0 ? DefaultColors.lightGrey : DefaultColors.darkBlue}
                                 trackColor={{true: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.lightBlue, false: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.disabled}}
                                 disabled={props.category.id === 0}
@@ -129,7 +129,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
 
                         <View style={{flexDirection: "row"}}>
                             <Button
-                                onPress={() => props.onSavePressed({id: props.category.id, name: categoryName, description: categoryDescription, color: categoryColor, activated: categoryActive, hasBudget: categoryHasMaxBudget, maxBudget: +categoryMaxBudget } as CategoryElement)}
+                                onPress={() => props.onSavePressed({id: props.category.id, name: categoryName, description: categoryDescription, color: categoryColor, activated: categoryActivated, hasBudget: categoryHasMaxBudget, maxBudget: +categoryMaxBudget } as CategoryElement)}
                                 title="Save"
                                 buttonStyle={buttonStyles.saveButtonStyle}
                                 titleStyle={buttonStyles.saveButtonText}

@@ -270,6 +270,16 @@ export const readFile = (filePath: string, setCategorys: (categorys: CategoryEle
                             maxBudget: +currentRow[6],
                         } as CategoryElement
                         )
+
+                        console.log("add category: ", {
+                            id: +currentRow[0],
+                            name: currentRow[1],
+                            description: currentRow[2],
+                            color: currentRow[3],
+                            activated: currentRow[4] === "true",
+                            hasBudget: currentRow[5] === "true",
+                            maxBudget: +currentRow[6],
+                        } as CategoryElement)
                     }
                 }
 

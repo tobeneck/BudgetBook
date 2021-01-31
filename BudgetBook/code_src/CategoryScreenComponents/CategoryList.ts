@@ -22,6 +22,20 @@ export const defaultCategoryElement: CategoryElement = {
     maxBudget: 0
 }
 
+/**
+ * returns all active categorys in a category list. The current category is always added, even if it is not active (for picker purposes)
+ * @param currentCategory the current category which is always added
+ * @param categorys the categorys to be filtered
+ */
+export const getActiveCategorys = (categorys: CategoryElement[], currentCategory?: CategoryElement): CategoryElement[] => {
+    const activeCategorys: CategoryElement[] = categorys.filter((ce: CategoryElement) => {return ce.activated})
+
+    if(currentCategory && !currentCategory.activated)
+        activeCategorys.push(currentCategory)
+
+    return activeCategorys
+ }
+
 
 /**
  * returns a copy of the current categorys withoud the element at the indexToBeRemoved. The IDs of the new categorys are changed to fill the gap created by the removed element.
@@ -82,6 +96,6 @@ export const valueCopyCategorys = (categorys: CategoryElement[]): CategoryElemen
  * @param categorys the category to be copied
  */
 export const valueCopyCategory = (category: CategoryElement): CategoryElement => {
-    return {id: category.id, name: category.name} as CategoryElement
+    return {id: category.id, name: category.name, color: category.color, description: category.description, activated: category.activated, hasBudget: category.hasBudget, maxBudget: category.maxBudget} as CategoryElement
     //TODO: try JSON.stringify and JSON.parse
 }

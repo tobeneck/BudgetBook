@@ -24,6 +24,8 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
 
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
 
+    const activeCategorys: CategoryElement[] = props.categorys.filter((ce: CategoryElement) => {return ce.activated})
+
     const onDateChanged = (e: Event, selectedDate: Date | undefined): void => {
         if(selectedDate)
             setDate(selectedDate)
@@ -97,7 +99,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                                 onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
                                 mode="dropdown"
                             >
-                                {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                                {activeCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
                             </Picker>
                         </View>
 

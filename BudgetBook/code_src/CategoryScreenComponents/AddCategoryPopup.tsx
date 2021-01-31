@@ -21,7 +21,7 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
 
     const onAddPressed = (): void => {
-        props.addCategory(categoryName, categoryDescription, categoryColor, categoryActive, categoryHasMaxBudget, categoryMaxBudget)
+        props.addCategory(categoryName, categoryDescription, categoryColor, categoryActive, categoryHasMaxBudget, +categoryMaxBudget)
         props.setVisible(false)
     }
 

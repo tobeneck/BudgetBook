@@ -4,7 +4,7 @@ import { Button } from "react-native-elements"
 import { AddBookingPopup } from "./BookingScreenComponents/AddBookingPopup"
 import { BookingElement, getCurrentTotal, adjustForTotalAmount } from "./BookingScreenComponents/BookingList"
 import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
-import { CategoryElement } from "./CategoryScreenComponents/CategoryList"
+import { CategoryElement, getActiveCategorys } from "./CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
 import { tableStyles, DefaultColors, spacings } from "./Styles/Styles"
 import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
@@ -96,7 +96,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
     return(
     <>
         <AddBookingPopup
-            categorys={props.categorys}
+            categorys={getActiveCategorys(props.categorys)}
             visible={addPopupVisible}
             setVisible={setAddPopupVisible}
             addItem={addBooking}
@@ -112,7 +112,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             onDeletePressed={onDeleteBookingItem}
             minimumPossibleDate={props.bookings.length - 1 - currentBookingIndex !== 0 ? props.bookings[props.bookings.length - 1].date : undefined} //TODO: ugly indexing
             maximumPossibleDate={props.bookings.length - 1 - currentBookingIndex === 0 && props.bookings.length > 1 ? props.bookings[props.bookings.length - 2].date : undefined} //TODO: ugly indexing
-            categorys={props.categorys}
+            categorys={getActiveCategorys(props.categorys, props.bookings[currentBookingIndex].category)}
             booking={props.bookings[currentBookingIndex]}
             currentIndex={props.bookings.length - 1 - currentBookingIndex}
         />
