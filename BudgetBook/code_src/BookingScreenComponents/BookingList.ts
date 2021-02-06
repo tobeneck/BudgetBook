@@ -49,19 +49,11 @@ export const sortBookings = (bookings: BookingElement[]): BookingElement[] => {
 
     bookingsToEdit = [...bookingsToEdit, bookings[bookings.length-1]] //re add the initial element
 
-    return adjustForTotalAmount(bookingsToEdit, bookings.length-1)
-}
+    //adjust the "total" values
+    let previousTotal: number = bookingsToEdit[bookings.length - 1].amount
+    bookingsToEdit[bookings.length - 1].total = previousTotal
 
-/**
- * returns an adjusted amount of totals for the bookings, beginning at startingIndex.
- * @param startingIndex the starting index (in reverse order)
- * @param bookings the bookings to be adjusted
- */
-const adjustForTotalAmount = (bookings: BookingElement[], startingIndex: number = 0): BookingElement[] => {
-    var bookingsToEdit: BookingElement[] = valueCopyBookings(bookings)
-
-    let previousTotal: number = bookingsToEdit[startingIndex].total
-    for(let i: number = startingIndex-1; i >= 0; i--){//the most recent bookings are at index 0, therefore we need to iterate down //TODO: think aboud indexing
+    for(let i: number = bookings.length - 2; i >= 0; i--){//the most recent bookings are at index 0, therefore we need to iterate down //TODO: think aboud indexing
         bookingsToEdit[i].total = previousTotal + bookingsToEdit[i].amount
         previousTotal = bookingsToEdit[i].total
     }
