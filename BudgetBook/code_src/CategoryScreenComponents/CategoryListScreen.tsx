@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { Button } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { tableStyles, DefaultColors, buttonStyles } from "./Styles/Styles"
-import { BookingElement, updateCategory } from "./BookingScreenComponents/BookingList"
-import { AddCategoryPopup } from "./CategoryScreenComponents/AddCategoryPopup"
-import EditCategoryPopup from "./CategoryScreenComponents/EditCategoryPopup"
-import ReassureDeleteCategoryPopup from "./CategoryScreenComponents/ReassureDeleteCategoryPopup"
-import { CategoryElement, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from "./CategoryScreenComponents/CategoryList"
+import { tableStyles, DefaultColors, buttonStyles } from "../Styles/Styles"
+import { BookingElement, updateCategory } from "../BookingScreenComponents/BookingList"
+import { AddCategoryPopup } from "./AddCategoryPopup"
+import EditCategoryPopup from "./EditCategoryPopup"
+import ReassureDeleteCategoryPopup from "./ReassureDeleteCategoryPopup"
+import { CategoryElement, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from "./CategoryList"
 
 interface Props{
     categorys: CategoryElement[]
@@ -44,7 +44,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
     }
 
     /**
-     * handles the "cancel" operation when editing a category list
+     * handles the "cancel" operation when editing a category item
      */
     const onCancelEditCategoryItem = (): void => {
         setCurrentCategoryIndex(0)
@@ -75,6 +75,9 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         setReassureDeleteCategoryPopupVisible(true)
     }
 
+    /**
+     * handles the "delete" operation when deleting a category element
+     */
     const onCancelReassureDelete = (): void => {
         setCurrentCategoryIndex(0)
         setReassureDeleteCategoryPopupVisible(false)
