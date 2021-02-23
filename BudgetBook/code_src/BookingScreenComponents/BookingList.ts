@@ -54,7 +54,7 @@ export const sortBookings = (bookings: BookingElement[]): BookingElement[] => {
     bookingsToEdit[bookings.length - 1].total = previousTotal
 
     for(let i: number = bookings.length - 2; i >= 0; i--){//the most recent bookings are at index 0, therefore we need to iterate down //TODO: think aboud indexing
-        bookingsToEdit[i].total = previousTotal + bookingsToEdit[i].amount
+        bookingsToEdit[i].total = +(previousTotal + bookingsToEdit[i].amount).toFixed(2)
         previousTotal = bookingsToEdit[i].total
     }
 

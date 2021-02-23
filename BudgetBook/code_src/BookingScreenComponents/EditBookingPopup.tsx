@@ -24,7 +24,7 @@ interface Props{
 export const EditBookingPopup = (props: Props): JSX.Element => {
     // const [booking, setBooking] = useState<BookingElement>(props.booking)
     const [date, setDate] = useState<Date>(props.booking.date)
-    const [amount, setAmount] = useState<string>(props.booking.amount+"")
+    const [amount, setAmount] = useState<string>(props.booking.amount.toFixed(2)+"")
     const [description, setDescription] = useState<string>(props.booking.description)
     const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 

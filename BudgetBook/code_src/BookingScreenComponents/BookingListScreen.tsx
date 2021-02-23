@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 import { Text } from "react-native"
 import { Button } from "react-native-elements"
-import { AddBookingPopup } from "./BookingScreenComponents/AddBookingPopup"
-import { BookingElement, getCurrentTotal, sortBookings } from "./BookingScreenComponents/BookingList"
-import { EditBookingPopup } from "./BookingScreenComponents/EditBookingPopup"
-import { CategoryElement, getActiveCategorys } from "./CategoryScreenComponents/CategoryList"
+import { AddBookingPopup } from "./AddBookingPopup"
+import { BookingElement, getCurrentTotal, sortBookings } from "./BookingList"
+import { EditBookingPopup } from "./EditBookingPopup"
+import { CategoryElement, getActiveCategorys } from "../CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
-import { tableStyles, DefaultColors } from "./Styles/Styles"
-import ReassureDeleteBookingPopup from "./BookingScreenComponents/ReassureDeleteBookingPopup"
+import { tableStyles, DefaultColors } from "../Styles/Styles"
+import ReassureDeleteBookingPopup from "./ReassureDeleteBookingPopup"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface Props{
@@ -75,6 +75,9 @@ const BookingListScreen = (props: Props): JSX.Element => {
         setEditPopupVisible(true)
     }
 
+    /**
+     * handles the "delete" operation when deleting a booking
+     */
     const onReassureDeleteBookingPopupDeletePressed = () => {
         const newBookingList: BookingElement[] = props.bookings
 
@@ -87,6 +90,9 @@ const BookingListScreen = (props: Props): JSX.Element => {
         setReassureDeleteBookingPopupVisible(false)
     }
 
+    /**
+     * handles the "calcel" operation when deleting a category
+     */
     const onReassureDeleteBookingPopupCancelPressed = () => {
         setCurrentBookingIndex(0)
         setReassureDeleteBookingPopupVisible(false)
@@ -140,8 +146,8 @@ const BookingListScreen = (props: Props): JSX.Element => {
                 <>
                     <View style={tableStyles.tableRow}>
                         <Text style={{width: "16%", color: "black" }}>{be.date.toLocaleDateString()}</Text>
-                        <Text style={{width: "18%", color: be.total < 0 ? DefaultColors.red : be.total > 0 ? DefaultColors.green : "black"}}>{be.total >= 0 ? " "+be.total : be.total}</Text>
-                        <Text style={{width: "18%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? " "+be.amount : be.amount}</Text>
+                        <Text style={{width: "18%", color: be.total < 0 ? DefaultColors.red : be.total > 0 ? DefaultColors.green : "black"}}>{be.total >= 0 ? " "+be.total.toFixed(2) : be.total.toFixed(2)}</Text>
+                        <Text style={{width: "18%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>
                         <Text style={{width: "38%", color: "black" }}>{be.category.name}</Text>
                         <Button
                             onPress={(e: Event) => onOpenEditBookingItem(index)}
