@@ -7,7 +7,7 @@ import { BookingElement } from "./BookingList"
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { buttonStyles, bigPopupStyles, spacings } from "../Styles/Styles";
 import { defaultButtonStyles } from "../Styles/DefaultStyles";
-import NumberInputPopup from "../GenericPopups/NumberInputPopup";
+import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 
 interface Props{
     categorys: CategoryElement[],
@@ -84,9 +84,9 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                         </Text>
 
                         <Text>Amount</Text>
-                        <NumberInputPopup
+                        <AmountInput
                             amount={amount}
-                            setAmount={(amount: number) => setAmount(amount)}
+                            setAmount={(newAmount: number) => setAmount(newAmount)}
                             style={bigPopupStyles.text}
                             normalButtonStyle={defaultButtonStyles.normalButtonStyle}
                             normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}

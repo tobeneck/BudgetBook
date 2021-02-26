@@ -51,8 +51,7 @@ const ScreenSwitcherScreen = (props: Props): JSX.Element => {
             <View style={spacings.defaultHorizontalSpacing}/>
 
             <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTileDisabled}
-                disabled={true}
+                style={ScreenSwitcherStyles.screenPickerTile}
                 onPress={() => props.openScreen(eCurrentScreen.SUPER_CATEGORY_LIST_SCREEN)}
             >
                 <Icon

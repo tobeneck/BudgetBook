@@ -7,7 +7,7 @@ import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 import { Overlay } from "react-native-elements";
 import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles";
-import NumberInputPopup from "../GenericPopups/NumberInputPopup";
+import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import { defaultButtonStyles } from "../Styles/DefaultStyles"
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -85,9 +85,9 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                         </Text>
 
                         <Text>Amount</Text>
-                        <NumberInputPopup
+                        <AmountInput
                             amount={amount}
-                            setAmount={(amount: number) => setAmount(amount)}
+                            setAmount={(newAmount: number) => setAmount(newAmount)}
                             style={bigPopupStyles.text}
                             normalButtonStyle={defaultButtonStyles.normalButtonStyle}
                             normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}

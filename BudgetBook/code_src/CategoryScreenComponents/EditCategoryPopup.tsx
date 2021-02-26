@@ -5,7 +5,7 @@ import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles
 import { CategoryElement } from "./CategoryList"
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import ColorPickerPopup from "../GenericPopups/ColorPickerPopup"
+import ColorPickerPopup from "../GenericComponents/ColorPicker/ColorPickerPopup"
 
 interface Props{
     visible: boolean,

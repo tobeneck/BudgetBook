@@ -144,7 +144,9 @@ const BookingListScreen = (props: Props): JSX.Element => {
 
             {props.bookings.map((be: BookingElement, index: number) => (
                 <>
-                    <View style={tableStyles.tableRow}>
+                    <View
+                        style={tableStyles.tableRow} //TODO: restyle
+                    >
                         <Text style={{width: "16%", color: "black" }}>{be.date.toLocaleDateString()}</Text>
                         <Text style={{width: "18%", color: be.total < 0 ? DefaultColors.red : be.total > 0 ? DefaultColors.green : "black"}}>{be.total >= 0 ? " "+be.total.toFixed(2) : be.total.toFixed(2)}</Text>
                         <Text style={{width: "18%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>

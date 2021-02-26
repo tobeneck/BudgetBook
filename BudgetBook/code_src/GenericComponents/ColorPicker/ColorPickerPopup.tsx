@@ -1,7 +1,7 @@
 import { View, Text, TextInput } from "react-native"
 import { Overlay, Button } from "react-native-elements"
 import { TriangleColorPicker, ColorPicker, toHsv, fromHsv } from 'react-native-color-picker'
-import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles"
+import { bigPopupStyles, buttonStyles, spacings } from "../../Styles/Styles"
 import React, { useState, useEffect } from "react"
 
 interface Props{
