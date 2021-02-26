@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native"
 
-const defaultRadius: number = 3
-const defaultBorderWidth: number = 1//0.5
+export const defaultRadius: number = 3
+export const defaultBorderWidth: number = 1//0.5
 
 const defaultSpacingPercent: number = 0.5
 
@@ -19,8 +19,14 @@ export const DefaultColors = {
   darkBlue: "#16697A", //ming
 
   lightGrey: "#D3D3D3",
+  grey: "grey",
 
-  disabled: "#00000040" //the last two digits mean 25% opacity
+  disabled: "#00000040", //the last two digits mean 25% opacity
+
+  white: "white",
+  black: "black",
+
+  deleteRed: "red",
 }
 
 export const headerStyles = StyleSheet.create({
@@ -73,15 +79,15 @@ export const tableStyles = StyleSheet.create({
 
 export const bigPopupStyles = StyleSheet.create({
   overlay: {
-    height: "60%",
-    width: "70%",
+    height: "92%",
+    width: "100%",
     backgroundColor: DefaultColors.nearWhite,
-    top: "-6%",
-    // bottomm: "5%"
+    top: "4%",
+    //bottomm: "5%"
   },
   text: {
     width: "99%",
-    height: "9%",
+    height: "6%",
     alignSelf: "flex-start",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
@@ -95,7 +101,7 @@ export const bigPopupStyles = StyleSheet.create({
   },
   textInput: {
     width: "99%",
-    height: "9%",
+    height: "6%",
     alignSelf: "center",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,

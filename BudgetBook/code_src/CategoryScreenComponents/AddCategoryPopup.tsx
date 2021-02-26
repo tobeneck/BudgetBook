@@ -3,7 +3,7 @@ import { Text, TextInput, TouchableOpacity, View, Switch } from "react-native"
 import { Overlay, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { buttonStyles, bigPopupStyles, spacings, DefaultColors } from "../Styles/Styles";
-import ColorPickerPopup from "./ColorPickerPopup";
+import ColorPickerPopup from "../GenericPopups/ColorPickerPopup";
 
 interface Props{
     visible: boolean,

@@ -5,7 +5,7 @@ import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles
 import { CategoryElement } from "./CategoryList"
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import ColorPickerPopup from "./ColorPickerPopup"
+import ColorPickerPopup from "../GenericPopups/ColorPickerPopup"
 
 interface Props{
     visible: boolean,
@@ -43,11 +43,12 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
             />
 
             <Overlay
-            isVisible={props.visible}
+                isVisible={props.visible}
                 // onBackdropPress={() => props.setVisible(false)}
                 overlayStyle={bigPopupStyles.overlay}
                 statusBarTranslucent={true}
                 onRequestClose={() => props.onCancelPressed()}
+                fullScreen={true}
             >
                 <View style={{height: "100%", width: "100%", justifyContent: "space-between"}}>
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { Text, TextInput, View, Keyboard, ScrollView } from "react-native"
+import { Text, TextInput, View, Keyboard, ScrollView, NativeSyntheticEvent, TargetedEvent } from "react-native"
 import { Button } from "react-native-elements"
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 import { Overlay } from "react-native-elements";
-import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles/Styles";
-
+import { bigPopupStyles, buttonStyles, spacings } from "../Styles/Styles";
+import NumberInputPopup from "../GenericPopups/NumberInputPopup";
+import { defaultButtonStyles } from "../Styles/DefaultStyles"
 interface Props{
     booking: BookingElement, //the booking to edit
     categorys: CategoryElement[],
@@ -24,7 +25,7 @@ interface Props{
 export const EditBookingPopup = (props: Props): JSX.Element => {
     // const [booking, setBooking] = useState<BookingElement>(props.booking)
     const [date, setDate] = useState<Date>(props.booking.date)
-    const [amount, setAmount] = useState<string>(props.booking.amount.toFixed(2)+"")
+    const [amount, setAmount] = useState<number>(props.booking.amount)
     const [description, setDescription] = useState<string>(props.booking.description)
     const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 
@@ -37,9 +38,13 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
         setDatePickerVisible(false)
     }
 
+    const onSavePressed = (): void => {
+        props.onSavePressed({description, category, date, total: props.booking.total, amount} as BookingElement)
+    }
+
     useEffect(() => {
         setDate(props.booking.date)
-        setAmount(props.booking.amount+"")
+        setAmount(props.booking.amount)
         setDescription(props.booking.description)
         setCategory(props.booking.category)
         setDatePickerVisible(false)
@@ -80,11 +85,14 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                         </Text>
 
                         <Text>Amount</Text>
-                        <TextInput
-                            style={bigPopupStyles.textInput}
-                            keyboardType = 'numeric'
-                            onChangeText={text => setAmount(text)}
-                            value={amount+""}
+                        <NumberInputPopup
+                            amount={amount}
+                            setAmount={(amount: number) => setAmount(amount)}
+                            style={bigPopupStyles.text}
+                            normalButtonStyle={defaultButtonStyles.normalButtonStyle}
+                            normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
+                            specialButtonStyle={defaultButtonStyles.specialButtonStyle}
+                            specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
                         />
 
                         <Text>Category</Text>
@@ -100,7 +108,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
                         </View>
 
                         <Text>Description</Text>
-                        <TextInput
+                         <TextInput
                             style={bigPopupStyles.textField}
                             onChangeText={text => setDescription(text)}
                             value={description}
@@ -125,7 +133,7 @@ export const EditBookingPopup = (props: Props): JSX.Element => {
 
                         <View style={{flexDirection: "row"}}>
                             <Button
-                                onPress={() => props.onSavePressed({description, category, date, total: props.booking.total - props.booking.amount + +amount, amount: +amount} as BookingElement)}
+                                onPress={() => onSavePressed()}
                                 title="Save"
                                 buttonStyle={buttonStyles.saveButtonStyle}
                                 titleStyle={buttonStyles.saveButtonText}

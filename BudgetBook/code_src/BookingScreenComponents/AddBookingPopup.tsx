@@ -6,6 +6,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { BookingElement } from "./BookingList"
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { buttonStyles, bigPopupStyles, spacings } from "../Styles/Styles";
+import { defaultButtonStyles } from "../Styles/DefaultStyles";
+import NumberInputPopup from "../GenericPopups/NumberInputPopup";
 
 interface Props{
     categorys: CategoryElement[],
@@ -17,9 +19,9 @@ interface Props{
 }
 
 export const AddBookingPopup = (props: Props): JSX.Element => {
-    const [date, setDate] = useState(new Date());
-    const [amount, setAmount] = useState("");
-    const [name, setName] = useState("");
+    const [date, setDate] = useState<Date>(new Date());
+    const [amount, setAmount] = useState<number>(0);
+    const [name, setName] = useState<string>("");
     const [category, setCategory] = useState<CategoryElement>(props.categorys[props.categorys.length-1]); //TODO: ugly indexing
 
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
@@ -41,7 +43,7 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     }
 
     useEffect(() => {
-        setAmount("")
+        setAmount(0)
         setName("")
         setCategory(props.categorys[props.categorys.length-1]) //TODO: ugly indexing
         setDate(new Date)
@@ -82,11 +84,14 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
                         </Text>
 
                         <Text>Amount</Text>
-                        <TextInput
-                            style={bigPopupStyles.textInput}
-                            keyboardType = 'numeric'
-                            onChangeText={text => setAmount(text)}
-                            value={amount}
+                        <NumberInputPopup
+                            amount={amount}
+                            setAmount={(amount: number) => setAmount(amount)}
+                            style={bigPopupStyles.text}
+                            normalButtonStyle={defaultButtonStyles.normalButtonStyle}
+                            normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
+                            specialButtonStyle={defaultButtonStyles.specialButtonStyle}
+                            specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
                         />
 
                         <Text>Category</Text>
