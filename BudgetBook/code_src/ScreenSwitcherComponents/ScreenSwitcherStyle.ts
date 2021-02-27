@@ -9,27 +9,27 @@ const defaultSpacingPercent: number = 0.5
 
 export const ScreenSwitcherStyles = StyleSheet.create({
     background: {
-        height: "92%",
-        width: "100%",
+        height: "90%",
+        width: "98%",
         color: colors.nearWhite,
         flexDirection: "column",
         justifyContent: "flex-end",
-        alignItems:"center"
+        alignSelf:"center"
     },
 
     text: {
         color: "white"
     },
 
-    screenPickerTile: {
-        height: "10%",
-        width: "99%",
-        borderRadius: defaultRadius,
-        backgroundColor: colors.darkBlue,
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row"
-    },
+    // screenPickerTile: {
+    //     height: "10%",
+    //     width: "99%",
+    //     borderRadius: defaultRadius,
+    //     backgroundColor: colors.darkBlue,
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     flexDirection: "row"
+    // },
 
     screenPickerTileDisabled: {
         height: "10%",

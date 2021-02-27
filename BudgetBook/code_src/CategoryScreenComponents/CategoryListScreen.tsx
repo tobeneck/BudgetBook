@@ -145,8 +145,8 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                         >
                             <View
                                 style={{
-                                    width: 20,
-                                    height: 20,
+                                    width: 14,
+                                    height: 14,
                                     backgroundColor: ce.color,
                                     borderRadius: 10,
                                     marginLeft: "3%"

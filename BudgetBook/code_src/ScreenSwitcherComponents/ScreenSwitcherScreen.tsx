@@ -1,10 +1,12 @@
 import React from "react"
 import { Text, TouchableOpacity, View, Modal } from "react-native"
-import { colors } from "../Styles/Styles"
+import { buttonStyles, defaultColors } from "../Styles/Styles"
 import { ScreenSwitcherStyles } from "./ScreenSwitcherStyle"
 import { spacings } from "../Styles/Styles"
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialComunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
 import { eCurrentScreen } from "../../App"
+import { Button } from "react-native-elements"
 
 interface Props{
     openScreen: (newScreen: eCurrentScreen) => void
@@ -17,117 +19,105 @@ const ScreenSwitcherScreen = (props: Props): JSX.Element => {
             style={ScreenSwitcherStyles.background}
         >
             {/* TODO: some cool infos like the total amound of money and maybe the 30 day trend or something like that*/ }
+            <Text>
+                Total amount: TODO
+            </Text>
+            <Text>
+                Uni: -333
+            </Text>
+            <Text>
+                Stipendium: +990
+            </Text>
 
-            <TouchableOpacity
-                style={[ScreenSwitcherStyles.screenPickerTile, {borderColor: colors.orange, backgroundColor: colors.orange}]}
+            <Button
+                buttonStyle={[buttonStyles.orangeButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.orangeButtonText}
                 onPress={() => props.openScreen(eCurrentScreen.BOOKING_LIST_SCREEN)}
-            >
-                <Icon
-                    name="book-outline"
-                    size={20}
-                    color="#fff"
-                    //onPress={() => setReassureExportPopupVisible(true)}
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Bookings</Text>
-            </TouchableOpacity>
+                icon={
+                    <MaterialComunityIcon
+                        name="book-outline"
+                        size={20}
+                        color={defaultColors.darkTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Bookings"}
+            />
 
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTile}
+            <Button
+                buttonStyle={[buttonStyles.darkBlueButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.darkBlueButtonText}
                 onPress={() => props.openScreen(eCurrentScreen.CATEGORY_LIST_SCREEN)}
-            >
-                <Icon
-                    name="label-outline"
-                    size={20}
-                    color="#fff"
-                    //onPress={() => setReassureExportPopupVisible(true)}
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Categorys</Text>
-            </TouchableOpacity>
+                icon={
+                    <MaterialComunityIcon
+                        name="label-outline"
+                        size={20}
+                        color={defaultColors.lightTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Categorys"}
+            />
 
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTile}
-                onPress={() => props.openScreen(eCurrentScreen.SUPER_CATEGORY_LIST_SCREEN)}
-            >
-                <Icon
-                    name="label-multiple-outline"
-                    size={20}
-                    color="#fff"
-                    //onPress={() => setReassureExportPopupVisible(true)}
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Super Categorys</Text>
-            </TouchableOpacity>
-
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTileDisabled}
-                disabled={true}
+            <Button
+                buttonStyle={[buttonStyles.darkBlueButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.darkBlueButtonText}
                 onPress={() => props.openScreen(eCurrentScreen.GRAPHS_SCREEN)}
-            >
-                <Icon
-                    name="chart-line"
-                    size={20}
-                    color="#fff"
-                    //onPress={() => setReassureExportPopupVisible(true)}
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Graphs</Text>
-            </TouchableOpacity>
+                icon={
+                    <MaterialComunityIcon
+                        name="chart-line"
+                        size={20}
+                        color={defaultColors.lightTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Graphs"}
+            />
 
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTile}
+            <Button
+                buttonStyle={[buttonStyles.darkBlueButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.darkBlueButtonText}
                 onPress={() => props.openExportPopup()}
-            >
-                <Icon
-                    name="file-export-outline"
-                    size={20}
-                    color="#fff"
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Export</Text>
-            </TouchableOpacity>
+                icon={
+                    <MaterialComunityIcon
+                        name="file-export-outline"
+                        size={20}
+                        color={defaultColors.lightTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Export"}
+            />
 
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTile}
+            <Button
+                buttonStyle={[buttonStyles.darkBlueButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.darkBlueButtonText}
                 onPress={() => props.openScreen(eCurrentScreen.IMPORT_DATA_SCREEN)}
-            >
-                <Icon
-                    name="file-import-outline"
-                    size={20}
-                    color="#fff"
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> Import</Text>
-            </TouchableOpacity>
+                icon={
+                    <MaterialComunityIcon
+                        name="file-import-outline"
+                        size={20}
+                        color={defaultColors.lightTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Import"}
+            />
 
-            <View style={spacings.defaultHorizontalSpacing}/>
-
-            <TouchableOpacity
-                style={ScreenSwitcherStyles.screenPickerTileDisabled}
-                disabled={true}
-                onPress={() => props.openScreen(eCurrentScreen.INFO_SCREEN)}
-            >
-                <Icon
-                    name="information-outline"
-                    size={20}
-                    color="#fff"
-                    style={{alignContent: "center"}}
-                />
-                <Text style={ScreenSwitcherStyles.text}> App Info</Text>
-            </TouchableOpacity>
-
-            <View style={spacings.defaultHorizontalSpacing}/>
+            <Button
+                buttonStyle={[buttonStyles.darkBlueButtonStyle, {width: "100%", marginBottom:"1%"}]}
+                titleStyle={buttonStyles.darkBlueButtonText}
+                onPress={() => props.openScreen(eCurrentScreen.SETTINGS_SCREEN)}
+                icon={
+                    <IonIcon
+                        name="settings-outline"
+                        size={20}
+                        color={defaultColors.lightTextColor}
+                        style={{alignContent: "center"}}
+                    />
+                }
+                title={"Settings"}
+            />
 
         </View>
     )

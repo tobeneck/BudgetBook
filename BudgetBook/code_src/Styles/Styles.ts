@@ -67,8 +67,8 @@ export const tableStyles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    minHeight: 33,
-    width: "100%",
+    minHeight: 40,
+    width: "98%",
     alignItems: "center",
     alignSelf: "center",
     borderBottomWidth: 1,
@@ -80,14 +80,14 @@ export const tableStyles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: defaultColors.separatorColor,
-    minHeight: 33,
+    minHeight: 40,
     width: "100%"
   },
-  tableContent: {
+  tableContent: { //this only exists for the margins left and right
+
     height: "100%",
     width: "98%", //98% width for margins left and right
     alignSelf: "center",
-    backgroundColor: defaultColors.backgroundColor,
   },
   tableText: {
     fontSize: 14,
@@ -211,19 +211,39 @@ export const spacings = StyleSheet.create({
   },
 })
 
+// buttonContainer: {
+//   height: "20%",
+//   width: "24%",
+//   justifyContent: "center",
+//   backgroundColor: "transparent",
+//   margin: "0.5%"
+// },
+// buttonTitleStyle:{
+//   color: "white"
+// },
+// buttonStyle: {
+//   height: "100%",
+//   width: "100%",
+//   textAlignVertical: "center"
+// },
+
 export const buttonStyles = StyleSheet.create({
   orangeButtonStyle: {
-    backgroundColor: colors.orange
+    backgroundColor: defaultColors.highlightColor,
+    height: 42,
   },
   orangeButtonText: {
-    color: defaultColors.darkTextColor
+    color: defaultColors.darkTextColor,
+    fontSize: 16
   },
 
   darkBlueButtonStyle: {
-    backgroundColor: colors.darkBlue
+    backgroundColor: colors.darkBlue,
+    height: 42
   },
   darkBlueButtonText: {
-    color: "white"
+    color: defaultColors.lightTextColor,
+    fontSize: 16
   },
 
   deleteButtonOutlineStyle: {

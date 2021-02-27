@@ -20,8 +20,12 @@ const ImportScreen = (props: Props): JSX.Element => {
 
 
     return(
-        <View>
-            <Text>
+        <View
+            style={tableStyles.table}
+        >
+            <Text
+                style={[tableStyles.tableHeader, {textAlignVertical: "center", textAlign: "center"}]}
+            >
                 To import the data, place the ".csv" file containing your Budget Book data into the downloads folder of your phone. Choose a File from below:
             </Text>
 
@@ -30,7 +34,7 @@ const ImportScreen = (props: Props): JSX.Element => {
                     No files available. Put the wanted ".csv" file in your "Downloads" directory.
                 </Text>
                 :
-                <ScrollView //TODO: style
+                <ScrollView
                     contentInsetAdjustmentBehavior="automatic"
                     style={tableStyles.tableContent}
                 >
@@ -46,7 +50,7 @@ const ImportScreen = (props: Props): JSX.Element => {
                                 size={23}
                                 color={colors.darkBlue}
                             />
-                            <Text style={{width: "80%", color: "black" }}>{name}</Text>
+                            <Text style={[tableStyles.tableText, {width: "80%"}]}>{name}</Text>
                         </TouchableOpacity>
                     </>
                 ))}
