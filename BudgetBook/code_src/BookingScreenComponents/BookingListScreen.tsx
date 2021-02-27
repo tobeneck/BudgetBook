@@ -107,7 +107,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
             return defaultColors.greenTextColor
         if(amount < 0)
             return defaultColors.redTextColor
-        return defaultColors.defaultTextColor
+        return defaultColors.darkTextColor
     }
 
     return(
@@ -156,6 +156,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
                     <TouchableOpacity
                         style={tableStyles.tableRow}
                         onPress={(e: Event) => onOpenEditBookingItem(index)}
+                        key={index}
                     >
                         <Text style={[tableStyles.tableText, {width: "20%", marginLeft: "3%"}]}>{be.date.toLocaleDateString()}</Text>
                         <Text style={[tableStyles.tableText, {width: "25%", marginLeft: "1%",fontWeight: "bold", color: getAmountColor(be.amount)}]}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>

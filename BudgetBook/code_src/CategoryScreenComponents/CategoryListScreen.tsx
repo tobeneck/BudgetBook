@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { Button } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { tableStyles, colors, buttonStyles } from "../Styles/Styles"
+import { tableStyles, colors, buttonStyles, defaultColors } from "../Styles/Styles"
 import { BookingElement, updateCategory } from "../BookingScreenComponents/BookingList"
 import { AddCategoryPopup } from "./AddCategoryPopup"
 import EditCategoryPopup from "./EditCategoryPopup"
@@ -134,33 +134,28 @@ const CategoryListScreen = (props: Props): JSX.Element => {
             />
 
             <View style={tableStyles.table}>
-                <View style={tableStyles.tableHeader}>
-                    {/* widths should combine to 90%: */}
-                    <Text style={{width: "15%", fontWeight: 'bold'}}>Nr.</Text>
-                    <Text style={{width: "75%", fontWeight: 'bold'}}>Name</Text>
-                </View>
-
                 <ScrollView
                     style={tableStyles.tableContent}
                 >
-                    {props.categorys.map((ce: CategoryElement) => (
-                        <>
-                            <View style={tableStyles.tableRow}>
-                                <Text style={{width: "15%"}}>{ce.id}</Text>
-                                <Text style={{width: "75%"}}>{ce.name}</Text>
-                                <Button
-                                    onPress={() => onEditCategoryItem(ce.id)}
-                                    type="clear"
-                                    icon={
-                                        <Icon
-                                          name="file-document-edit-outline"
-                                          size={23}
-                                          color={colors.darkBlue}
-                                        />
-                                    }
-                                />
+                    {props.categorys.map((ce: CategoryElement, index: number) => (
+                        <TouchableOpacity
+                            style={tableStyles.tableRow}
+                            onPress={() => onEditCategoryItem(ce.id)}
+                            key={index}
+                        >
+                            <View
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    backgroundColor: ce.color,
+                                    borderRadius: 10,
+                                    marginLeft: "3%"
+                                }}
+                            >
                             </View>
-                        </>
+                            <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "60%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.name}</Text>
+                            <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "30%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.hasBudget ? ("("+ce.maxBudget+"€)") : ""}</Text>
+                        </TouchableOpacity>
                     ))}
                 </ScrollView>
 

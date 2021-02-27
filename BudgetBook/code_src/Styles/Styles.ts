@@ -35,9 +35,14 @@ export const defaultColors = {
   primaryColor: colors.darkBlue,
   highlightColor: colors.orange,
 
-  defaultTextColor: colors.black,
+  darkTextColor: colors.black,
+  lightTextColor: colors.white,
   redTextColor: colors.red,
   greenTextColor: colors.green,
+
+  disabled: colors.disabled,
+
+  separatorColor: colors.lightGrey
 
 }
 
@@ -74,7 +79,7 @@ export const tableStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: "lightgrey",
+    borderBottomColor: defaultColors.separatorColor,
     minHeight: 33,
     width: "100%"
   },
@@ -211,7 +216,7 @@ export const buttonStyles = StyleSheet.create({
     backgroundColor: colors.orange
   },
   orangeButtonText: {
-    color: "black"
+    color: defaultColors.darkTextColor
   },
 
   darkBlueButtonStyle: {
@@ -251,7 +256,7 @@ export const buttonStyles = StyleSheet.create({
     backgroundColor: colors.orange
   },
   saveButtonText: {
-    color: "black"
+    color: defaultColors.darkTextColor
   },
 
   cancelButtonStyle: {
@@ -260,7 +265,7 @@ export const buttonStyles = StyleSheet.create({
     backgroundColor: colors.darkBlue,
   },
   cancelButtonText: {
-    color: "white"
+    color: defaultColors.lightTextColor
   },
 })
 
