@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { Button } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { tableStyles, DefaultColors, buttonStyles } from "../Styles/Styles"
+import { tableStyles, colors, buttonStyles } from "../Styles/Styles"
 import { BookingElement, updateCategory } from "../BookingScreenComponents/BookingList"
 import { AddCategoryPopup } from "./AddCategoryPopup"
 import EditCategoryPopup from "./EditCategoryPopup"
@@ -155,7 +155,7 @@ const CategoryListScreen = (props: Props): JSX.Element => {
                                         <Icon
                                           name="file-document-edit-outline"
                                           size={23}
-                                          color={DefaultColors.darkBlue}
+                                          color={colors.darkBlue}
                                         />
                                     }
                                 />

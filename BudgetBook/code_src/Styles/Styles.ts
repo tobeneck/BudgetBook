@@ -1,11 +1,12 @@
-import { StyleSheet } from "react-native"
+import { PixelRatio, StyleSheet } from "react-native"
+import { BottomSheet } from "react-native-elements"
 
 export const defaultRadius: number = 3
 export const defaultBorderWidth: number = 1//0.5
 
-const defaultSpacingPercent: number = 0.5
+export const defaultSpacingPercent: number = 0.5
 
-export const DefaultColors = {
+export const colors = {
   lightGreen: "#9BC53D", //Android green
   green: "#6E8D2A",
   red: "#C3423F", //Madder Lake
@@ -29,49 +30,68 @@ export const DefaultColors = {
   deleteRed: "red",
 }
 
+export const defaultColors = {
+  backgroundColor: colors.nearWhite,
+  primaryColor: colors.darkBlue,
+  highlightColor: colors.orange,
+
+  defaultTextColor: colors.black,
+  redTextColor: colors.red,
+  greenTextColor: colors.green,
+
+}
+
 export const headerStyles = StyleSheet.create({
-  header: {
-    height: "8%",
+  headerContainer: {
+    height: "10%",
     width: "100%",
-    backgroundColor: DefaultColors.darkBlue,
+    backgroundColor: colors.darkBlue,
+    alignItems: "center",
+  },
+  headerStyle: {
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
   }
 })
 
 export const tableStyles = StyleSheet.create({
   table: {
-    backgroundColor: DefaultColors.nearWhite,
-    height: "92%"
+    backgroundColor: colors.nearWhite,
+    height: "90%" //header height is 10%
   },
   tableHeader: {
     flexDirection: 'row',
-    borderBottomColor: DefaultColors.orange,
-    height: "4%",
-    width: "99%",
+    minHeight: 33,
+    width: "100%",
     alignItems: "center",
     alignSelf: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: defaultColors.primaryColor,
+    justifyContent: "center"
   },
   tableRow: {
     flexDirection: 'row',
-    //justifyContent: "space-between",
     alignItems: 'center',
-
-    backgroundColor: "white",
-
-    flexWrap: "nowrap",
-    borderRadius: defaultRadius,
-    marginVertical: defaultSpacingPercent,
-    marginHorizontal: defaultSpacingPercent
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgrey",
+    minHeight: 33,
+    width: "100%"
   },
   tableContent: {
-    height: "82%", //magic number: this is set with the "Add" button and the "Header" space in mind
-    width: "99%",
+    height: "100%",
+    width: "98%", //98% width for margins left and right
     alignSelf: "center",
-    backgroundColor: DefaultColors.nearWhite,
+    backgroundColor: defaultColors.backgroundColor,
+  },
+  tableText: {
+    fontSize: 14,
+    color: "black",
   },
   tableButton: {
-    backgroundColor: DefaultColors.nearWhite,
-    height: "6%",
-    width: "99%",
+    backgroundColor: defaultColors.backgroundColor,
+    height: 42,
+    width: "98%",
     margin: defaultSpacingPercent,
     alignSelf: "center",
   }
@@ -81,7 +101,7 @@ export const bigPopupStyles = StyleSheet.create({
   overlay: {
     height: "92%",
     width: "100%",
-    backgroundColor: DefaultColors.nearWhite,
+    backgroundColor: colors.nearWhite,
     top: "4%",
     //bottomm: "5%"
   },
@@ -137,7 +157,7 @@ export const smallPopupStyles = StyleSheet.create({
   overlay: {
     height: smallPopupHeightPercentage+"%",
     width: "70%",
-    backgroundColor: DefaultColors.nearWhite,
+    backgroundColor: colors.nearWhite,
     top: "-6%",
   },
   headline: {
@@ -152,7 +172,7 @@ export const smallPopupStyles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     textAlign: "center",
-    color: DefaultColors.red
+    color: colors.red
   },
   text: {
     alignSelf: "center",
@@ -188,14 +208,14 @@ export const spacings = StyleSheet.create({
 
 export const buttonStyles = StyleSheet.create({
   orangeButtonStyle: {
-    backgroundColor: DefaultColors.orange
+    backgroundColor: colors.orange
   },
   orangeButtonText: {
     color: "black"
   },
 
   darkBlueButtonStyle: {
-    backgroundColor: DefaultColors.darkBlue
+    backgroundColor: colors.darkBlue
   },
   darkBlueButtonText: {
     color: "white"
@@ -209,11 +229,11 @@ export const buttonStyles = StyleSheet.create({
     color: "red"
   },
   deleteButtonOutlineDisabledStyle: {
-    borderColor: DefaultColors.disabled,
+    borderColor: colors.disabled,
     borderWidth: defaultBorderWidth,
   },
   deleteButtonOutlineDisabledText: {
-    color: DefaultColors.disabled
+    color: colors.disabled
   },
 
   deleteButtonStyle: {
@@ -226,18 +246,18 @@ export const buttonStyles = StyleSheet.create({
   },
 
   saveButtonStyle: {
-    borderColor: DefaultColors.orange,
+    borderColor: colors.orange,
     borderWidth: defaultBorderWidth,
-    backgroundColor: DefaultColors.orange
+    backgroundColor: colors.orange
   },
   saveButtonText: {
     color: "black"
   },
 
   cancelButtonStyle: {
-    borderColor: DefaultColors.darkBlue,
+    borderColor: colors.darkBlue,
     borderWidth: defaultBorderWidth,
-    backgroundColor: DefaultColors.darkBlue,
+    backgroundColor: colors.darkBlue,
   },
   cancelButtonText: {
     color: "white"
@@ -248,11 +268,11 @@ export const overlayStyles = StyleSheet.create({
   overlay: {
     height: "60%",
     width: "70%",
-    backgroundColor: DefaultColors.nearWhite
+    backgroundColor: colors.nearWhite
   },
   smallOverlay: {
     height: "30%",
     width: "70%",
-    backgroundColor: DefaultColors.nearWhite
+    backgroundColor: colors.nearWhite
   }
 })

@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from "react-native"
 import { Button } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList";
-import { tableStyles, DefaultColors, buttonStyles } from "../Styles/Styles"
+import { tableStyles, colors, buttonStyles } from "../Styles/Styles"
 import { AddSuperCategoryPopup } from "./AddSuperCategory";
 import { SuperCategoryElement, valueCopySuperCategorys } from "./SuperCategoryList";
 
@@ -138,7 +138,7 @@ const SuperCategoryListScreen = (props: Props): JSX.Element => {
                                         <Icon
                                           name="file-document-edit-outline"
                                           size={23}
-                                          color={DefaultColors.darkBlue}
+                                          color={colors.darkBlue}
                                         />
                                     }
                                 />

@@ -1,12 +1,12 @@
 import { StyleSheet } from "react-native";
-import { DefaultColors } from "../../Styles/Styles";
+import { colors } from "../../Styles/Styles";
 
 export const amountInputStyles = StyleSheet.create({
     overlay: {
         height: "40%",
         width: "100%",
         position: "absolute",
-        backgroundColor: DefaultColors.nearWhite,
+        backgroundColor: colors.nearWhite,
         bottom: 0
     },
     buttonContainer: {

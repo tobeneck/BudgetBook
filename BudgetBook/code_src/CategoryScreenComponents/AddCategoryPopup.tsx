@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Text, TextInput, TouchableOpacity, View, Switch } from "react-native"
 import { Overlay, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { buttonStyles, bigPopupStyles, spacings, DefaultColors } from "../Styles/Styles";
+import { buttonStyles, bigPopupStyles, spacings, colors } from "../Styles/Styles";
 import ColorPickerPopup from "../GenericComponents/ColorPicker/ColorPickerPopup";
 import { defaultButtonStyles } from "../Styles/DefaultStyles";
 import AmountInput from "../GenericComponents/AmountInput/AmountInput";
@@ -16,7 +16,7 @@ interface Props{
 export const AddCategoryPopup = (props: Props): JSX.Element => {
     const [categoryName, setCategoryName] = useState<string>("")
     const [categoryDescription, setCategoryDescription] = useState<string>("")
-    const [categoryColor, setCategoryColor] = useState<string>(DefaultColors.lightGrey)
+    const [categoryColor, setCategoryColor] = useState<string>(colors.lightGrey)
     const [categoryActive, setCategoryActive] = useState<boolean>(true)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(false)
     const [categoryMaxBudget, setCategoryMaxBudget] = useState<number>(0)
@@ -85,8 +85,8 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
                             <Switch
                                 value={categoryHasMaxBudget}
                                 onValueChange={() => setCategoryHasMaxBudget(!categoryHasMaxBudget)}
-                                thumbColor={DefaultColors.darkBlue}
-                                trackColor={{true: DefaultColors.lightBlue, false: DefaultColors.disabled}}
+                                thumbColor={colors.darkBlue}
+                                trackColor={{true: colors.lightBlue, false: colors.disabled}}
                             />
                         </View>
 
@@ -106,8 +106,8 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
                             <Switch
                                 value={categoryActive}
                                 onValueChange={() => setCategoryActive(!categoryActive)}
-                                thumbColor={DefaultColors.darkBlue}
-                                trackColor={{true: DefaultColors.lightBlue, false: DefaultColors.disabled}}
+                                thumbColor={colors.darkBlue}
+                                trackColor={{true: colors.lightBlue, false: colors.disabled}}
                             />
                         </View>
 

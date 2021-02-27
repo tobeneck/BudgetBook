@@ -1,27 +1,27 @@
 import { StyleSheet } from "react-native";
-import { defaultBorderWidth, DefaultColors, defaultRadius } from "./Styles";
+import { defaultBorderWidth, colors, defaultRadius } from "./Styles";
 
 
 export const defaultButtonStyles = StyleSheet.create({//this only defines the color, borders and text styles. The height and width is defined elsewhere
     normalButtonStyle: {
-        backgroundColor: DefaultColors.darkBlue
+        backgroundColor: colors.darkBlue
     },
     normalTitleStyle: {
-        color: DefaultColors.white
+        color: colors.white
     },
 
     specialButtonStyle: {
-        backgroundColor: DefaultColors.orange
+        backgroundColor: colors.orange
     },
     specialTitleStyle: {
-        color: DefaultColors.black
+        color: colors.black
     },
 
     deleteButtonStyle: {
-        backgroundColor: DefaultColors.deleteRed
+        backgroundColor: colors.deleteRed
     },
     deleteButtonText: {
-        color: DefaultColors.deleteRed
+        color: colors.deleteRed
     },
   })
 
@@ -30,10 +30,25 @@ export const defaultButtonStyles = StyleSheet.create({//this only defines the co
         alignSelf: "center",
         borderWidth: defaultBorderWidth,
         borderRadius: defaultRadius,
-        borderColor: DefaultColors.grey, //TODO: remove these, maybe make it more grey
+        borderColor: colors.grey, //TODO: remove these, maybe make it more grey
         alignContent:"center",
-        color: DefaultColors.black,
+        color: colors.black,
         marginLeft: defaultBorderWidth //to cpmpensate for the border with
       },
       //TODO: the same thing for text
   })
+
+  export const defaultTableStyles = StyleSheet.create({
+    table: {
+      backgroundColor: colors.nearWhite,
+    },
+    tableCell: {
+        backgroundColor: colors.nearWhite
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        borderBottomColor: colors.orange,
+        alignItems: "center",
+        alignSelf: "center",
+      },
+  });

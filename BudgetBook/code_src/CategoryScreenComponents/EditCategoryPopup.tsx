@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Text, TextInput, TouchableOpacity, View, Switch } from "react-native"
 import { Overlay, Button } from "react-native-elements"
-import { bigPopupStyles, buttonStyles, DefaultColors, spacings } from "../Styles/Styles"
+import { bigPopupStyles, buttonStyles, colors, spacings } from "../Styles/Styles"
 import { CategoryElement } from "./CategoryList"
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -93,8 +93,8 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                             <Switch
                                 value={categoryHasMaxBudget}
                                 onValueChange={() => setCategoryHasMaxBudget(!categoryHasMaxBudget)}
-                                thumbColor={props.category.id === 0 ? DefaultColors.lightGrey : DefaultColors.darkBlue}
-                                trackColor={{true: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.lightBlue, false: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.disabled}}
+                                thumbColor={props.category.id === 0 ? colors.lightGrey : colors.darkBlue}
+                                trackColor={{true: props.category.id === 0 ? colors.disabled : colors.lightBlue, false: props.category.id === 0 ? colors.disabled : colors.disabled}}
                                 disabled={props.category.id === 0}
                             />
                         </View>
@@ -114,8 +114,8 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                             <Switch
                                 value={categoryActivated}
                                 onValueChange={() => setCategoryActivated(!categoryActivated)}
-                                thumbColor={props.category.id === 0 ? DefaultColors.lightGrey : DefaultColors.darkBlue}
-                                trackColor={{true: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.lightBlue, false: props.category.id === 0 ? DefaultColors.disabled : DefaultColors.disabled}}
+                                thumbColor={props.category.id === 0 ? colors.lightGrey : colors.darkBlue}
+                                trackColor={{true: props.category.id === 0 ? colors.disabled : colors.lightBlue, false: props.category.id === 0 ? colors.disabled : colors.disabled}}
                                 disabled={props.category.id === 0}
                             />
                         </View>

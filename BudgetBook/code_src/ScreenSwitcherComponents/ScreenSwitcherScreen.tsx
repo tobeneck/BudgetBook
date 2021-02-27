@@ -1,6 +1,6 @@
 import React from "react"
 import { Text, TouchableOpacity, View, Modal } from "react-native"
-import { DefaultColors } from "../Styles/Styles"
+import { colors } from "../Styles/Styles"
 import { ScreenSwitcherStyles } from "./ScreenSwitcherStyle"
 import { spacings } from "../Styles/Styles"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -19,7 +19,7 @@ const ScreenSwitcherScreen = (props: Props): JSX.Element => {
             {/* TODO: some cool infos like the total amound of money and maybe the 30 day trend or something like that*/ }
 
             <TouchableOpacity
-                style={[ScreenSwitcherStyles.screenPickerTile, {borderColor: DefaultColors.orange, backgroundColor: DefaultColors.orange}]}
+                style={[ScreenSwitcherStyles.screenPickerTile, {borderColor: colors.orange, backgroundColor: colors.orange}]}
                 onPress={() => props.openScreen(eCurrentScreen.BOOKING_LIST_SCREEN)}
             >
                 <Icon

@@ -7,7 +7,7 @@ import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScre
 import BookingListScreen from "./code_src/BookingScreenComponents/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryScreenComponents/CategoryListScreen"
 import { saveToCache, exportToDownloads, readFile, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler';
-import { DefaultColors, headerStyles } from "./code_src/Styles/Styles"
+import { colors, headerStyles } from "./code_src/Styles/Styles"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
@@ -143,18 +143,19 @@ const App = () => {
     return (
       <Header
         statusBarProps={{ barStyle: 'light-content' }}
-        backgroundColor={DefaultColors.darkBlue}
-        containerStyle={headerStyles.header}
+        backgroundColor={colors.darkBlue}
+        containerStyle={headerStyles.headerContainer}
+        style={headerStyles.headerStyle}
       >
         { currentScreen !== eCurrentScreen.SCREEN_SWITCHER_SCREEN &&
           <Icon
           name='arrow-left'
-          size={25}
+          size={30}
           color="white"
           onPress={() => setCurrentScreen(eCurrentScreen.SCREEN_SWITCHER_SCREEN)}
         />
         }
-        <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18} }>{getHeaderTitle()}</Text>
+        <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18, justifyContent: "center"} }>{getHeaderTitle()}</Text>
       </Header>
     )
 

@@ -1,5 +1,5 @@
 import { BookingElement } from "../BookingScreenComponents/BookingList"
-import { DefaultColors } from "../Styles/Styles";
+import { colors } from "../Styles/Styles";
 
 
 export interface SuperCategoryElement{

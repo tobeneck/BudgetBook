@@ -1,12 +1,12 @@
 import React, { useState } from "react"
-import { Text } from "react-native"
-import { Button } from "react-native-elements"
+import { Text, TouchableOpacity } from "react-native"
+import { Button, Divider } from "react-native-elements"
 import { AddBookingPopup } from "./AddBookingPopup"
 import { BookingElement, getCurrentTotal, sortBookings } from "./BookingList"
 import { EditBookingPopup } from "./EditBookingPopup"
 import { CategoryElement, getActiveCategorys } from "../CategoryScreenComponents/CategoryList"
 import { View, ScrollView } from "react-native"
-import { tableStyles, DefaultColors } from "../Styles/Styles"
+import { tableStyles, colors, defaultColors } from "../Styles/Styles"
 import ReassureDeleteBookingPopup from "./ReassureDeleteBookingPopup"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
@@ -98,6 +98,18 @@ const BookingListScreen = (props: Props): JSX.Element => {
         setReassureDeleteBookingPopupVisible(false)
     }
 
+    /**
+     * returns the appropriate color depending on the input value. Red for negative numbers and green for positive.
+     * @param amount the amount text to be colored
+     */
+    const getAmountColor = (amount: number): string => {
+        if(amount > 0)
+            return defaultColors.greenTextColor
+        if(amount < 0)
+            return defaultColors.redTextColor
+        return defaultColors.defaultTextColor
+    }
+
     return(
     <>
         <AddBookingPopup
@@ -131,10 +143,8 @@ const BookingListScreen = (props: Props): JSX.Element => {
         <View style={tableStyles.table}>
             <View style={tableStyles.tableHeader}>
                 {/* widths should combine to 90%: */}
-                <Text style={{width: "16%", fontWeight: 'bold'}}>Date</Text>
-                <Text style={{width: "18%", fontWeight: 'bold'}}>Total</Text>
-                <Text style={{width: "18%", fontWeight: 'bold'}}>Amount</Text>
-                <Text style={{width: "38%", fontWeight: 'bold'}}>Category</Text>
+                <Text style={[tableStyles.tableText, {fontWeight: 'bold'}]}>Current Total = </Text>
+                <Text style={[tableStyles.tableText, {fontWeight: "bold", color: getAmountColor(props.bookings[0].total)}]}>{props.bookings[0].total >= 0 ? " "+props.bookings[0].total.toFixed(2) : props.bookings[0].total.toFixed(2)}</Text>
             </View>
 
             <ScrollView
@@ -143,27 +153,14 @@ const BookingListScreen = (props: Props): JSX.Element => {
             >
 
             {props.bookings.map((be: BookingElement, index: number) => (
-                <>
-                    <View
-                        style={tableStyles.tableRow} //TODO: restyle
+                    <TouchableOpacity
+                        style={tableStyles.tableRow}
+                        onPress={(e: Event) => onOpenEditBookingItem(index)}
                     >
-                        <Text style={{width: "16%", color: "black" }}>{be.date.toLocaleDateString()}</Text>
-                        <Text style={{width: "18%", color: be.total < 0 ? DefaultColors.red : be.total > 0 ? DefaultColors.green : "black"}}>{be.total >= 0 ? " "+be.total.toFixed(2) : be.total.toFixed(2)}</Text>
-                        <Text style={{width: "18%", color: be.amount < 0 ? DefaultColors.red : be.amount > 0 ? DefaultColors.green : "black"}}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>
-                        <Text style={{width: "38%", color: "black" }}>{be.category.name}</Text>
-                        <Button
-                            onPress={(e: Event) => onOpenEditBookingItem(index)}
-                            type="clear"
-                            icon={
-                                <Icon
-                                  name="file-document-edit-outline"
-                                  size={23}
-                                  color={DefaultColors.darkBlue}
-                                />
-                            }
-                        />
-                    </View>
-                </>
+                        <Text style={[tableStyles.tableText, {width: "20%", marginLeft: "3%"}]}>{be.date.toLocaleDateString()}</Text>
+                        <Text style={[tableStyles.tableText, {width: "25%", marginLeft: "1%",fontWeight: "bold", color: getAmountColor(be.amount)}]}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>
+                        <Text style={[tableStyles.tableText, {width: "50%", marginLeft: "1%"}]}>{be.category.name}</Text>
+                    </TouchableOpacity>
             ))}
 
             </ScrollView>
@@ -172,7 +169,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
                 <Button
                     onPress={(e: Event) => onAddBookingPressed(e)}
                     title="Add Booking"
-                    buttonStyle={{backgroundColor: DefaultColors.orange}}
+                    buttonStyle={{backgroundColor: colors.orange}}
                     titleStyle={{color: "black"}}
                     accessibilityLabel="Add Item to the budget list"
                 />

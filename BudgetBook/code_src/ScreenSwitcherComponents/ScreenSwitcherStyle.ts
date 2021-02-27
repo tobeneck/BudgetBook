@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { DefaultColors } from "./../Styles/Styles"
+import { colors } from "./../Styles/Styles"
 
 const defaultRadius: number = 3
 const defaultBorderWidth: number = 1//0.5
@@ -11,7 +11,7 @@ export const ScreenSwitcherStyles = StyleSheet.create({
     background: {
         height: "92%",
         width: "100%",
-        color: DefaultColors.nearWhite,
+        color: colors.nearWhite,
         flexDirection: "column",
         justifyContent: "flex-end",
         alignItems:"center"
@@ -25,7 +25,7 @@ export const ScreenSwitcherStyles = StyleSheet.create({
         height: "10%",
         width: "99%",
         borderRadius: defaultRadius,
-        backgroundColor: DefaultColors.darkBlue,
+        backgroundColor: colors.darkBlue,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row"
