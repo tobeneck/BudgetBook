@@ -4,7 +4,7 @@ import { Button, Overlay } from "react-native-elements"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { defaultTextInputStyles } from "../../Styles/DefaultStyles"
 import { amountInputStyles } from "./AmountInputStyle"
-import { bigPopupStyles } from "../../Styles/Styles"
+import { bigPopupStyles, DefaultColors } from "../../Styles/Styles"
 
 interface CursorPos{
     start: number,
@@ -18,6 +18,7 @@ interface Props{
     normalButtonTextStyle?: TextStyle,
     specialButtonStyle?: ViewStyle,
     specialButtonTextStyle?: TextStyle,
+    disabled?: boolean
 }
 
 const AmountInput = (props: Props): JSX.Element =>  {
@@ -32,6 +33,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
     const specialButtonStyle: StyleProp<ViewStyle> = !!props.specialButtonStyle ? [amountInputStyles.buttonStyle ,props.specialButtonStyle] : [amountInputStyles.buttonStyle]
     const specialButtonTextStyle: StyleProp<TextStyle> = !!props.specialButtonTextStyle ? [props.specialButtonTextStyle] : [amountInputStyles.buttonTitleStyle]
 
+    const style: StyleProp<TextStyle> = props.disabled ? [props.style, {color: DefaultColors.disabled}] : [props.style, {color: DefaultColors.black}]
     useEffect(() => {
         setAmount(props.amount+"")
         setNumberInputPopupVisible(false)
@@ -84,12 +86,10 @@ const AmountInput = (props: Props): JSX.Element =>  {
         } catch {
             setEvaluatedAmount(undefined)
         }
-        console.log("result: ", result)
         setEvaluatedAmount(result as number)
     }
 
     const onCursorMoved = (event: NativeSyntheticEvent<TextInputSelectionChangeEventData>): void => {
-        console.log(event.nativeEvent.selection)
         setCursorPos({start: event.nativeEvent.selection.start, end: event.nativeEvent.selection.end} as CursorPos)
     }
 
@@ -272,9 +272,12 @@ const AmountInput = (props: Props): JSX.Element =>  {
         </Overlay>
 
         <Text
-            style={props.style} //TODO: pull the style opt to the parent!
+            style={style} //TODO: pull the style opt to the parent!
             //keyboardType = 'numeric'
-            onPress={() => setNumberInputPopupVisible(true)}
+            onPress={() => {
+                if(!props.disabled)
+                    setNumberInputPopupVisible(true)
+            }}
             //onBlur={() => setNumberInputPopupVisible(false)}
             //showSoftInputOnFocus={false}
             //value={props.amount}

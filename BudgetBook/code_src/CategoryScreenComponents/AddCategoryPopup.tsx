@@ -4,6 +4,8 @@ import { Overlay, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { buttonStyles, bigPopupStyles, spacings, DefaultColors } from "../Styles/Styles";
 import ColorPickerPopup from "../GenericComponents/ColorPicker/ColorPickerPopup";
+import { defaultButtonStyles } from "../Styles/DefaultStyles";
+import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 
 interface Props{
     visible: boolean,
@@ -17,7 +19,7 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
     const [categoryColor, setCategoryColor] = useState<string>(DefaultColors.lightGrey)
     const [categoryActive, setCategoryActive] = useState<boolean>(true)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(false)
-    const [categoryMaxBudget, setCategoryMaxBudget] = useState<string>(0+"")
+    const [categoryMaxBudget, setCategoryMaxBudget] = useState<number>(0)
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
 
     const onAddPressed = (): void => {
@@ -88,12 +90,15 @@ export const AddCategoryPopup = (props: Props): JSX.Element => {
                             />
                         </View>
 
-                        <TextInput
-                            style={bigPopupStyles.textInput}
-                            keyboardType = 'numeric'
-                            onChangeText={text => setCategoryMaxBudget(text)}
-                            value={categoryMaxBudget+""}
-                            editable={categoryHasMaxBudget}
+                        <AmountInput
+                            amount={categoryMaxBudget}
+                            setAmount={(newMaxBudget: number) => setCategoryMaxBudget(newMaxBudget)}
+                            style={bigPopupStyles.text}
+                            normalButtonStyle={defaultButtonStyles.normalButtonStyle}
+                            normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
+                            specialButtonStyle={defaultButtonStyles.specialButtonStyle}
+                            specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                            disabled={!categoryHasMaxBudget}
                         />
 
                         <View style={{flexDirection: "row", alignItems: "center"}}>

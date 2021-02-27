@@ -6,6 +6,8 @@ import { CategoryElement } from "./CategoryList"
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import ColorPickerPopup from "../GenericComponents/ColorPicker/ColorPickerPopup"
+import { defaultButtonStyles } from "../Styles/DefaultStyles"
+import AmountInput from "../GenericComponents/AmountInput/AmountInput"
 
 interface Props{
     visible: boolean,
@@ -21,7 +23,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
     const [categoryColor, setCategoryColor] = useState<string>(props.category.color)
     const [categoryActivated, setCategoryActivated] = useState<boolean>(props.category.activated)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(props.category.hasBudget)
-    const [categoryMaxBudget, setCategoryMaxBudget] = useState<string>(props.category.maxBudget+"")
+    const [categoryMaxBudget, setCategoryMaxBudget] = useState<number>(props.category.maxBudget)
     const [showColorPopup, setShowColorPopup] = useState<boolean>(false)
 
     useEffect(() => {
@@ -30,7 +32,7 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
         setCategoryColor(props.category.color)
         setCategoryActivated(props.category.activated)
         setCategoryHasMaxBudget(props.category.hasBudget)
-        setCategoryMaxBudget(props.category.maxBudget+"")
+        setCategoryMaxBudget(props.category.maxBudget)
     }, [props.category])
 
     return (
@@ -96,13 +98,15 @@ const EditCategoryPopup = (props: Props): JSX.Element => {
                                 disabled={props.category.id === 0}
                             />
                         </View>
-
-                        <TextInput
-                            style={bigPopupStyles.textInput}
-                            keyboardType = 'numeric'
-                            onChangeText={text => setCategoryMaxBudget(text)}
-                            value={categoryMaxBudget+""}
-                            editable={categoryHasMaxBudget}
+                        <AmountInput
+                            amount={categoryMaxBudget}
+                            setAmount={(newMaxBudget: number) => setCategoryMaxBudget(newMaxBudget)}
+                            style={bigPopupStyles.text}
+                            normalButtonStyle={defaultButtonStyles.normalButtonStyle}
+                            normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
+                            specialButtonStyle={defaultButtonStyles.specialButtonStyle}
+                            specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                            disabled={!categoryHasMaxBudget}
                         />
 
                         <View style={{flexDirection: "row", alignItems: "center"}}>
