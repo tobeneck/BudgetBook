@@ -18,7 +18,6 @@ const ReassureExportPopup = (props: Props): JSX.Element => {
         getFreeFilePath()
         .then((filepath: string) => {
             const splitFilepath: string[] = filepath.split("/")
-            console.log(splitFilepath)
             setFilename(splitFilepath[splitFilepath.length - 1])
         })
     })

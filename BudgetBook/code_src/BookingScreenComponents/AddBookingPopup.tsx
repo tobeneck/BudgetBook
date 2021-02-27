@@ -38,7 +38,6 @@ export const AddBookingPopup = (props: Props): JSX.Element => {
     }
 
     const onCancelPressed = (): void => {
-        console.log("Cancel button pressed")
         props.setVisible(false)
     }
 

@@ -24,8 +24,6 @@ const CategoryListScreen = (props: Props): JSX.Element => {
     const [ reassureDeleteCategoryPopupVisible, setReassureDeleteCategoryPopupVisible ] = useState<boolean>(false)
     const [ currentCategoryIndex, setCurrentCategoryIndex ] = useState<number>(0) //TODO: again, is 0 the best way to initialize it?
 
-    console.log(props.categorys)
-
     /**
      * handles the addition of a category item
      * @param item the item to be added
@@ -96,8 +94,6 @@ const CategoryListScreen = (props: Props): JSX.Element => {
         //set the new booking:
         const timesUsed: number = getTimesUsed(props.categorys[currentCategoryIndex], props.bookings)
         const deletedCategory: CategoryElement = props.categorys[currentCategoryIndex]
-        //let newBookings: BookingElement[] = timesUsed > 1 ? updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]) : valueCopyBookings(props.bookings)
-        console.log("deletedCategory: ", deletedCategory, " newCategory: ", remainingCategorys[newID])
         if(timesUsed > 0)
             props.setCategorysAndBookings(remainingCategorys, updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]))
         else
