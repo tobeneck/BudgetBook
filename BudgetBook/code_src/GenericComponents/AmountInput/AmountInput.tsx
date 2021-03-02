@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import { NativeSyntheticEvent, StyleProp, Text, TextInput, TextInputSelectionChangeEventData, TextStyle, View, ViewStyle } from "react-native"
 import { Button, Overlay } from "react-native-elements"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { defaultTextInputStyles } from "../../Styles/DefaultStyles"
 import { amountInputStyles } from "./AmountInputStyle"
-import { bigPopupStyles, colors } from "../../Styles/Styles"
+import { colors } from "../../Styles/Styles"
 
 interface CursorPos{
     start: number,
@@ -33,7 +33,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
     const specialButtonStyle: StyleProp<ViewStyle> = !!props.specialButtonStyle ? [amountInputStyles.buttonStyle ,props.specialButtonStyle] : [amountInputStyles.buttonStyle]
     const specialButtonTextStyle: StyleProp<TextStyle> = !!props.specialButtonTextStyle ? [props.specialButtonTextStyle] : [amountInputStyles.buttonTitleStyle]
 
-    const style: StyleProp<TextStyle> = props.disabled ? [props.style, {color: colors.disabled}] : [props.style, {color: colors.black}]
+    const style: StyleProp<TextStyle> = props.disabled ? [props.style, {color: colors.disabled}] : [props.style]
     useEffect(() => {
         setAmount(props.amount+"")
         setNumberInputPopupVisible(false)

@@ -1,8 +1,10 @@
 import React from "react"
 import { Text, View } from "react-native"
-import { Overlay, Button } from "react-native-elements"
-import { buttonStyles, smallPopupStyles, spacings } from "../Styles/Styles"
+import { Overlay } from "react-native-elements"
+import { smallPopupStyles, spacings } from "../Styles/Styles"
 import { openSettings } from 'react-native-permissions';
+import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
+import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 
 interface Props{
     visible: boolean,
@@ -24,20 +26,16 @@ const ErrorExportingPopup = (props: Props): JSX.Element => {
                 <Text style={smallPopupStyles.text}>The data could not be exportet. This app does not have the permissions to write to your devices storage. Please enable the permission for the file acces for this app in the settings.</Text>
 
                 <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
-                    <Button
+                    <OrangeButton
                         onPress={() => openSettings().catch(console.error)}
                         title="Open settings"
-                        titleStyle={buttonStyles.saveButtonText}
-                        buttonStyle={buttonStyles.saveButtonStyle}
                     />
 
                     <View style={spacings.defaultVerticalSpacing} />
 
-                    <Button
+                    <DarkBlueButton
                         onPress={() => props.onCancelPressed()}
                         title="Cancel"
-                        titleStyle={buttonStyles.cancelButtonText}
-                        buttonStyle={buttonStyles.cancelButtonStyle}
                     />
                 </View>
             </View>

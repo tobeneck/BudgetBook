@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { Text, View } from "react-native"
 import { Overlay, Button } from "react-native-elements"
-import { buttonStyles, smallPopupStyles, spacings } from "../Styles/Styles"
+import { smallPopupStyles, spacings } from "../Styles/Styles"
 import { getFreeFilePath, defaultFilename, defaultFileEnding, currentDateAppendix } from "./CSVHandler"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton"
+import { orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles"
+import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton"
 
 interface Props{
     visible: boolean,
@@ -36,16 +39,14 @@ const ReassureExportPopup = (props: Props): JSX.Element => {
                 <Text style={smallPopupStyles.text}>The data will be exportet to the "Downloads" foulder with the filename {filename}.</Text>
 
                 <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
-                    <Button
+                    <OrangeButton
                         onPress={() => props.onExportPressed()}
                         title=" Export"
-                        buttonStyle={buttonStyles.saveButtonStyle}
-                        titleStyle={buttonStyles.saveButtonText}
                         icon={
                             <Icon
                             name="file-export-outline"
                             size={20}
-                            color={buttonStyles.saveButtonText.color}
+                            color={orangeButtonStyle.titleStyle.color}
                             style={{alignContent: "center"}}
                           />
                         }
@@ -53,11 +54,9 @@ const ReassureExportPopup = (props: Props): JSX.Element => {
 
                     <View style={spacings.defaultVerticalSpacing} />
 
-                    <Button
+                    <DarkBlueButton
                         onPress={() => props.onCancelPressed()}
                         title="Cancel"
-                        titleStyle={buttonStyles.cancelButtonText}
-                        buttonStyle={buttonStyles.cancelButtonStyle}
                     />
                 </View>
             </View>

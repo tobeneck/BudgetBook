@@ -1,5 +1,5 @@
 import { BookingElement } from "../BookingScreenComponents/BookingList"
-import { colors } from "../Styles/Styles";
+import { defaultColors } from "../Styles/Styles";
 
 
 export interface CategoryElement{
@@ -16,7 +16,7 @@ export const defaultCategoryElement: CategoryElement = {
     id: 0,
     name: "uncategorized",
     description: "For all bookings not fitting in any cateAgory. This category can not be edited or deleted.",
-    color: colors.lightGrey,
+    color: defaultColors.separatorColor,
     activated: true,
     hasBudget: false,
     maxBudget: 0

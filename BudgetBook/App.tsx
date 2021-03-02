@@ -1,45 +1,72 @@
-import React, { useState, useEffect } from 'react'
-import { SafeAreaView } from 'react-native'
-import { Header } from 'react-native-elements'
-import { BookingElement, defaultBookingElement } from "./code_src/BookingScreenComponents/BookingList" //debugg purpose
-import { Text } from 'react-native';
-import { CategoryElement, defaultCategoryElement } from './code_src/CategoryScreenComponents/CategoryList'
+import React, { useState, useEffect, useRef } from 'react'
+import { BackHandler, SafeAreaView, Text } from 'react-native'
+import { BookingElement, defaultBookingElement, getCurrentTotal, sortBookings, updateCategory } from "./code_src/BookingScreenComponents/BookingList"
+import { CategoryElement, defaultCategoryElement, getActiveCategorys, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from './code_src/CategoryScreenComponents/CategoryList'
 import BookingListScreen from "./code_src/BookingScreenComponents/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryScreenComponents/CategoryListScreen"
-import { saveToCache, exportToDownloads, readFile, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler'
-import { colors, headerStyles } from "./code_src/Styles/Styles"
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { saveToCache, exportToDownloads, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler'
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
 import { request, PERMISSIONS } from "react-native-permissions"
-import ScreenSwitcherScreen from "./code_src/ScreenSwitcherComponents/ScreenSwitcherScreen"
+import HomeScreen from "./code_src/HomeScreenComponents/HomeScreen"
 import ImportScreen from "./code_src/ExportImportData/ImportScreen"
+import ScreenComponent from './code_src/GenericComponents/ScreenComponent'
+import { AddBookingScreen } from './code_src/BookingScreenComponents/AddBookingScreen'
+import { EditBookingScreen } from './code_src/BookingScreenComponents/EditBookingScreen'
+import ReassureDeleteBookingPopup from './code_src/BookingScreenComponents/ReassureDeleteBookingPopup'
+import { useBackHandler } from '@react-native-community/hooks'
+import { AddCategoryScreen } from './code_src/CategoryScreenComponents/AddCategoryScreen'
+import EditCategoryScreen from './code_src/CategoryScreenComponents/EditCategoryScreen'
+import ReassureDeleteCategoryPopup from './code_src/CategoryScreenComponents/ReassureDeleteCategoryPopup'
 
-export enum eCurrentScreen{
+export enum eScreens{
   CATEGORY_LIST_SCREEN = 0,
-  BOOKING_LIST_SCREEN,
-  SCREEN_SWITCHER_SCREEN,
-  EXPORT_DATA_SCREEN,
-  IMPORT_DATA_SCREEN,
-  GRAPHS_SCREEN,
+  ADD_CATEGORY_SCREEN,
+  EDIT_CATEGORY_SCREEN,
+
+  BOOKING_LIST_SCREEN ,
+  ADD_BOOKING_SCREEN,
+  EDIT_BOOKING_SCREEN,
+
+  HOME_SCREEN ,
+  //EXPORT_DATA_SCREEN = "export",
+  ANALYTICS,
   SETTINGS_SCREEN,
+  IMPORT_DATA_SCREEN,
 }
 
 const App = () => {
-  const [currentScreen, setCurrentScreen] = useState<eCurrentScreen>(eCurrentScreen.BOOKING_LIST_SCREEN)
   const [categorys, setCategorys] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
+  const [ currentCategoryIndex, setCurrentCategoryIndex ] = useState<number>(0) //TODO: again, is 0 the best way to initialize it?
+  const [ reassureDeleteCategoryPopupVisible, setReassureDeleteCategoryPopupVisible ] = useState<boolean>(false)
+
   const [bookings, setBookings] = useState<BookingElement[]>([defaultBookingElement]) //there needs to be at least one booking!
+  const [ currentBookingIndex, setCurrentBookingIndex ] = useState<number>(0) //TODO: is 0 really the best way to solve this?
+  const [ reassureDeleteBookingPopupVisible, setReassureDeleteBookingPopupVisible ] = useState<boolean>(false)
 
   const [reassureExportPopupVisible, setReassureExportPopupVisible] = useState<boolean>(false)
   const [errorExportingPopupVisible, setErrorExportingPopupVisible] = useState<boolean>(false)
 
-  useEffect(() => {
-    readCacheData(setCategorys, setBookings)
+  const [screenStack, setScreenStack] = useState<eScreens[]>([eScreens.HOME_SCREEN])
+  //const [currentScreen, setCurrentScreen] = useState<eScreens>(eScreens.BOOKING_LIST_SCREEN)
 
-    // return(
-    //   saveToCache(categorys, bookings) //save the data when closing the app
-    // )
-  }, [])
+  /**
+   * saves the new bookings to the cache and to the state
+   * @param newBookings the new bookings to be saved
+   */
+  const setAndSaveBookings = (newBookings: BookingElement[]): void => {
+    saveToCache(categorys, newBookings)
+    setBookings(newBookings)
+  }
+
+  /**
+   * saves the new categorys to the cache and to the state
+   * @param newCategorys the new categorys to be saved
+   */
+  const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
+    saveToCache(newCategorys, bookings)
+    setCategorys(newCategorys)
+  }
 
   /**
    * If a unexpected error occured, this callback can be called to open the generigErrorPopup
@@ -82,112 +109,209 @@ const App = () => {
   }
 
   /**
-   * returns the right title for the right screen
-   */
-  const getHeaderTitle = (): string => {
-    switch(currentScreen){
-      case eCurrentScreen.BOOKING_LIST_SCREEN:
-        return "Bookings"
-      case eCurrentScreen.CATEGORY_LIST_SCREEN:
-        return "Categorys"
-      case eCurrentScreen.SETTINGS_SCREEN:
-        return "Settings"
-      case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
-          return "Budget Book"
-      case eCurrentScreen.IMPORT_DATA_SCREEN:
-          return "Import Data"
-      default:
-        return "Error: Title not found"
-    }
-  }
-
-  /**
-   * saves the new bookings to the cache and to the state
-   * @param newBookings the new bookings to be saved
-   */
-  const setAndSaveBookings = (newBookings: BookingElement[]): void => {
-    saveToCache(categorys, newBookings)
-    setBookings(newBookings)
-  }
-
-  /**
-   * saves the new categorys to the cache and to the state
-   * @param newCategorys the new categorys to be saved
-   */
-  const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
-    saveToCache(newCategorys, bookings)
-    setCategorys(newCategorys)
-  }
-
-  /**
    * saves the new categorys and the new bookings to the cache and to the state. Use this if you wand to save both at once to avoid writing to the cache twice!
    * @param newCategorys the new categorys to be saved
    * @param newBookings the new bookings to be saved
    */
-  const setAndSaveBookinbsAndCategorys = (newCategorys: CategoryElement[], newBookings: BookingElement[]): void => {
+  const setAndSaveBookingsAndCategorys = (newCategorys: CategoryElement[], newBookings: BookingElement[]): void => {
     saveToCache(newCategorys, newBookings)
     setBookings(newBookings)
     setCategorys(newCategorys)
   }
 
-  /**
-   * renders the status bar, header and contains its functionality
-   */
-  const renderHeader = (): JSX.Element => {
-    return (
-      <Header
-        statusBarProps={{ barStyle: 'light-content' }}
-        backgroundColor={colors.darkBlue}
-        containerStyle={headerStyles.headerContainer}
-        style={headerStyles.headerStyle}
-      >
-        { currentScreen !== eCurrentScreen.SCREEN_SWITCHER_SCREEN &&
-          <Icon
-          name='arrow-left'
-          size={30}
-          color="white"
-          onPress={() => setCurrentScreen(eCurrentScreen.SCREEN_SWITCHER_SCREEN)}
-        />
-        }
-        <Text style={ {color: 'white', fontWeight: 'bold', fontSize: 18, justifyContent: "center"} }>{getHeaderTitle()}</Text>
-      </Header>
-    )
 
+  /**
+   * pops the last item off the screen stack if the screen stack length is longer than 1
+   */
+  const popScreenStack = (): void => {
+    if(screenStack.length > 1)
+      setScreenStack(screenStack.slice(0,screenStack.length-1))
   }
 
   /**
-   * returns the current screen to render
+   * pushes a new screen onto the screen stack
+   * @param newScreen tne new screen to be added
    */
-  const renderCurrentScreen = (): JSX.Element => {
-    switch(currentScreen){
-      case eCurrentScreen.CATEGORY_LIST_SCREEN:
+  const pushScreenStack = (newScreen: eScreens): void => {
+    setScreenStack([...screenStack, newScreen])
+  }
+
+  /**
+   * pushes the new screen onto the screen stack
+   */
+  const renderScreen = (screenToRender: eScreens): JSX.Element => {
+    console.log("render screen:", screenToRender)
+    switch(screenToRender){
+      case eScreens.CATEGORY_LIST_SCREEN:
         return (
-        <CategoryListScreen
-          categorys={categorys}
-          setCategorys={setAndSaveCategorys}
-          bookings={bookings}
-          setCategorysAndBookings={setAndSaveBookinbsAndCategorys}
-        />)
-      case eCurrentScreen.BOOKING_LIST_SCREEN:
-        return (
-        <BookingListScreen
-          categorys={categorys}
-          bookings={bookings}
-          setBookings={setAndSaveBookings}
-        />)
-      case eCurrentScreen.SCREEN_SWITCHER_SCREEN:
-        return(
-          <ScreenSwitcherScreen
-            openScreen={(newScreen: eCurrentScreen) => setCurrentScreen(newScreen)}
-            openExportPopup={() => setReassureExportPopupVisible(true)}
+          <ScreenComponent
+            onHeaderBackButtonPressed={() => popScreenStack()}
+            headerHeadline={"Categorys"}
+            content = {
+              <CategoryListScreen
+                categorys={categorys}
+                onEditCategory={(index: number) => {
+                  setCurrentCategoryIndex(categorys.length - 1 - index) //TODO: this is ugly!
+                  pushScreenStack(eScreens.EDIT_CATEGORY_SCREEN)
+                }}
+                onAddCategory={() => {
+                  pushScreenStack(eScreens.ADD_CATEGORY_SCREEN)
+                }}
+              />
+            }
           />
         )
-      case eCurrentScreen.IMPORT_DATA_SCREEN:
+      case eScreens.ADD_CATEGORY_SCREEN:
+          return (
+            <ScreenComponent
+              onHeaderBackButtonPressed={() => popScreenStack()}
+              headerHeadline={"Add Category"}
+              content = {
+                <AddCategoryScreen
+                  onAddPressed={(categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number) => {
+                    setAndSaveCategorys([{id: categorys.length, name: categoryName, description: categoryDescription, color: categoryColor, activated: active, hasBudget: hasMaxBudget, maxBudget: maxBudget} as CategoryElement, ...categorys])
+                    popScreenStack()
+                  }}
+                  onCancelPressed={ () => {
+                    popScreenStack()
+                  }}
+                />
+              }
+            />
+            )
+
+        case eScreens.EDIT_CATEGORY_SCREEN:
+          return (
+            <ScreenComponent
+              onHeaderBackButtonPressed={() => popScreenStack()}
+              headerHeadline={"Edit Category"}
+              content = {
+                <EditCategoryScreen
+                  category={categorys[currentCategoryIndex]}
+
+                  onCancelPressed={() => {
+                    setCurrentCategoryIndex(0)
+                    popScreenStack()
+                  }}
+                  onSavePressed={(nce: CategoryElement) => {
+                    const newCategoryList: CategoryElement[] = valueCopyCategorys(categorys)
+                    newCategoryList[currentCategoryIndex] = nce
+
+                    const oldCategory: CategoryElement = categorys[currentCategoryIndex]
+                    const newBookingList: BookingElement[] = updateCategory(bookings, oldCategory, nce)
+
+                    setAndSaveBookingsAndCategorys(newCategoryList, newBookingList)
+
+                    popScreenStack()
+                  }}
+                  onDeletePressed={() => {
+                    setReassureDeleteCategoryPopupVisible(true)
+                  }}
+                />
+              }
+            />
+            )
+      case eScreens.BOOKING_LIST_SCREEN:
+        return (
+          <ScreenComponent
+          onHeaderBackButtonPressed={() => popScreenStack()}
+          headerHeadline={"Bookings"}
+          content = {
+              <BookingListScreen
+                bookings={bookings}
+                setBookings={setAndSaveBookings}
+                onOpenAddBooking={() => pushScreenStack(eScreens.ADD_BOOKING_SCREEN)}
+                onOpenEditBooking={(index: number) => {
+                  setCurrentBookingIndex(index)
+                  pushScreenStack(eScreens.EDIT_BOOKING_SCREEN)
+                }}
+              />
+          }
+        />
+         )
+      case eScreens.ADD_BOOKING_SCREEN:
+        return (
+          <ScreenComponent
+          onHeaderBackButtonPressed={() => popScreenStack()}
+          headerHeadline={"Add Booking"}
+          content = {
+            <AddBookingScreen
+                categorys={getActiveCategorys(categorys)}
+                //addItem={addBooking}
+                onAddPressed={(nbe: BookingElement) => {
+                  console.log("add")
+                  setAndSaveBookings(sortBookings([nbe, ...bookings]))
+                  popScreenStack()
+                }}
+                onCancelPressed={() => popScreenStack()}
+                currentTotal={getCurrentTotal(bookings)}
+                minimumPossibleDate={bookings[bookings.length - 1].date} //TODO: ugly indexing. The initial item is ment
+            />
+          }
+        />
+          )
+
+      case eScreens.EDIT_BOOKING_SCREEN:
+        return (
+          <ScreenComponent
+          onHeaderBackButtonPressed={() => popScreenStack()}
+          headerHeadline={"Edit Booking"}
+          content = {
+            <EditBookingScreen
+                onCancelPressed={() => {
+                  setCurrentBookingIndex(0)
+                  popScreenStack()
+                }}
+                onSavePressed={(nbe: BookingElement) => {
+                  const newBookingList: BookingElement[] = bookings
+                  newBookingList[currentBookingIndex] = nbe
+                  setAndSaveBookings(sortBookings(newBookingList))
+                  setCurrentBookingIndex(0)
+                  popScreenStack()
+                }}
+                onDeletePressed={() => {
+                  setReassureDeleteBookingPopupVisible(true)
+                }}
+                minimumPossibleDate={bookings.length - 1 - currentBookingIndex !== 0 ? bookings[bookings.length - 1].date : undefined} //TODO: ugly indexing
+                maximumPossibleDate={bookings.length - 1 - currentBookingIndex === 0 && bookings.length > 1 ? bookings[bookings.length - 2].date : undefined} //TODO: ugly indexing
+                categorys={getActiveCategorys(categorys, bookings[currentBookingIndex].category)}
+                booking={bookings[currentBookingIndex]}
+                currentIndex={bookings.length - 1 - currentBookingIndex}
+            />
+          }
+        />
+          )
+      case eScreens.HOME_SCREEN:
+          console.log("render the home screen")
+        return (
+          <ScreenComponent
+          //onHeaderBackButtonPressed={() => setCurrentScreen(eScreens.SCREEN_SWITCHER_SCREEN)}
+          headerHeadline={"Budget Book"}
+          content = {
+            <HomeScreen
+              openScreen={(newScreen: eScreens) => {
+                pushScreenStack(newScreen)
+              }}
+              openExportPopup={() => {
+                console.log("homescreen export")
+                setReassureExportPopupVisible(true)
+              }}
+            />
+          }
+        />
+        )
+      case eScreens.IMPORT_DATA_SCREEN:
         return(
-          <ImportScreen
-            loadCsvFile={(fileName: string) => {
-              readDownloadsData(fileName, setCategorys, setBookings)
-            }}
+          <ScreenComponent
+            onHeaderBackButtonPressed={() => popScreenStack()}
+            headerHeadline={"Import"}
+            content = {
+              <ImportScreen
+              loadCsvFile={(fileName: string) => {
+                readDownloadsData(fileName, setCategorys, setBookings)
+              }}
+            />
+            }
           />
         )
       default:
@@ -195,12 +319,79 @@ const App = () => {
     }
   }
 
+  useEffect(() => {
+    //read the initial data
+    readCacheData(setCategorys, setBookings)
 
+  }, []);
+
+  useBackHandler(() => {
+    if (screenStack.length > 1) {
+      // handle it
+      popScreenStack()
+      return true
+    }
+    // let the default thing happen
+    return false
+  })
+
+
+  console.log(screenStack, " ", screenStack.length)
   return (
     <SafeAreaView
       style={{height: "100%", width: "100%"}}
     >
+      {/* the popups: */}
+      <ReassureDeleteBookingPopup
+        visible={reassureDeleteBookingPopupVisible}
+        booking={bookings[currentBookingIndex]}
+        onCancelPressed={() => {
+          setCurrentBookingIndex(0)
+          setReassureDeleteBookingPopupVisible(false)
+        }}
+        onDeletePressed={() => {
+          const newBookingList: BookingElement[] = bookings
+
+          if (currentBookingIndex > -1) {
+              newBookingList.splice(currentBookingIndex, 1);
+          }
+
+          setAndSaveBookings(newBookingList)
+
+          setCurrentBookingIndex(0)
+          popScreenStack()
+          setReassureDeleteBookingPopupVisible(false)
+        }}
+      />
+
+      <ReassureDeleteCategoryPopup
+          visible={reassureDeleteCategoryPopupVisible}
+          remainingCategorys={getCategorysWithoud(categorys, currentCategoryIndex)}
+          timesUsed={getTimesUsed(categorys[currentCategoryIndex], bookings)}
+          category={categorys[currentCategoryIndex]}
+          onCancelPressed={() => {
+            setReassureDeleteCategoryPopupVisible(false)
+          }}
+          onDeletePressed={(oldID: number, newID: number) => {
+            //compute the "new" categorys
+            const remainingCategorys: CategoryElement[] = getCategorysWithoud(categorys, currentCategoryIndex)
+
+            //set the categorys and maybe bookings:
+            const timesUsed: number = getTimesUsed(categorys[currentCategoryIndex], bookings)
+            const deletedCategory: CategoryElement = categorys[currentCategoryIndex]
+            if(timesUsed > 0)
+                setAndSaveBookingsAndCategorys(remainingCategorys, updateCategory(bookings, deletedCategory, remainingCategorys[newID]))
+            else
+                setAndSaveCategorys(remainingCategorys)
+
+            setCurrentCategoryIndex(0)
+            popScreenStack()
+            setReassureDeleteCategoryPopupVisible(false)
+          }}
+      />
+
       <ReassureExportPopup
+      //TODO: put this into the homescreen
         visible={reassureExportPopupVisible}
         onCancelPressed={() => setReassureExportPopupVisible(false)}
         onExportPressed={() => {
@@ -212,8 +403,11 @@ const App = () => {
         visible={errorExportingPopupVisible}
         onCancelPressed={(() => setErrorExportingPopupVisible(false))}
       />
-      { renderHeader() }
-      { renderCurrentScreen() }
+
+
+      {
+        renderScreen(screenStack[screenStack.length-1])
+      }
     </SafeAreaView>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { Text, ScrollView, TouchableOpacity } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import { colors, tableStyles } from "../Styles/Styles"
+import { defaultColors, tableStyles } from "../Styles/Styles"
 import { getCsvFilesInDownloads } from "./CSVHandler"
 
 interface Props{
@@ -20,9 +20,7 @@ const ImportScreen = (props: Props): JSX.Element => {
 
 
     return(
-        <View
-            style={tableStyles.table}
-        >
+        <>
             <Text
                 style={[tableStyles.tableHeader, {textAlignVertical: "center", textAlign: "center"}]}
             >
@@ -48,7 +46,7 @@ const ImportScreen = (props: Props): JSX.Element => {
                             <Icon
                                 name="file-import-outline"
                                 size={23}
-                                color={colors.darkBlue}
+                                color={defaultColors.primaryColor}
                             />
                             <Text style={[tableStyles.tableText, {width: "80%"}]}>{name}</Text>
                         </TouchableOpacity>
@@ -57,7 +55,7 @@ const ImportScreen = (props: Props): JSX.Element => {
 
                 </ScrollView>
             }
-        </View>
+        </>
     )
 }
 

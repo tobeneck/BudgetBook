@@ -1,7 +1,9 @@
 import React from "react"
 import { Text, View } from "react-native"
-import { Overlay, Button } from "react-native-elements"
-import { buttonStyles, smallPopupStyles } from "../Styles/Styles"
+import { Overlay } from "react-native-elements"
+import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton"
+import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton"
+import { smallPopupStyles } from "../Styles/Styles"
 import { BookingElement } from "./BookingList"
 
 interface Props{
@@ -26,18 +28,14 @@ const ReassureDeleteBookingPopup = (props: Props): JSX.Element => {
                 <Text style={smallPopupStyles.text}>{props.booking.date.toDateString()}, {props.booking.amount}, {props.booking.category.name} </Text>
 
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                    <Button
+                    <DeleteButton
                         onPress={() => props.onDeletePressed()}
                         title="Delete"
-                        buttonStyle={buttonStyles.deleteButtonStyle}
-                        titleStyle={buttonStyles.deleteButtonText}
                     />
 
-                    <Button
+                    <DarkBlueButton
                         onPress={() => props.onCancelPressed()}
                         title="Cancel"
-                        titleStyle={buttonStyles.cancelButtonText}
-                        buttonStyle={buttonStyles.cancelButtonStyle}
                     />
                 </View>
             </View>

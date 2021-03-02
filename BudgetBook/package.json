@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "^3.0.8",
+    "@react-native-community/hooks": "^2.6.0",
     "@react-native-picker/picker": "^1.9.8",
     "moment": "^2.29.1",
     "react": "16.13.1",

@@ -2,8 +2,10 @@ import React, { useState } from "react"
 import { Text, View } from "react-native"
 import { Picker } from '@react-native-picker/picker';
 import { CategoryElement } from "./CategoryList"
-import { buttonStyles, smallPopupStyles } from "../Styles/Styles";
-import { Overlay, Button } from "react-native-elements";
+import { smallPopupStyles } from "../Styles/Styles";
+import { Overlay } from "react-native-elements";
+import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton";
+import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 
 interface Props{
     visible: boolean,
@@ -58,18 +60,14 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
                 {pickNewCategory()}
 
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                    <Button
+                    <DeleteButton
                         onPress={() => props.onDeletePressed(props.category.id, replacementCategoryIndex)}
                         title="Delete"
-                        buttonStyle={buttonStyles.deleteButtonStyle}
-                        titleStyle={buttonStyles.deleteButtonText}
                     />
 
-                    <Button
+                    <DarkBlueButton
                         onPress={() => props.onCancelPressed()}
                         title="Cancel"
-                        titleStyle={buttonStyles.cancelButtonText}
-                        buttonStyle={buttonStyles.cancelButtonStyle}
                     />
                 </View>
             </View>

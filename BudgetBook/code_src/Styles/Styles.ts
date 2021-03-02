@@ -1,4 +1,4 @@
-import { PixelRatio, StyleSheet } from "react-native"
+import { PixelRatio, StatusBarProps, StyleSheet } from "react-native"
 import { BottomSheet } from "react-native-elements"
 
 export const defaultRadius: number = 3
@@ -42,8 +42,9 @@ export const defaultColors = {
 
   disabled: colors.disabled,
 
-  separatorColor: colors.lightGrey
+  separatorColor: colors.lightGrey,
 
+  deleteRed: "red" //TODO: change
 }
 
 export const headerStyles = StyleSheet.create({
@@ -61,14 +62,10 @@ export const headerStyles = StyleSheet.create({
 })
 
 export const tableStyles = StyleSheet.create({
-  table: {
-    backgroundColor: colors.nearWhite,
-    height: "90%" //header height is 10%
-  },
   tableHeader: {
     flexDirection: 'row',
     minHeight: 40,
-    width: "98%",
+    width: "100%",
     alignItems: "center",
     alignSelf: "center",
     borderBottomWidth: 1,
@@ -102,57 +99,63 @@ export const tableStyles = StyleSheet.create({
   }
 });
 
-export const bigPopupStyles = StyleSheet.create({
-  overlay: {
-    height: "92%",
-    width: "100%",
-    backgroundColor: colors.nearWhite,
-    top: "4%",
-    //bottomm: "5%"
+export const textStyles = StyleSheet.create({
+  normal: {
+    fontSize: 14,
+    textAlign: "center",
+    textAlignVertical: "center",
+    color: "orange"//defaultColors.darkTextColor
   },
+  headline: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    textAlignVertical: "center",
+    color: defaultColors.darkTextColor
+  },
+  smallTitle: {
+    fontSize: 14,
+    textAlign: "left",
+    textAlignVertical: "center",
+    color: defaultColors.darkTextColor
+  },
+})
+
+export const interactionElements = StyleSheet.create({ //for interactions, for example a text input or a editable text
   text: {
     width: "99%",
-    height: "6%",
+    height: 42,
     alignSelf: "flex-start",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
     alignItems: "flex-start",
     justifyContent:"center",
-    textAlignVertical: "center"
-  },
-  iconAndText: {
-    flexDirection: 'row',
+    textAlignVertical: "center",
+    color:"orange",//defaultColors.darkTextColor
+    fontSize: 14
   },
   textInput: {
     width: "99%",
-    height: "6%",
+    height: 42,
     alignSelf: "center",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
-    alignContent:"center"
+    alignContent:"center",
+    color:"orange",//defaultColors.darkTextColor
+    fontSize: 14
   },
   textField: {
     width: "99%",
-    height: "36%",
+    height: 42*2,
     alignSelf: "center",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
-    alignItems: "flex-start"
-  },
-  headline: {
-    alignSelf: "center",
-    fontWeight: "bold",
-    fontSize: 16,
-    textAlign: "center",
-    color: "black"
-  },
-  subHeadline: {
-    alignSelf: "center",
-    textAlign: "center",
-    color: "black"
+    alignItems: "flex-start",
+    color:"orange",//defaultColors.darkTextColor
+    fontSize: 14
   },
 })
 
@@ -227,77 +230,62 @@ export const spacings = StyleSheet.create({
 //   textAlignVertical: "center"
 // },
 
-export const buttonStyles = StyleSheet.create({
-  orangeButtonStyle: {
-    backgroundColor: defaultColors.highlightColor,
-    height: 42,
+
+
+// export const overlayStyles = StyleSheet.create({ //TODO: delete
+//   overlay: {
+//     height: "60%",
+//     width: "70%",
+//     backgroundColor: colors.nearWhite
+//   },
+//   smallOverlay: {
+//     height: "30%",
+//     width: "70%",
+//     backgroundColor: colors.nearWhite
+//   }
+// })
+
+export const statusBarProps: StatusBarProps =   {
+  barStyle: 'light-content',
+  backgroundColor: defaultColors.primaryColor
+}
+
+export const defaultViewStyles = StyleSheet.create({
+  simpleFlexStart: {
+    justifyContent: "flex-start"
   },
-  orangeButtonText: {
-    color: defaultColors.darkTextColor,
-    fontSize: 16
+  simpleRow: {
+    flexDirection: "row"
+  },
+  bottomButtonRow:{
+    //width: "100%", //TODO: what if there was no width? Could we circumvent the +50%?
+    flexDirection: "row",
+    justifyContent:"flex-end"
+  },
+  //TODO: bottomRow buttons with delete
+  bottomButtonRowWithDelete:{
+    width: "100%",
+    flexDirection: "row",
+    justifyContent:"space-between"
   },
 
-  darkBlueButtonStyle: {
-    backgroundColor: colors.darkBlue,
-    height: 42
-  },
-  darkBlueButtonText: {
-    color: defaultColors.lightTextColor,
-    fontSize: 16
+  containerWithPadding:{
+    width: "98%",
+    height: "99.7%", //magic numbers that look good together at my pixel2XL
+    alignSelf: "center",
+    justifyContent: "center"
   },
 
-  deleteButtonOutlineStyle: {
-    borderColor: "red",
-    borderWidth: defaultBorderWidth,
-  },
-  deleteButtonOutlineText: {
-    color: "red"
-  },
-  deleteButtonOutlineDisabledStyle: {
-    borderColor: colors.disabled,
-    borderWidth: defaultBorderWidth,
-  },
-  deleteButtonOutlineDisabledText: {
-    color: colors.disabled
-  },
 
-  deleteButtonStyle: {
-    borderColor: "red",
-    borderWidth: defaultBorderWidth,
-    backgroundColor: "red"
+  header: { //style of the header
+    height: "10%",
+    width: "100%",
+    backgroundColor: defaultColors.primaryColor,
+    alignItems: "flex-end"
   },
-  deleteButtonText: {
-    color: "white"
+  content: { //style of the content zone. The content itself is placed into the contentContainer
+    height: "90%",
+    width: "100%",
+    backgroundColor: defaultColors.backgroundColor
   },
-
-  saveButtonStyle: {
-    borderColor: colors.orange,
-    borderWidth: defaultBorderWidth,
-    backgroundColor: colors.orange
-  },
-  saveButtonText: {
-    color: defaultColors.darkTextColor
-  },
-
-  cancelButtonStyle: {
-    borderColor: colors.darkBlue,
-    borderWidth: defaultBorderWidth,
-    backgroundColor: colors.darkBlue,
-  },
-  cancelButtonText: {
-    color: defaultColors.lightTextColor
-  },
-})
-
-export const overlayStyles = StyleSheet.create({
-  overlay: {
-    height: "60%",
-    width: "70%",
-    backgroundColor: colors.nearWhite
-  },
-  smallOverlay: {
-    height: "30%",
-    width: "70%",
-    backgroundColor: colors.nearWhite
-  }
 })

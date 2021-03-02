@@ -1,170 +1,47 @@
-import React, { useState } from "react"
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
-import { Button } from "react-native-elements"
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { tableStyles, colors, buttonStyles, defaultColors } from "../Styles/Styles"
-import { BookingElement, updateCategory } from "../BookingScreenComponents/BookingList"
-import { AddCategoryPopup } from "./AddCategoryPopup"
-import EditCategoryPopup from "./EditCategoryPopup"
-import ReassureDeleteCategoryPopup from "./ReassureDeleteCategoryPopup"
-import { CategoryElement, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from "./CategoryList"
+import React from "react"
+import { Text, ScrollView, TouchableOpacity } from "react-native"
+import ColoredCircle from "../GenericComponents/ColoredCircle"
+import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton"
+import { tableStyles, defaultColors } from "../Styles/Styles"
+import { CategoryElement } from "./CategoryList"
 
 interface Props{
     categorys: CategoryElement[]
-    setCategorys: (categorys: CategoryElement[]) => void
-    bookings: BookingElement[],
-    setCategorysAndBookings: (categorys: CategoryElement[], bookings: BookingElement[]) => void
+    onEditCategory: (index: number) => void
+    onAddCategory: () => void
 }
 
 
 
 const CategoryListScreen = (props: Props): JSX.Element => {
-    const [ addPopupVisible, setAddPopupVisible ] = useState<boolean>(false)
-    const [ editPopupVisible, setEditPopupVisible ] = useState<boolean>(false)
-    const [ reassureDeleteCategoryPopupVisible, setReassureDeleteCategoryPopupVisible ] = useState<boolean>(false)
-    const [ currentCategoryIndex, setCurrentCategoryIndex ] = useState<number>(0) //TODO: again, is 0 the best way to initialize it?
-
-    /**
-     * handles the addition of a category item
-     * @param item the item to be added
-     */
-    const addCategoryItem = (categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number): void => {
-        props.setCategorys([{id: props.categorys.length, name: categoryName, description: categoryDescription, color: categoryColor, activated: active, hasBudget: hasMaxBudget, maxBudget: maxBudget} as CategoryElement, ...props.categorys])
-    }
-
-    /**
-     * opens the edit popup for the category at index
-     * @param index the index of the category to be edited
-     */
-    const onEditCategoryItem = (index: number): void => {
-        setCurrentCategoryIndex(props.categorys.length - 1 - index) //TODO: this is ugly!
-        setEditPopupVisible(true)
-    }
-
-    /**
-     * handles the "cancel" operation when editing a category item
-     */
-    const onCancelEditCategoryItem = (): void => {
-        setCurrentCategoryIndex(0)
-        setEditPopupVisible(false)
-    }
-
-    /**
-     * handles the "save" operation when editing a category item
-     * @param nce the new category element to be saved
-     */
-    const onSaveEditCategoryItem = (nce: CategoryElement): void => {
-        const newCategoryList: CategoryElement[] = valueCopyCategorys(props.categorys)
-        newCategoryList[currentCategoryIndex] = nce
-
-        const oldCategory: CategoryElement = props.categorys[currentCategoryIndex]
-        const newBookingList: BookingElement[] = updateCategory(props.bookings, oldCategory, nce)
-
-        props.setCategorysAndBookings(newCategoryList, newBookingList)
-
-        setEditPopupVisible(false)
-    }
-
-    /**
-     * handles the "delete" operation when editing the category list
-     */
-    const onDeleteCategoryItem = (): void => {
-        setEditPopupVisible(false)
-        setReassureDeleteCategoryPopupVisible(true)
-    }
-
-    /**
-     * handles the "delete" operation when deleting a category element
-     */
-    const onCancelReassureDelete = (): void => {
-        setCurrentCategoryIndex(0)
-        setReassureDeleteCategoryPopupVisible(false)
-    }
-
-    /**
-     * Deletes the category with the oldID and automatically changes the used category in the bookings to a new categoryID
-     * @param oldID ID of the old category to be deleted
-     * @param newID ID of the new category to be used when deleting the old ones
-     */
-    const onDeleteReassureDelete = (oldID: number, newID: number): void => {
-        //set the new categorys:
-        const remainingCategorys: CategoryElement[] = getCategorysWithoud(props.categorys, currentCategoryIndex)
-        props.setCategorys(remainingCategorys)
-
-        //set the new booking:
-        const timesUsed: number = getTimesUsed(props.categorys[currentCategoryIndex], props.bookings)
-        const deletedCategory: CategoryElement = props.categorys[currentCategoryIndex]
-        if(timesUsed > 0)
-            props.setCategorysAndBookings(remainingCategorys, updateCategory(props.bookings, deletedCategory, remainingCategorys[newID]))
-        else
-            props.setCategorys(remainingCategorys)
-
-        setCurrentCategoryIndex(0)
-        setReassureDeleteCategoryPopupVisible(false)
-    }
 
     return (
         <>
-            <AddCategoryPopup
-                visible={addPopupVisible}
-                setVisible={setAddPopupVisible} //TODO: coherent strategy where to put the setVisible and other methods
-                addCategory={addCategoryItem}
+            <ScrollView
+                contentInsetAdjustmentBehavior="automatic"
+                style={tableStyles.tableContent}
+            >
+                {props.categorys.map((ce: CategoryElement, index: number) => (
+                    <TouchableOpacity
+                        style={tableStyles.tableRow}
+                        onPress={() => props.onEditCategory(ce.id)}
+                        key={index}
+                    >
+                        <ColoredCircle
+                            color={ce.color}
+                            size={14}
+                        />
+                        <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "60%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.name}</Text>
+                        <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "30%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.hasBudget ? ("("+ce.maxBudget+"€)") : ""}</Text>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+
+
+            <OrangeButton
+                onPress={() => props.onAddCategory()}
+                title="Add Category"
             />
-
-            <EditCategoryPopup
-                visible={editPopupVisible}
-                category={props.categorys[currentCategoryIndex]}
-                onCancelPressed={() => onCancelEditCategoryItem()}
-                onSavePressed={(nce: CategoryElement) => onSaveEditCategoryItem(nce)}
-                onDeletePressed={() => onDeleteCategoryItem()}
-            />
-
-            <ReassureDeleteCategoryPopup
-                visible={reassureDeleteCategoryPopupVisible}
-                remainingCategorys={getCategorysWithoud(props.categorys, currentCategoryIndex)}
-                //remainingCategorys={props.categorys}
-                onCancelPressed={() => onCancelReassureDelete()}
-                onDeletePressed={(oldID: number, newID: number) => onDeleteReassureDelete(oldID, newID)}
-                timesUsed={getTimesUsed(props.categorys[currentCategoryIndex], props.bookings)}
-                category={props.categorys[currentCategoryIndex]}
-            />
-
-            <View style={tableStyles.table}>
-                <ScrollView
-                    style={tableStyles.tableContent}
-                >
-                    {props.categorys.map((ce: CategoryElement, index: number) => (
-                        <TouchableOpacity
-                            style={tableStyles.tableRow}
-                            onPress={() => onEditCategoryItem(ce.id)}
-                            key={index}
-                        >
-                            <View
-                                style={{
-                                    width: 14,
-                                    height: 14,
-                                    backgroundColor: ce.color,
-                                    borderRadius: 10,
-                                    marginLeft: "3%"
-                                }}
-                            >
-                            </View>
-                            <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "60%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.name}</Text>
-                            <Text style={[tableStyles.tableText, {marginLeft: "3%", width: "30%", color: ce.activated ? defaultColors.darkTextColor : defaultColors.disabled}]}>{ce.hasBudget ? ("("+ce.maxBudget+"€)") : ""}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-
-                <View style={tableStyles.tableButton}>
-                    <Button
-                        onPress={() => setAddPopupVisible(true)}
-                        title="Add Category"
-                        buttonStyle={buttonStyles.orangeButtonStyle}
-                        titleStyle={buttonStyles.orangeButtonText}
-                        accessibilityLabel="Add Item to the budget list"
-                    />
-                </View>
-            </View>
         </>
       )
 }
