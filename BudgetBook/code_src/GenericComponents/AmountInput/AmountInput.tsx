@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react"
 import { NativeSyntheticEvent, StyleProp, Text, TextInput, TextInputSelectionChangeEventData, TextStyle, View, ViewStyle } from "react-native"
 import { Button, Overlay } from "react-native-elements"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import { defaultTextInputStyles } from "../../Styles/DefaultStyles"
 import { amountInputStyles } from "./AmountInputStyle"
-import { colors } from "../../Styles/Styles"
+import {  defaultColors, interactionElements } from "../../Styles/Styles"
 
 interface CursorPos{
     start: number,
@@ -33,7 +32,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
     const specialButtonStyle: StyleProp<ViewStyle> = !!props.specialButtonStyle ? [amountInputStyles.buttonStyle ,props.specialButtonStyle] : [amountInputStyles.buttonStyle]
     const specialButtonTextStyle: StyleProp<TextStyle> = !!props.specialButtonTextStyle ? [props.specialButtonTextStyle] : [amountInputStyles.buttonTitleStyle]
 
-    const style: StyleProp<TextStyle> = props.disabled ? [props.style, {color: colors.disabled}] : [props.style]
+    const style: StyleProp<TextStyle> = props.disabled ? [props.style, {color: defaultColors.disabled}] : [props.style]
     useEffect(() => {
         setAmount(props.amount+"")
         setNumberInputPopupVisible(false)
@@ -41,8 +40,30 @@ const AmountInput = (props: Props): JSX.Element =>  {
         setEvaluatedAmount(props.amount)
     }, [props])
 
-    let newAmount: string = ""
+    /**
+     * checks of the text to be evaluated contains only valid letters. Otherwise it would be possible to execute javascript inside of the text input
+     * @param textToCheck the text to be checked
+     */
+    const textValid = (textToCheck: string): boolean => {
+        let text: string = textToCheck
+
+        text = text.replace("0", "")
+        text = text.replace("1", "")
+        text = text.replace("2", "")
+        text = text.replace("3", "")
+        text = text.replace("4", "")
+        text = text.replace("5", "")
+        text = text.replace("6", "")
+        text = text.replace("9", "")
+        text = text.replace("+", "")
+        text = text.replace("-", "")
+        text = text.replace(" ", "")
+
+        return text.length === 0
+    }
+
     const onKeyPressed = (key: string): void => {
+        let newAmount: string = ""
 
         let left: string = ""
         let right: string = ""
@@ -79,18 +100,32 @@ const AmountInput = (props: Props): JSX.Element =>  {
         }
         setAmount(newAmount)
 
-        //TODO: evaluate
-        let result: any;
-        try{
-            result = eval(newAmount)
-        } catch {
+
+        //check if the text xontains invalid symbols, otherwise eval could interpret javascript which would be pretty bad
+        if(!textValid(newAmount)){
             setEvaluatedAmount(undefined)
         }
-        setEvaluatedAmount(result as number)
+        else{
+
+            let result: any;
+            try{ //this try catch should not be possible
+                result = eval(newAmount)
+            } catch {
+                setEvaluatedAmount(undefined)
+            }
+            setEvaluatedAmount(result as number)
+
+        }
     }
 
     const onCursorMoved = (event: NativeSyntheticEvent<TextInputSelectionChangeEventData>): void => {
-        setCursorPos({start: event.nativeEvent.selection.start, end: event.nativeEvent.selection.end} as CursorPos)
+        const newPos: CursorPos = {start: event.nativeEvent.selection.start, end: event.nativeEvent.selection.end} as CursorPos
+
+        if(newPos.start > amount.length){ //do not allow unvalid cursor positions!
+            console.log("wow, this should not happen!")
+            return
+        }
+        setCursorPos(newPos)
     }
 
     return( //TODO: style!
@@ -107,12 +142,20 @@ const AmountInput = (props: Props): JSX.Element =>  {
             <>
             <View style={amountInputStyles.topBar}>
                 <TextInput
-                    style={[amountInputStyles.textInput, defaultTextInputStyles.textInput]}
+                    style={[amountInputStyles.textInput, interactionElements.textInput, {width: "74.5%"}]}
                     showSoftInputOnFocus={false}
                     onSelectionChange={(event: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => onCursorMoved(event)}
                     selection={cursorPos}
                     autoFocus={true}
                     value={amount}
+                    selectionColor={defaultColors.primaryColor}
+                    onChangeText={(newText: string) => {
+                        setAmount(newText)
+                        //check if the text xontains invalid symbols, otherwise eval could interpret javascript which would be pretty bad
+                        if(!textValid(newText)){
+                            setEvaluatedAmount(undefined)
+                        }
+                    }} //to make copy and paste work
                 />
                 <Text
                     style={amountInputStyles.resultText}
@@ -273,14 +316,10 @@ const AmountInput = (props: Props): JSX.Element =>  {
 
         <Text
             style={style} //TODO: pull the style opt to the parent!
-            //keyboardType = 'numeric'
             onPress={() => {
                 if(!props.disabled)
                     setNumberInputPopupVisible(true)
             }}
-            //onBlur={() => setNumberInputPopupVisible(false)}
-            //showSoftInputOnFocus={false}
-            //value={props.amount}
         > {props.amount}</Text>
 
     </>
