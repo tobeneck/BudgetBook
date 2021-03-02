@@ -4,11 +4,11 @@ import { colors, defaultColors, defaultViewStyles, interactionElements, textStyl
 import { CategoryElement } from "./CategoryList"
 
 import ColorInput from "../GenericComponents/ColorInput/ColorInput"
-import { defaultButtonStyles } from "../Styles/DefaultStyles"
 import AmountInput from "../GenericComponents/AmountInput/AmountInput"
 import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton"
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton"
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton"
+import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles"
 
 interface Props{
     category: CategoryElement,
@@ -94,10 +94,10 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
                         amount={categoryMaxBudget}
                         setAmount={(newMaxBudget: number) => setCategoryMaxBudget(newMaxBudget)}
                         style={interactionElements.text}
-                        normalButtonStyle={defaultButtonStyles.buttonStyles}
-                        normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
-                        specialButtonStyle={defaultButtonStyles.specialButtonStyle}
-                        specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                        normalButtonStyle={darkBlueButtonStyle.buttonStyle}
+                        normalButtonTextStyle={darkBlueButtonStyle.titleStyle}
+                        specialButtonStyle={orangeButtonStyle.buttonStyle}
+                        specialButtonTextStyle={orangeButtonStyle.titleStyle}
                         disabled={!categoryHasMaxBudget}
                     />
 

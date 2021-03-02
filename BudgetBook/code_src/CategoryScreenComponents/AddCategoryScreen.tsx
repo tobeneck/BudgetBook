@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Text, TextInput, View, Switch } from "react-native"
 import { colors, defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles";
 import ColorInput from "../GenericComponents/ColorInput/ColorInput";
-import { defaultButtonStyles } from "../Styles/DefaultStyles";
 import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
+import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
 
 interface Props{
     onAddPressed: (categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number) => void,
@@ -77,10 +77,10 @@ export const AddCategoryScreen = (props: Props): JSX.Element => {
                         amount={categoryMaxBudget}
                         setAmount={(newMaxBudget: number) => setCategoryMaxBudget(newMaxBudget)}
                         style={interactionElements.text}
-                        normalButtonStyle={defaultButtonStyles.buttonStyles}
-                        normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
-                        specialButtonStyle={defaultButtonStyles.specialButtonStyle}
-                        specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                        normalButtonStyle={darkBlueButtonStyle.buttonStyle}
+                        normalButtonTextStyle={darkBlueButtonStyle.titleStyle}
+                        specialButtonStyle={orangeButtonStyle.buttonStyle}
+                        specialButtonTextStyle={orangeButtonStyle.titleStyle}
                         disabled={!categoryHasMaxBudget}
                     />
 

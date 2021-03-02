@@ -1,5 +1,4 @@
-import { PixelRatio, StatusBarProps, StyleSheet } from "react-native"
-import { BottomSheet } from "react-native-elements"
+import { StatusBarProps, StyleSheet } from "react-native"
 
 export const defaultRadius: number = 3
 export const defaultBorderWidth: number = 1//0.5
@@ -104,7 +103,7 @@ export const textStyles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     textAlignVertical: "center",
-    color: "orange"//defaultColors.darkTextColor
+    color: defaultColors.darkTextColor
   },
   headline: {
     fontSize: 18,
@@ -132,7 +131,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     alignItems: "flex-start",
     justifyContent:"center",
     textAlignVertical: "center",
-    color:"orange",//defaultColors.darkTextColor
+    color:defaultColors.darkTextColor,
     fontSize: 14
   },
   textInput: {
@@ -143,7 +142,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
     alignContent:"center",
-    color:"orange",//defaultColors.darkTextColor
+    color: defaultColors.darkTextColor,
     fontSize: 14
   },
   textField: {
@@ -154,7 +153,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     borderRadius: defaultRadius,
     borderColor: "grey", //TODO: remove these, maybe make it more grey
     alignItems: "flex-start",
-    color:"orange",//defaultColors.darkTextColor
+    color: defaultColors.darkTextColor,
     fontSize: 14
   },
 })
@@ -213,37 +212,6 @@ export const spacings = StyleSheet.create({
     width: defaultSpacingPercent*2+"%",
   },
 })
-
-// buttonContainer: {
-//   height: "20%",
-//   width: "24%",
-//   justifyContent: "center",
-//   backgroundColor: "transparent",
-//   margin: "0.5%"
-// },
-// buttonTitleStyle:{
-//   color: "white"
-// },
-// buttonStyle: {
-//   height: "100%",
-//   width: "100%",
-//   textAlignVertical: "center"
-// },
-
-
-
-// export const overlayStyles = StyleSheet.create({ //TODO: delete
-//   overlay: {
-//     height: "60%",
-//     width: "70%",
-//     backgroundColor: colors.nearWhite
-//   },
-//   smallOverlay: {
-//     height: "30%",
-//     width: "70%",
-//     backgroundColor: colors.nearWhite
-//   }
-// })
 
 export const statusBarProps: StatusBarProps =   {
   barStyle: 'light-content',

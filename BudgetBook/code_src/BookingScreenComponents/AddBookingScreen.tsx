@@ -5,10 +5,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { BookingElement } from "./BookingList"
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { interactionElements, textStyles, defaultViewStyles } from "../Styles/Styles";
-import { defaultButtonStyles } from "../Styles/DefaultStyles";
 import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
+import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
 
 interface Props{
     categorys: CategoryElement[],
@@ -89,10 +89,10 @@ export const AddBookingScreen = (props: Props): JSX.Element => {
                         amount={amount}
                         setAmount={(newAmount: number) => setAmount(newAmount)}
                         style={interactionElements.text}
-                        normalButtonStyle={defaultButtonStyles.buttonStyles}
-                        normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
-                        specialButtonStyle={defaultButtonStyles.specialButtonStyle}
-                        specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                        normalButtonStyle={darkBlueButtonStyle.buttonStyle}
+                        normalButtonTextStyle={darkBlueButtonStyle.titleStyle}
+                        specialButtonStyle={orangeButtonStyle.buttonStyle}
+                        specialButtonTextStyle={orangeButtonStyle.titleStyle}
                     />
 
                     <Text

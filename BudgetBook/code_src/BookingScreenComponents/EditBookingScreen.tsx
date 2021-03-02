@@ -6,10 +6,10 @@ import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
 import { defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles";
 import AmountInput from "../GenericComponents/AmountInput/AmountInput";
-import { defaultButtonStyles } from "../Styles/DefaultStyles"
 import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
+import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
 
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -96,10 +96,10 @@ export const EditBookingScreen = (props: Props): JSX.Element => {
                         amount={amount}
                         setAmount={(newAmount: number) => setAmount(newAmount)}
                         style={interactionElements.text}
-                        normalButtonStyle={defaultButtonStyles.buttonStyles}
-                        normalButtonTextStyle={defaultButtonStyles.normalTitleStyle}
-                        specialButtonStyle={defaultButtonStyles.specialButtonStyle}
-                        specialButtonTextStyle={defaultButtonStyles.specialTitleStyle}
+                        normalButtonStyle={darkBlueButtonStyle.buttonStyle}
+                        normalButtonTextStyle={darkBlueButtonStyle.titleStyle}
+                        specialButtonStyle={orangeButtonStyle.buttonStyle}
+                        specialButtonTextStyle={orangeButtonStyle.titleStyle}
                     />
 
                     <Text
