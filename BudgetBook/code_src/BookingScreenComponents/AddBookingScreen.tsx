@@ -10,6 +10,7 @@ import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
 import BorderedPicker from "../GenericComponents/BorderedPicker";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface Props{
     categorys: CategoryElement[],
@@ -17,6 +18,7 @@ interface Props{
     onAddPressed: (element: BookingElement) => void,
     minimumPossibleDate: Date,
     onCancelPressed: () => void,
+    onOpenAddCategorys: () => void,
     openAddCategoryScreen?: () => void //TODO: make it possible to add categorys from within add or edit bookings
 }
 
@@ -101,14 +103,28 @@ export const AddBookingScreen = (props: Props): JSX.Element => {
                     >
                         Category
                     </Text>
-                    
-                    <BorderedPicker
-                        //NOTE: can I resize the text?
-                        selectedValue={category.id}
-                        onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
-                        mode="dropdown"
-                        content={props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-                    />
+
+                    <View style={[defaultViewStyles.simpleRow, {alignContent: "stretch"}]}>
+                        <BorderedPicker
+                            //NOTE: can I resize the text?
+                            containerStyle={{width: 333}} //TODO: magic number
+                            selectedValue={category.id}
+                            onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
+                            mode="dropdown"
+                            content={props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                        />
+                        <DarkBlueButton
+                            buttonStyle={{minWidth: 66}} //TODO: magic numer
+                            onPress={() => props.onOpenAddCategorys()}
+                            icon={
+                                <Icon
+                                    name="plus"
+                                    size={20}
+                                    color={darkBlueButtonStyle.titleStyle.color}
+                                />
+                            }
+                        />
+                    </View>
 
                     <Text
                         style={textStyles.smallTitle}

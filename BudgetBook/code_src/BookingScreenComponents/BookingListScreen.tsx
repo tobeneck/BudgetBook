@@ -48,7 +48,7 @@ const BookingListScreen = (props: Props): JSX.Element => {
                     <Text style={[tableStyles.tableText, {width: "20%", marginLeft: "3%"}]}>{be.date.toLocaleDateString()}</Text>
                     <Text style={[tableStyles.tableText, {width: "25%", marginLeft: "1%",fontWeight: "bold", color: getAmountColor(be.amount)}]}>{be.amount >= 0 ? "+"+be.amount.toFixed(2) : be.amount.toFixed(2)}</Text>
                     <ColoredCircle color={be.category.color} size={14} />
-                    <Text style={[tableStyles.tableText, {width: "50%", marginLeft: "1%"}]}>{be.category.name}</Text>
+                    <Text style={[tableStyles.tableText, {width: "42%", marginLeft: "1%"}]}>{be.category.name}</Text>
                 </TouchableOpacity>
         ))}
 

@@ -18,6 +18,7 @@ import { useBackHandler } from '@react-native-community/hooks'
 import { AddCategoryScreen } from './code_src/CategoryScreenComponents/AddCategoryScreen'
 import EditCategoryScreen from './code_src/CategoryScreenComponents/EditCategoryScreen'
 import ReassureDeleteCategoryPopup from './code_src/CategoryScreenComponents/ReassureDeleteCategoryPopup'
+import SettingsScreen from './code_src/SettingsScreenComponents/SettingsScreen'
 
 export enum eScreens{
   CATEGORY_LIST_SCREEN = 0,
@@ -246,6 +247,7 @@ const App = () => {
                 onCancelPressed={() => popScreenStack()}
                 currentTotal={getCurrentTotal(bookings)}
                 minimumPossibleDate={bookings[bookings.length - 1].date} //TODO: ugly indexing. The initial item is ment
+                onOpenAddCategorys={() => pushScreenStack(eScreens.ADD_CATEGORY_SCREEN)}
             />
           }
         />
@@ -277,12 +279,12 @@ const App = () => {
                 categorys={getActiveCategorys(categorys, bookings[currentBookingIndex].category)}
                 booking={bookings[currentBookingIndex]}
                 currentIndex={bookings.length - 1 - currentBookingIndex}
+                onOpenAddCategorys={() => pushScreenStack(eScreens.ADD_CATEGORY_SCREEN)}
             />
           }
         />
           )
       case eScreens.HOME_SCREEN:
-          console.log("render the home screen")
         return (
           <ScreenComponent
           //onHeaderBackButtonPressed={() => setCurrentScreen(eScreens.SCREEN_SWITCHER_SCREEN)}
@@ -292,13 +294,26 @@ const App = () => {
               openScreen={(newScreen: eScreens) => {
                 pushScreenStack(newScreen)
               }}
-              openExportPopup={() => {
-                console.log("homescreen export")
-                setReassureExportPopupVisible(true)
-              }}
             />
           }
         />
+        )
+       case eScreens.SETTINGS_SCREEN:
+        return (
+          <ScreenComponent
+            onHeaderBackButtonPressed={() => popScreenStack()}
+            headerHeadline={"Settings"}
+            content = {
+              <SettingsScreen
+                openScreen={(newScreen: eScreens) => {
+                  pushScreenStack(newScreen)
+                }}
+                openExportPopup={() => {
+                  setReassureExportPopupVisible(true)
+                }}
+              />
+            }
+          />
         )
       case eScreens.IMPORT_DATA_SCREEN:
         return(
@@ -391,7 +406,7 @@ const App = () => {
       />
 
       <ReassureExportPopup
-      //TODO: put this into the homescreen
+      //TODO: put this into the homescreen?
         visible={reassureExportPopupVisible}
         onCancelPressed={() => setReassureExportPopupVisible(false)}
         onExportPressed={() => {
