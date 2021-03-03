@@ -6,6 +6,7 @@ import { smallPopupStyles } from "../Styles/Styles";
 import { Overlay } from "react-native-elements";
 import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
+import BorderedPicker from "../GenericComponents/BorderedPicker";
 
 interface Props{
     visible: boolean,
@@ -29,16 +30,12 @@ const ReassureDeleteCategoryPopup = (props: Props): JSX.Element => {
                 <>
                     <Text style={smallPopupStyles.text}>The category is used {props.timesUsed} {props.timesUsed === 1 ? "time" : "times"}.The the category using this booking will be changed to: </Text>
 
-                    <View style={smallPopupStyles.picker}>
-                        <Picker
-                            selectedValue={props.remainingCategorys.length - 1 - replacementCategoryIndex}  //TODO: this is alsi ugly! Think aboud how to assign IDs for categorys, or how to add them
-                            onValueChange={(itemValue, itemIndex) => (setReplacementCategoryIndex(itemIndex))}
-                            mode="dropdown"
-                            style={{height: "100%", width: "100%"}}
-                        >
-                            {props.remainingCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-                        </Picker>
-                    </View>
+                    <BorderedPicker
+                        selectedValue={props.remainingCategorys.length - 1 - replacementCategoryIndex}  //TODO: this is alsi ugly! Think aboud how to assign IDs for categorys, or how to add them
+                        onValueChange={(itemValue, itemIndex) => (setReplacementCategoryIndex(itemIndex))}
+                        mode="dropdown"
+                        content={ props.remainingCategorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />)) }
+                    />
                 </>
             )
         else

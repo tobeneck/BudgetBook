@@ -9,6 +9,7 @@ import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
+import BorderedPicker from "../GenericComponents/BorderedPicker";
 
 interface Props{
     categorys: CategoryElement[],
@@ -100,17 +101,14 @@ export const AddBookingScreen = (props: Props): JSX.Element => {
                     >
                         Category
                     </Text>
-                    <View style={interactionElements.textInput}>
-                        <Picker
-                            //NOTE: can I resize the text?
-                            selectedValue={category.id}
-                            style={[textStyles.normal, {height: "100%", width: "100%"}]}
-                            onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
-                            mode="dropdown"
-                        >
-                            {props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
-                        </Picker>
-                    </View>
+                    
+                    <BorderedPicker
+                        //NOTE: can I resize the text?
+                        selectedValue={category.id}
+                        onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
+                        mode="dropdown"
+                        content={props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
+                    />
 
                     <Text
                         style={textStyles.smallTitle}
