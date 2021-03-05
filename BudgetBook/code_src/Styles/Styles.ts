@@ -1,6 +1,6 @@
 import { StatusBarProps, StyleSheet } from "react-native"
 
-export const defaultRadius: number = 3
+export const defaultRadius: number = 5
 export const defaultBorderWidth: number = 1//0.5
 
 export const defaultSpacingPercent: number = 0.5
@@ -41,7 +41,8 @@ export const defaultColors = {
 
   disabled: colors.disabled,
 
-  separatorColor: colors.lightGrey,
+  tableSeparatorColor: colors.lightGrey,
+  interactionSeparatorColor: colors.grey,
 
   deleteRed: "red" //TODO: change
 }
@@ -75,7 +76,7 @@ export const tableStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: defaultColors.separatorColor,
+    borderBottomColor: defaultColors.tableSeparatorColor,
     minHeight: 40,
     width: "100%"
   },
@@ -114,9 +115,13 @@ export const textStyles = StyleSheet.create({
   },
   smallTitle: {
     fontSize: 14,
+    //textDecorationLine: 'underline',
+    fontStyle: "italic",
     textAlign: "left",
     textAlignVertical: "center",
-    color: defaultColors.darkTextColor
+    color: defaultColors.darkTextColor,
+    marginTop: 15, //this is used for margins between objects. Might be better to implement it otherwise in the future
+    marginBottom: 5
   },
 })
 
@@ -127,7 +132,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     alignSelf: "flex-start",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
-    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    borderColor: defaultColors.interactionSeparatorColor,
     alignItems: "flex-start",
     justifyContent:"center",
     textAlignVertical: "center",
@@ -140,7 +145,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     alignSelf: "center",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
-    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    borderColor: defaultColors.interactionSeparatorColor,
     alignContent:"center",
     color: defaultColors.darkTextColor,
     fontSize: 14
@@ -151,7 +156,7 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
     alignSelf: "center",
     borderWidth: defaultBorderWidth,
     borderRadius: defaultRadius,
-    borderColor: "grey", //TODO: remove these, maybe make it more grey
+    borderColor: defaultColors.interactionSeparatorColor,
     alignItems: "flex-start",
     color: defaultColors.darkTextColor,
     fontSize: 14

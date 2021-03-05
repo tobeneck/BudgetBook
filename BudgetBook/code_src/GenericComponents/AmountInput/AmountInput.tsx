@@ -13,11 +13,43 @@ interface Props{
     amount: number,
     setAmount: (amount: number) => void,
     style?: TextStyle,
+    prefix?: string,
+    suffix?: string,
     normalButtonStyle?: ViewStyle,
     normalButtonTextStyle?: TextStyle,
     specialButtonStyle?: ViewStyle,
     specialButtonTextStyle?: TextStyle,
     disabled?: boolean
+}
+
+/**
+ * returns a correctly formated string with curreny symbol.
+ * @param amount the amount to be printet
+ * @param currencyPrefix the currency prefix
+ * @param currencySuffix the currency suffix
+ * @param withPlus should "+" symbols also be printet?
+ */
+export const numberToCurrency = (amount: number, currencyPrefix: string, currencySuffix: string, withPlus: boolean = false): string => {
+    const operator: string = amount < 0 ? "-" : withPlus ? "+" : ""
+    const amountText: string = Math.abs(amount).toFixed(2)
+
+    return operator+currencyPrefix+amountText+currencySuffix
+}
+
+/**
+ * own implementation of a replace function to replace all characters. Will be unneccecary of a replaceAll will be implemented for strings
+ * @param input the input string to be replaced
+ * @param removeChar the char or string to be removed
+ * @param replacementChar the char or string to replace the original
+ */
+const replaceAll = (input: string, removeChar: string, replacementChar: string): string => {
+    if(removeChar === replacementChar)
+        return input
+
+    let outputString: string = input
+    while(outputString.includes(removeChar))
+        outputString = outputString.replace(removeChar, replacementChar)
+    return outputString
 }
 
 const AmountInput = (props: Props): JSX.Element =>  {
@@ -47,20 +79,53 @@ const AmountInput = (props: Props): JSX.Element =>  {
     const textValid = (textToCheck: string): boolean => {
         let text: string = textToCheck
 
-        text = text.replace("0", "")
-        text = text.replace("1", "")
-        text = text.replace("2", "")
-        text = text.replace("3", "")
-        text = text.replace("4", "")
-        text = text.replace("5", "")
-        text = text.replace("6", "")
-        text = text.replace("9", "")
-        text = text.replace("+", "")
-        text = text.replace("-", "")
-        text = text.replace(" ", "")
+        text = replaceAll(text, "1", "")
+        text = replaceAll(text, "2", "")
+        text = replaceAll(text, "3", "")
+        text = replaceAll(text, "4", "")
+        text = replaceAll(text, "5", "")
+        text = replaceAll(text, "6", "")
+        text = replaceAll(text, "7", "")
+        text = replaceAll(text, "8", "")
+        text = replaceAll(text, "9", "")
+        text = replaceAll(text, "0", "")
+        text = replaceAll(text, "+", "")
+        text = replaceAll(text, "-", "")
+        text = replaceAll(text, " ", "")
 
         return text.length === 0
     }
+
+    /**
+     * savely sets a new cursor pos, if it is inside of the valid bounds
+     * @param newPos the new pos to be set
+     */
+    const savelySetCursorPos = (newPos: CursorPos, saveCursorPos: number = amount.length): void => {
+        console.log(newPos, saveCursorPos)
+        if(newPos.start > saveCursorPos
+            || (!!newPos.end && newPos.end > saveCursorPos)
+            || newPos.start < 0){ //do not allow unvalid cursor positions!
+            console.warn("wow, this should not happen!")
+            return
+        }
+        setCursorPos(newPos)
+    }
+
+    // /**
+    //  * a simple function to evaluate a string function containing + and - operators
+    //  * eval function also interpretes other types of numbers (like binary...)
+    //  * @param s
+    //  */
+    // const evalStringFunction = (input: string): number | null => {
+    //     var total = 0
+    //     var numbers: string[] = input.split("+")
+
+    //     numbers.forEach((value: string) => {
+    //         if(value)
+    //         total += parseFloat(value)
+    //     })
+    //     return total;
+    //   }
 
     const onKeyPressed = (key: string): void => {
         let newAmount: string = ""
@@ -87,6 +152,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
             //     break
             case "delete":
                 newAmount = left.slice(0,left.length-1)+right
+                savelySetCursorPos({start: cursorPos.start-1, end: undefined} as CursorPos, amount.length - 1) //as we remove one the save length is shorter
                 break
             case "enter":
                 if(evaluatedAmount !== undefined)
@@ -95,8 +161,8 @@ const AmountInput = (props: Props): JSX.Element =>  {
                 break
             default:
                 newAmount = left+key+right
-                setCursorPos({start: cursorPos.start+1, end: undefined} as CursorPos)
-
+                console.log(cursorPos.start)
+                savelySetCursorPos({start: cursorPos.start+1, end: undefined} as CursorPos, amount.length + 1) //as we remove one the save length is longer
         }
         setAmount(newAmount)
 
@@ -106,7 +172,6 @@ const AmountInput = (props: Props): JSX.Element =>  {
             setEvaluatedAmount(undefined)
         }
         else{
-
             let result: any;
             try{ //this try catch should not be possible
                 result = eval(newAmount)
@@ -118,17 +183,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
         }
     }
 
-    const onCursorMoved = (event: NativeSyntheticEvent<TextInputSelectionChangeEventData>): void => {
-        const newPos: CursorPos = {start: event.nativeEvent.selection.start, end: event.nativeEvent.selection.end} as CursorPos
-
-        if(newPos.start > amount.length){ //do not allow unvalid cursor positions!
-            console.log("wow, this should not happen!")
-            return
-        }
-        setCursorPos(newPos)
-    }
-
-    return( //TODO: style!
+    return(
         <>
         <Overlay
             isVisible={numberInputPopupVisible}
@@ -144,7 +199,10 @@ const AmountInput = (props: Props): JSX.Element =>  {
                 <TextInput
                     style={[amountInputStyles.textInput, interactionElements.textInput, {width: "74.5%"}]}
                     showSoftInputOnFocus={false}
-                    onSelectionChange={(event: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => onCursorMoved(event)}
+                    onSelectionChange={(event: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+                        const newPos: CursorPos = {start: event.nativeEvent.selection.start, end: event.nativeEvent.selection.end} as CursorPos
+                        savelySetCursorPos(newPos)
+                    }}
                     selection={cursorPos}
                     autoFocus={true}
                     value={amount}
@@ -320,7 +378,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
                 if(!props.disabled)
                     setNumberInputPopupVisible(true)
             }}
-        > {props.amount}</Text>
+        > {numberToCurrency(props.amount, props.prefix ? props.prefix : "", props.suffix ? props.suffix : "", false)}</Text>
 
     </>
     )

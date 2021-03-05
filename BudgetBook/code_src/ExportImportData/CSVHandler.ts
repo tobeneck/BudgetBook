@@ -2,18 +2,15 @@ import { BookingElement } from '../BookingScreenComponents/BookingList'
 import { CategoryElement } from '../CategoryScreenComponents/CategoryList'
 import moment from 'moment'
 import RNFetchBlob, { RNFetchBlobWriteStream } from "rn-fetch-blob"
-
-export const defaultFilename: string = "BudgetBookData"
-export const defaultFileEnding: string = ".csv"
+import { defaultDownloadDir, defaultExportDir, readFile, writeFile } from './ReadAndWriteFiles'
 
 const defaultSeparator: string = ";"
 const defaultSeparatorReplacement: string = ","
 const defaultLineEnd: string = defaultSeparator+"\n"
 const defaultStringDivider: string = "---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultSeparator+"---"+defaultLineEnd
-const defaultDownloadDir: string = RNFetchBlob.fs.dirs.DownloadDir //TODO: the downloadDir is android only! Change this for IOS!
-const defaultExportDir: string = RNFetchBlob.fs.dirs.DocumentDir
 
-const encoding = 'utf8'
+export const defaultFilename: string = "BudgetBookData"
+export const defaultFileEnding: string = ".csv"
 
 const currentDataFormatVersion: string = "BudgetBook Data Export Version 1.0"
 
@@ -136,43 +133,6 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
 }
 
 /**
- * saves string data into a file. Creates the file if it does not exist already, otherwise the old file will be overwritten,
- * @param data the data to be saved
- * @param filepath the file to save to
- */
-const saveStringToFile = (data: string, filepath: string, errorCallback?: (e: Error) => void): void => {
-
-    RNFetchBlob.fs.exists(filepath)
-    .then((exists: boolean) => {
-        if(!exists){ //create the file if it does not exist
-            RNFetchBlob.fs.createFile(filepath, data, encoding)
-        } else {//update the file if it exists
-            RNFetchBlob.fs.writeStream(
-                filepath,
-                // encoding, should be one of `base64`, `utf8`, `ascii`
-                'utf8',
-                // should data append to existing content ?
-                false
-            )
-            .then<RNFetchBlobWriteStream | never>((ofstream: RNFetchBlobWriteStream) => {
-                ofstream.write(data)
-                return ofstream
-            })
-            .then<void | never>((ofstream: RNFetchBlobWriteStream) => {
-                ofstream.close()
-            })
-            .catch((e: Error) => {
-                if(errorCallback)
-                    errorCallback(e)
-                else
-                    console.log(e) //console.error //TODO: remove the optionality when implementing the genericErrorPopup
-            })
-        }
-    })
-    .catch(console.error)
-}
-
-/**
  * exports the current data to the downloads foulder. If the default filename already exists it adds a "_n" to the filename
  * @param categorys the categorys to be saved
  * @param bookings the bookings to be saved
@@ -181,7 +141,7 @@ export const exportToDownloads = (categorys: CategoryElement[], bookings: Bookin
     getFreeFilePath()
     .then((filepath: string) => {
         const data: string = dataToString(categorys, bookings)
-        saveStringToFile(data, filepath, errorCallback)
+        writeFile(data, filepath, errorCallback)
     })
     .catch(console.error)
 }
@@ -195,7 +155,7 @@ export const saveToCache = (categorys: CategoryElement[], bookings: BookingEleme
     const filepath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding;
 
     const data: string = dataToString(categorys, bookings)
-    saveStringToFile(data, filepath)
+    writeFile(data, filepath)
 }
 
 /**
@@ -205,7 +165,7 @@ export const saveToCache = (categorys: CategoryElement[], bookings: BookingEleme
  */
 export const readDownloadsData = (fileName: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
     const filePath: string = defaultDownloadDir + "/" + fileName
-    readFile(filePath, setCategorys, setBookings)
+    readData(filePath, setCategorys, setBookings)
 }
 
 /**
@@ -215,72 +175,71 @@ export const readDownloadsData = (fileName: string, setCategorys: (categorys: Ca
  */
 export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
     const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
-    readFile(filePath, setCategorys, setBookings)
+    readData(filePath, setCategorys, setBookings)
 }
 
+
+
+
 /**
- * reads the in filepath, if it exists. After decrypting the data, the two setter methods are called
+ * reads the in filepath. After decrypting the data, the two setter methods are called
  * @param setCategorys callback method to set the read categorys
  * @param setBookings callback method to set the read bookings
  */
-export const readFile = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
-
-    RNFetchBlob.fs.exists(filePath)
-    .then((exists: boolean) => {
-        if(exists){
-            RNFetchBlob.fs.readFile(filePath, encoding)
-            .then((data: string) => {//deconstruct the categorys and bookings here
-                const categorys: CategoryElement[] = []
-                const bookings: BookingElement[] = []
-
-                const dataFormatVersion: string = data.split(defaultStringDivider)[0].replace(defaultLineEnd, "")
-                switch(dataFormatVersion){
-                    case currentDataFormatVersion: //TODO: check for other file versions and read them accodringly in the future!
-                        //move on
-                        break;
-                    default:
-                        console.error("Error reading the file! The data format version \"", dataFormatVersion, "\" is not supportet in this version of the app.") //TODO: throw error!
-                }
-
-                const categorysString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
-                const bookingsString: string[] = data.split(defaultStringDivider)[2].split(defaultLineEnd)
-
-                for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
-                    if(categorysString[i] !== ""){ //the last element always is "", avoid this!
-                        const currentRow: string[] = categorysString[i].split(defaultSeparator)
-                        categorys.push({
-                            id: +currentRow[0],
-                            name: currentRow[1],
-                            description: currentRow[2],
-                            color: currentRow[3],
-                            activated: currentRow[4] === "true",
-                            hasBudget: currentRow[5] === "true",
-                            maxBudget: +currentRow[6],
-                        } as CategoryElement
-                        )
-                    }
-                }
-
-                for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
-                    if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
-                        const currentRow: string[] = bookingsString[i].split(defaultSeparator)
-                        const currentCategoryID = +currentRow[4]
-                        bookings.push({
-                            date: new Date(currentRow[0]),
-                            total: +currentRow[1],
-                            amount: +currentRow[2],
-                            description: currentRow[3],
-                            category: categorys[categorys.length - 1 - currentCategoryID] //TODO: this is uggly indexing!
-                        } as BookingElement)
-                    }
-                }
-
-                setCategorys(categorys)
-                setBookings(bookings)
-            })
-            .catch(console.error)
+const readData = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+    
+    readFile(filePath)
+    .then((data: string) => {
+        const categorys: CategoryElement[] = []
+        const bookings: BookingElement[] = []
+    
+        const dataFormatVersion: string = data.split(defaultStringDivider)[0].replace(defaultLineEnd, "")
+        switch(dataFormatVersion){
+            case currentDataFormatVersion: //TODO: check for other file versions and read them accodringly in the future!
+                //move on
+                break;
+            default:
+                console.error("Error reading the file! The data format version \"", dataFormatVersion, "\" is not supportet in this version of the app.") //TODO: throw error!
         }
+    
+        const categorysString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
+        const bookingsString: string[] = data.split(defaultStringDivider)[2].split(defaultLineEnd)
+    
+        for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
+            if(categorysString[i] !== ""){ //the last element always is "", avoid this!
+                const currentRow: string[] = categorysString[i].split(defaultSeparator)
+                categorys.push({
+                    id: +currentRow[0],
+                    name: currentRow[1],
+                    description: currentRow[2],
+                    color: currentRow[3],
+                    activated: currentRow[4] === "true",
+                    hasBudget: currentRow[5] === "true",
+                    maxBudget: +currentRow[6],
+                } as CategoryElement
+                )
+            }
+        }
+    
+        for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
+            if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
+                const currentRow: string[] = bookingsString[i].split(defaultSeparator)
+                const currentCategoryID = +currentRow[4]
+                bookings.push({
+                    date: new Date(currentRow[0]),
+                    total: +currentRow[1],
+                    amount: +currentRow[2],
+                    description: currentRow[3],
+                    category: categorys[categorys.length - 1 - currentCategoryID] //TODO: this is uggly indexing!
+                } as BookingElement)
+            }
+        }
+    
+        setCategorys(categorys)
+        setBookings(bookings)
     })
     .catch(console.error)
- }
+}
+
+
 

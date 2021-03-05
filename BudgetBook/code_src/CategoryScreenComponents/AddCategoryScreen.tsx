@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { Text, TextInput, View, Switch } from "react-native"
 import { colors, defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles";
 import ColorInput from "../GenericComponents/ColorInput/ColorInput";
@@ -6,10 +6,12 @@ import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
+import { SettingsContext } from "../../App";
+import { AppSettings } from "../ExportImportData/SettingsManager";
 
 interface Props{
     onAddPressed: (categoryName: string, categoryDescription: string, categoryColor: string, active: boolean, hasMaxBudget: boolean, maxBudget: number) => void,
-    onCancelPressed: () => void
+    onCancelPressed: () => void,
 }
 
 export const AddCategoryScreen = (props: Props): JSX.Element => {
@@ -19,6 +21,9 @@ export const AddCategoryScreen = (props: Props): JSX.Element => {
     const [categoryActivated, setCategoryActivated] = useState<boolean>(true)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(false)
     const [categoryMaxBudget, setCategoryMaxBudget] = useState<number>(0)
+
+    const settingsProvider = useContext<AppSettings>(SettingsContext)
+
 
     return (
         <>
@@ -82,6 +87,8 @@ export const AddCategoryScreen = (props: Props): JSX.Element => {
                         specialButtonStyle={orangeButtonStyle.buttonStyle}
                         specialButtonTextStyle={orangeButtonStyle.titleStyle}
                         disabled={!categoryHasMaxBudget}
+                        prefix={settingsProvider.currencySymbol.pre}
+                        suffix={settingsProvider.currencySymbol.post}
                     />
 
                     <View style={defaultViewStyles.simpleRow}>

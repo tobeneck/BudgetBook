@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Text, TextInput, View, Keyboard } from "react-native"
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -12,6 +12,8 @@ import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles";
 import BorderedPicker from "../GenericComponents/BorderedPicker";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { SettingsContext } from "../../App";
+import { AppSettings } from "../ExportImportData/SettingsManager";
 
 interface Props{
     booking: BookingElement, //the booking to edit
@@ -35,6 +37,9 @@ export const EditBookingScreen = (props: Props): JSX.Element => {
     const [category, setCategory] = useState<CategoryElement>(props.booking.category)
 
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
+
+    const currencySymbolsProvider = useContext<AppSettings>(SettingsContext)
+
 
 
     const onDateChanged = (e: Event, selectedDate: Date | undefined): void => {
@@ -103,6 +108,8 @@ export const EditBookingScreen = (props: Props): JSX.Element => {
                         normalButtonTextStyle={darkBlueButtonStyle.titleStyle}
                         specialButtonStyle={orangeButtonStyle.buttonStyle}
                         specialButtonTextStyle={orangeButtonStyle.titleStyle}
+                        prefix={currencySymbolsProvider.currencySymbol.pre}
+                        suffix={currencySymbolsProvider.currencySymbol.post}
                     />
 
                     <Text

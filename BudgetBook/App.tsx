@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { BackHandler, SafeAreaView, Text } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { SafeAreaView, Text } from 'react-native'
 import { BookingElement, defaultBookingElement, getCurrentTotal, sortBookings, updateCategory } from "./code_src/BookingScreenComponents/BookingList"
 import { CategoryElement, defaultCategoryElement, getActiveCategorys, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from './code_src/CategoryScreenComponents/CategoryList'
 import BookingListScreen from "./code_src/BookingScreenComponents/BookingListScreen"
@@ -19,6 +19,7 @@ import { AddCategoryScreen } from './code_src/CategoryScreenComponents/AddCatego
 import EditCategoryScreen from './code_src/CategoryScreenComponents/EditCategoryScreen'
 import ReassureDeleteCategoryPopup from './code_src/CategoryScreenComponents/ReassureDeleteCategoryPopup'
 import SettingsScreen from './code_src/SettingsScreenComponents/SettingsScreen'
+import { AppSettings, defaultSettingsValue, readSettings, writeSettings } from './code_src/ExportImportData/SettingsManager'
 
 export enum eScreens{
   CATEGORY_LIST_SCREEN = 0,
@@ -36,12 +37,14 @@ export enum eScreens{
   IMPORT_DATA_SCREEN,
 }
 
+export const SettingsContext = React.createContext<AppSettings>(defaultSettingsValue);
+
 const App = () => {
-  const [categorys, setCategorys] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
+  const [ categorys, setCategorys ] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
   const [ currentCategoryIndex, setCurrentCategoryIndex ] = useState<number>(0) //TODO: again, is 0 the best way to initialize it?
   const [ reassureDeleteCategoryPopupVisible, setReassureDeleteCategoryPopupVisible ] = useState<boolean>(false)
 
-  const [bookings, setBookings] = useState<BookingElement[]>([defaultBookingElement]) //there needs to be at least one booking!
+  const [ bookings, setBookings ] = useState<BookingElement[]>([defaultBookingElement]) //there needs to be at least one booking!
   const [ currentBookingIndex, setCurrentBookingIndex ] = useState<number>(0) //TODO: is 0 really the best way to solve this?
   const [ reassureDeleteBookingPopupVisible, setReassureDeleteBookingPopupVisible ] = useState<boolean>(false)
 
@@ -49,7 +52,7 @@ const App = () => {
   const [errorExportingPopupVisible, setErrorExportingPopupVisible] = useState<boolean>(false)
 
   const [screenStack, setScreenStack] = useState<eScreens[]>([eScreens.HOME_SCREEN])
-  //const [currentScreen, setCurrentScreen] = useState<eScreens>(eScreens.BOOKING_LIST_SCREEN)
+  const [settings, setSettings] = useState<AppSettings>(defaultSettingsValue)
 
   /**
    * saves the new bookings to the cache and to the state
@@ -67,6 +70,15 @@ const App = () => {
   const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
     saveToCache(newCategorys, bookings)
     setCategorys(newCategorys)
+  }
+
+  /**
+   * sets the new settings and saves it into a file
+   * @param newSettings the new settings
+   */
+  const setAndSaveSettings = (newSettings: AppSettings): void => {
+    setSettings(newSettings)
+    writeSettings(newSettings)
   }
 
   /**
@@ -104,7 +116,6 @@ const App = () => {
         default:
           genericErrorCallback(e)
       }
-      console.log(result)
     });
     //setErrorExportingPopupVisible(true)
   }
@@ -141,7 +152,6 @@ const App = () => {
    * pushes the new screen onto the screen stack
    */
   const renderScreen = (screenToRender: eScreens): JSX.Element => {
-    console.log("render screen:", screenToRender)
     switch(screenToRender){
       case eScreens.CATEGORY_LIST_SCREEN:
         return (
@@ -240,7 +250,6 @@ const App = () => {
                 categorys={getActiveCategorys(categorys)}
                 //addItem={addBooking}
                 onAddPressed={(nbe: BookingElement) => {
-                  console.log("add")
                   setAndSaveBookings(sortBookings([nbe, ...bookings]))
                   popScreenStack()
                 }}
@@ -311,6 +320,7 @@ const App = () => {
                 openExportPopup={() => {
                   setReassureExportPopupVisible(true)
                 }}
+                setNewSettings={(newSettings: AppSettings) => setAndSaveSettings(newSettings)}
               />
             }
           />
@@ -338,6 +348,7 @@ const App = () => {
     //read the initial data
     readCacheData(setCategorys, setBookings)
 
+    readSettings((newSettings: AppSettings) => setSettings(newSettings))
   }, []);
 
   useBackHandler(() => {
@@ -350,8 +361,8 @@ const App = () => {
     return false
   })
 
+  console.log("settings bevore rendering: ", settings)
 
-  console.log(screenStack, " ", screenStack.length)
   return (
     <SafeAreaView
       style={{height: "100%", width: "100%"}}
@@ -420,9 +431,11 @@ const App = () => {
       />
 
 
-      {
-        renderScreen(screenStack[screenStack.length-1])
-      }
+      <SettingsContext.Provider value={settings}>
+        {
+          renderScreen(screenStack[screenStack.length-1])
+        }
+      </SettingsContext.Provider>
     </SafeAreaView>
   );
 };

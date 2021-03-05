@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Text, TextInput, View, Switch } from "react-native"
 import { colors, defaultColors, defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles"
 import { CategoryElement } from "./CategoryList"
@@ -9,6 +9,8 @@ import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton"
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton"
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton"
 import { darkBlueButtonStyle, orangeButtonStyle } from "../GenericComponents/GenericButtons/ButtonStyles"
+import { SettingsContext } from "../../App"
+import { AppSettings } from "../ExportImportData/SettingsManager"
 
 interface Props{
     category: CategoryElement,
@@ -24,6 +26,9 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
     const [categoryActivated, setCategoryActivated] = useState<boolean>(props.category.activated)
     const [categoryHasMaxBudget, setCategoryHasMaxBudget] = useState<boolean>(props.category.hasBudget)
     const [categoryMaxBudget, setCategoryMaxBudget] = useState<number>(props.category.maxBudget)
+
+    const settingsProvider = useContext<AppSettings>(SettingsContext)
+
 
     useEffect(() => {
         setCategoryName(props.category.name)
@@ -80,7 +85,7 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
                         <Switch
                             value={categoryHasMaxBudget}
                             onValueChange={() => setCategoryHasMaxBudget(!categoryHasMaxBudget)}
-                            thumbColor={props.category.id === 0 ? defaultColors.separatorColor : defaultColors.primaryColor}
+                            thumbColor={props.category.id === 0 ? defaultColors.tableSeparatorColor : defaultColors.primaryColor}
                             trackColor={{true: props.category.id === 0 ? defaultColors.disabled : colors.lightBlue, false: props.category.id === 0 ? defaultColors.disabled : defaultColors.disabled}}
                             disabled={props.category.id === 0}
                         />
@@ -99,6 +104,8 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
                         specialButtonStyle={orangeButtonStyle.buttonStyle}
                         specialButtonTextStyle={orangeButtonStyle.titleStyle}
                         disabled={!categoryHasMaxBudget}
+                        prefix={settingsProvider.currencySymbol.pre}
+                        suffix={settingsProvider.currencySymbol.post}
                     />
 
                     <View style={defaultViewStyles.simpleRow}>

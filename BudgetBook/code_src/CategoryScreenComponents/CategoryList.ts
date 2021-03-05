@@ -16,7 +16,7 @@ export const defaultCategoryElement: CategoryElement = {
     id: 0,
     name: "uncategorized",
     description: "For all bookings not fitting in any cateAgory. This category can not be edited or deleted.",
-    color: defaultColors.separatorColor,
+    color: defaultColors.tableSeparatorColor,
     activated: true,
     hasBudget: false,
     maxBudget: 0
@@ -54,7 +54,6 @@ export const getCategorysWithoud = (categorys: CategoryElement[], indexToBeRemov
 
     //re-set the IDs of the categorys
     newCategoryList.forEach((element, index) => {
-        console.log("getCategorysWithoud correction: ",element.id," => ",newCategoryList.length - 1 - index)
         element.id = newCategoryList.length - 1 - index
     });
 
