@@ -6,6 +6,7 @@ export const currencySymbols = [
     '\u20AC', //euro
     '\u00A3', //pound
     '\u0024', //Dollar
+    '\u20A3', //Franc (swiss)
     '\u00A5', //Yen
     '\u20A4', //Lira
     '\u20BD', //Ruble
@@ -20,7 +21,7 @@ export interface CurrencySymbols{
 
 export const languages =   [
     "English",
-    "German"
+    //"German"
 ]
 
 export const styles = [

@@ -101,7 +101,7 @@ const SettingsScreen = (props: Props): JSX.Element => {
         <ScrollView
             contentContainerStyle={[defaultViewStyles.containerWithPadding ,{justifyContent: "flex-start"}]}
         >
-            <View>
+            <View style={{width: "100%"}}>
                 <Text
                     style={textStyles.smallTitle}
                 >
@@ -118,7 +118,7 @@ const SettingsScreen = (props: Props): JSX.Element => {
                     selectedButtonStyle={[orangeButtonStyle.buttonStyle, {minWidth: 10}]}
                     selectedTextStyle={orangeButtonStyle.titleStyle}
                     buttons={currencySymbols}
-                    containerStyle={{height: 42, backgroundColor: defaultColors.backgroundColor, borderRadius: defaultRadius}}
+                    containerStyle={{height: 42, backgroundColor: defaultColors.backgroundColor, borderRadius: defaultRadius, width: "100%", marginLeft: 1, marginBottom: 1, marginTop: 1, marginRight: 1, borderWidth: 0}}
                 />
 
                 <ButtonGroup
@@ -131,7 +131,7 @@ const SettingsScreen = (props: Props): JSX.Element => {
                     selectedButtonStyle={[orangeButtonStyle.buttonStyle, {minWidth: 10}]}
                     selectedTextStyle={orangeButtonStyle.titleStyle}
                     buttons={['"20'+ currencySymbols[currencyID]+'"', '"'+currencySymbols[currencyID]+'20"']}
-                    containerStyle={{height: 42, backgroundColor: defaultColors.backgroundColor, borderRadius: defaultRadius}}
+                    containerStyle={{height: 42, backgroundColor: defaultColors.backgroundColor, borderRadius: defaultRadius, width: "100%", marginLeft: 1, marginBottom: 1, marginTop: 1, marginRight: 1, borderWidth: 0}}
                 />
 
             </View>
@@ -154,7 +154,7 @@ const SettingsScreen = (props: Props): JSX.Element => {
                     <Switch
                         value={styleID !== 0} //styleID === 0 => lightMode
                         onValueChange={(value: boolean) => updateStyle(value ? 1 : 0)}
-                        //disabled={true}
+                        disabled={true}
                     >
 
                     </Switch>
