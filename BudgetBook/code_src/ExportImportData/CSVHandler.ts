@@ -119,7 +119,7 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
 
     //parse booking data
     outString += defaultStringDivider
-    outString += "bookingDate"+defaultSeparator+"bookingAmount"+defaultSeparator+"bookingName"+defaultSeparator+"bookingCategoryID"+defaultLineEnd
+    outString += "bookingDate"+defaultSeparator+"totalAmount"+defaultSeparator+"bookingAmount"+defaultSeparator+"bookingName"+defaultSeparator+"bookingCategoryID"+defaultLineEnd
     bookings.forEach((be) => {
         const date: string = replaceAllIllegalCharacters(toISOStringWithTimezone(be.date))
         const total: string = replaceAllIllegalCharacters(be.total.toFixed(2)+"")
