@@ -28,7 +28,7 @@ const ImportScreen = (props: Props): JSX.Element => {
             </Text>
 
             { availableFiles.length === 0 ?
-                <Text>
+                <Text style={{textAlign: "center"}}>
                     No files available. Put the wanted ".csv" file in your "Downloads" directory.
                 </Text>
                 :
