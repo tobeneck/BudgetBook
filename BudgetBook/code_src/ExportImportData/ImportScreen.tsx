@@ -3,13 +3,17 @@ import { Text, ScrollView, TouchableOpacity } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { defaultColors, tableStyles } from "../Styles/Styles"
 import { getCsvFilesInDownloads } from "./CSVHandler"
+import ReassureImportPopup from "./ReassureImportPopup"
 
 interface Props{
-    loadCsvFile: (filename: string) => void
+    importData: (filename: string) => void
 }
 
 const ImportScreen = (props: Props): JSX.Element => {
     const [availableFiles, setAvailableFiles] = useState<string[]>(["hello", "this is a test.csv"])
+
+    const [reassureImportPopupVisible, setReassureImportPopupVisible] = useState<boolean>(false)
+    const [selectedFilename, setSelectedFilename] = useState<string>("")
 
     useEffect(() => {
         getCsvFilesInDownloads()
@@ -21,6 +25,15 @@ const ImportScreen = (props: Props): JSX.Element => {
 
     return(
         <>
+            <ReassureImportPopup
+                visible={selectedFilename !== ""}
+                importFileTitle={selectedFilename}
+                onImportPressed={() => {
+                    props.importData(selectedFilename)
+                    setSelectedFilename("")
+                }}
+                onCancelPressed={() => setSelectedFilename("")}
+            />
             <Text
                 style={[tableStyles.tableHeader, {textAlignVertical: "center", textAlign: "center"}]}
             >
@@ -41,7 +54,7 @@ const ImportScreen = (props: Props): JSX.Element => {
                     <>
                         <TouchableOpacity
                             style={tableStyles.tableRow}
-                            onPress={() => props.loadCsvFile(name)}
+                            onPress={() => setSelectedFilename(name)}
                         >
                             <Icon
                                 name="file-import-outline"

@@ -134,10 +134,11 @@ const App = () => {
 
   /**
    * pops the last item off the screen stack if the screen stack length is longer than 1
+   * @param count the amount of screens that should be popped
    */
-  const popScreenStack = (): void => {
+  const popScreenStack = (count: number = 1): void => {
     if(screenStack.length > 1)
-      setScreenStack(screenStack.slice(0,screenStack.length-1))
+      setScreenStack(screenStack.slice(0,screenStack.length-count))
   }
 
   /**
@@ -332,8 +333,10 @@ const App = () => {
             headerHeadline={"Import"}
             content = {
               <ImportScreen
-              loadCsvFile={(fileName: string) => {
-                readDownloadsData(fileName, setCategorys, setBookings)
+              importData={(fileName: string) => {
+                readDownloadsData(fileName, setAndSaveCategorys, setAndSaveBookings)
+                //if successfull pop the screen stack and go back to settings
+                popScreenStack()
               }}
             />
             }
