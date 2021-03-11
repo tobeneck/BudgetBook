@@ -91,6 +91,7 @@ const AmountInput = (props: Props): JSX.Element =>  {
         text = replaceAll(text, "0", "")
         text = replaceAll(text, "+", "")
         text = replaceAll(text, "-", "")
+        text = replaceAll(text, ".", "")
         text = replaceAll(text, " ", "")
 
         return text.length === 0
