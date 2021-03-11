@@ -133,7 +133,7 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
 }
 
 /**
- * exports the current data to the downloads foulder. If the default filename already exists it adds a "_n" to the filename
+ * exports the current data to the downloads folder. If the default filename already exists it adds a "_n" to the filename
  * @param categorys the categorys to be saved
  * @param bookings the bookings to be saved
  */
@@ -147,7 +147,7 @@ export const exportToDownloads = (categorys: CategoryElement[], bookings: Bookin
 }
 
 /**
- * saves the data to the cahce foulder
+ * saves the data to the cahce folder
  * @param categorys the categorys to be saved
  * @param bookings the bookings to be saved
  */

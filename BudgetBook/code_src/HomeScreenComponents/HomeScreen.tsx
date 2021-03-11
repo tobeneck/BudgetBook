@@ -1,5 +1,5 @@
 import React from "react"
-import { View } from "react-native"
+import { Dimensions, View } from "react-native"
 import { defaultColors, defaultViewStyles } from "../Styles/Styles"
 import MaterialComunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
@@ -32,7 +32,7 @@ const HomeScreen = (props: Props): JSX.Element => {
                 style={{flexDirection: "row", justifyContent: "space-between", alignContent: "stretch"}}
             >
                 <DarkBlueButton
-                    buttonStyle={{minWidth: 333, alignItems: "center"}} //TODO: magic number
+                    buttonStyle={{minWidth: Dimensions.get('window').width * 0.81}}
                     onPress={() => props.openScreen(eScreens.BOOKING_LIST_SCREEN)}
                     icon={
                         <MaterialComunityIcon
@@ -45,7 +45,7 @@ const HomeScreen = (props: Props): JSX.Element => {
                     title={"Bookings"}
                 />
                 <OrangeButton
-                    buttonStyle={{minWidth: 66}} //TODO: magic number
+                    buttonStyle={{minWidth: Dimensions.get('window').width * 0.16}}
                     onPress={() => props.openScreen(eScreens.ADD_BOOKING_SCREEN)}
                     icon={
                         <MaterialComunityIcon
@@ -61,7 +61,7 @@ const HomeScreen = (props: Props): JSX.Element => {
                 style={{flexDirection: "row", justifyContent: "space-between", alignContent: "stretch"}}
             >
                 <DarkBlueButton
-                    buttonStyle={{minWidth: 333, alignItems: "center"}} //TODO: magic number
+                    buttonStyle={{minWidth: Dimensions.get('window').width * 0.81}}
                     onPress={() => props.openScreen(eScreens.CATEGORY_LIST_SCREEN)}
                     icon={
                         <MaterialComunityIcon
@@ -73,7 +73,7 @@ const HomeScreen = (props: Props): JSX.Element => {
                     title={"Categorys"}
                 />
                 <OrangeButton
-                    buttonStyle={{minWidth: 66}} //TODO: magic number
+                    buttonStyle={{minWidth: Dimensions.get('window').width * 0.16}}
                     onPress={() => props.openScreen(eScreens.ADD_CATEGORY_SCREEN)}
                     icon={
                         <MaterialComunityIcon

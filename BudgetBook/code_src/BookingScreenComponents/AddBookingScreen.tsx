@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Text, TextInput, View, Keyboard } from "react-native"
+import { Text, TextInput, View, Keyboard, Dimensions } from "react-native"
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { BookingElement } from "./BookingList"
@@ -114,14 +114,14 @@ export const AddBookingScreen = (props: Props): JSX.Element => {
                     <View style={[defaultViewStyles.simpleRow, {alignContent: "stretch"}]}>
                         <BorderedPicker
                             //NOTE: can I resize the text?
-                            containerStyle={{width: 333}} //TODO: magic number
+                            containerStyle={{width: Dimensions.get('window').width * 0.81}}
                             selectedValue={category.id}
                             onValueChange={(itemValue, itemIndex) => (setCategory(props.categorys[itemIndex]))}
                             mode="dropdown"
                             content={props.categorys.map((ce: CategoryElement) => (<Picker.Item label={ce.name} value={ce.id} />))}
                         />
                         <DarkBlueButton
-                            buttonStyle={{minWidth: 66}} //TODO: magic numer
+                            buttonStyle={{minWidth: Dimensions.get('window').width * 0.16}}
                             onPress={() => props.onOpenAddCategorys()}
                             icon={
                                 <Icon

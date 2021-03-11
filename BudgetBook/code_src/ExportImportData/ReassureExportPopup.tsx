@@ -36,7 +36,7 @@ const ReassureExportPopup = (props: Props): JSX.Element => {
             <View style={{height: "100%", justifyContent: "space-between"}}>
                 <Text style={smallPopupStyles.headline}>Export the Data</Text>
 
-                <Text style={smallPopupStyles.text}>The data will be exportet to the "Downloads" foulder with the filename {filename}.</Text>
+                <Text style={smallPopupStyles.text}>The data will be exportet to the "Downloads" folder with the filename {filename}.</Text>
 
                 <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
                     <OrangeButton
