@@ -50,7 +50,7 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
                         Name
                     </Text>
                     <TextInput
-                        style={interactionElements.textInput}
+                        style={props.category.id === 0 ? [interactionElements.textInput, {color: defaultColors.disabled}] : interactionElements.textInput}
                         onChangeText={text => setCategoryName(text)}
                         value={categoryName}
                         editable={props.category.id !== 0}
@@ -62,7 +62,7 @@ const EditCategoryScreen = (props: Props): JSX.Element => {
                         Description
                     </Text>
                     <TextInput
-                        style={interactionElements.textField}
+                        style={props.category.id === 0 ? [interactionElements.textField, {color: defaultColors.disabled}] : interactionElements.textField}
                         onChangeText={text => setCategoryDescription(text)}
                         value={categoryDescription}
                         multiline={true}

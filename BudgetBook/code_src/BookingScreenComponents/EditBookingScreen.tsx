@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CategoryElement } from "../CategoryScreenComponents/CategoryList"
 import { BookingElement } from "./BookingList"
-import { defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles";
+import { defaultColors, defaultViewStyles, interactionElements, textStyles } from "../Styles/Styles";
 import AmountInput from "../GenericComponents/AmountInput/AmountInput";
 import DeleteButton from "../GenericComponents/GenericButtons/DeleteButton";
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
@@ -146,11 +146,12 @@ export const EditBookingScreen = (props: Props): JSX.Element => {
                         Description
                     </Text>
                     <TextInput
-                        style={interactionElements.textField}
+                        style={props.currentIndex === 0 ? [interactionElements.textField, {color: defaultColors.disabled}] : interactionElements.textField}
                         onChangeText={text => setDescription(text)}
                         value={description}
                         multiline={true}
                         textAlignVertical="top"
+                        editable={props.currentIndex !== 0}
                     />
                 </View>
 
