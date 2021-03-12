@@ -6,8 +6,7 @@ import BookingListScreen from "./code_src/BookingScreenComponents/BookingListScr
 import CategoryListScreen from "./code_src/CategoryScreenComponents/CategoryListScreen"
 import { saveToCache, exportToDownloads, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler'
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
-import ErrorExportingPopup from "./code_src/ExportImportData/ErrorExportingPopup"
-import { request, PERMISSIONS } from "react-native-permissions"
+import FSAccessErrorPopup from "./code_src/ExportImportData/FSAccessErrorPopup"
 import HomeScreen from "./code_src/HomeScreenComponents/HomeScreen"
 import ImportScreen from "./code_src/ExportImportData/ImportScreen"
 import ScreenComponent from './code_src/GenericComponents/ScreenComponent'
@@ -38,6 +37,7 @@ export enum eScreens{
 }
 
 export const SettingsContext = React.createContext<AppSettings>(defaultSettingsValue);
+export const errorPopupContext = React.createContext<string>("")
 
 const App = () => {
   const [ categorys, setCategorys ] = useState<CategoryElement[]>([defaultCategoryElement]) //there needs to be at least one category!
@@ -48,18 +48,38 @@ const App = () => {
   const [ currentBookingIndex, setCurrentBookingIndex ] = useState<number>(0) //TODO: is 0 really the best way to solve this?
   const [ reassureDeleteBookingPopupVisible, setReassureDeleteBookingPopupVisible ] = useState<boolean>(false)
 
-  const [reassureExportPopupVisible, setReassureExportPopupVisible] = useState<boolean>(false)
-  const [errorExportingPopupVisible, setErrorExportingPopupVisible] = useState<boolean>(false)
-
   const [screenStack, setScreenStack] = useState<eScreens[]>([eScreens.HOME_SCREEN])
   const [settings, setSettings] = useState<AppSettings>(defaultSettingsValue)
+
+  const [reassureExportPopupVisible, setReassureExportPopupVisible] = useState<boolean>(false)
+
+  const [fsAccessErrorPopupVisible, setFsAccessErrorPopupVisible] = useState<boolean>(false)
+
+  const [genericErrorPopupVisible, setGenericErrorPopupVisible] = useState<boolean>(false)
+  const [genericErrorPopupText, setGenericErrorPopupText] = useState<string>("")
+
+
+  /**
+   * handles an error when the file system access is not right
+   */
+  const handleFsAccessError = () => {
+    console.log("error!!!")
+    setFsAccessErrorPopupVisible(true)
+  }
+
+  const handleGenericError = (message: string) => {
+    setGenericErrorPopupText(message)
+    setGenericErrorPopupVisible(true)
+    //TODO: implement the popup and stuff!
+  }
+
 
   /**
    * saves the new bookings to the cache and to the state
    * @param newBookings the new bookings to be saved
    */
   const setAndSaveBookings = (newBookings: BookingElement[]): void => {
-    saveToCache(categorys, newBookings)
+    saveToCache(categorys, newBookings, handleGenericError)
     setBookings(newBookings)
   }
 
@@ -68,7 +88,7 @@ const App = () => {
    * @param newCategorys the new categorys to be saved
    */
   const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
-    saveToCache(newCategorys, bookings)
+    saveToCache(newCategorys, bookings, handleGenericError)
     setCategorys(newCategorys)
   }
 
@@ -78,46 +98,7 @@ const App = () => {
    */
   const setAndSaveSettings = (newSettings: AppSettings): void => {
     setSettings(newSettings)
-    writeSettings(newSettings)
-  }
-
-  /**
-   * If a unexpected error occured, this callback can be called to open the generigErrorPopup
-   * @param e the error which occured
-   */
-  const genericErrorCallback = (e: Error) => {
-    //TODO: open a generic error popup
-  }
-
-  /**
-   * callback when an error occurs during exporting.
-   */
-  const errorExportingCallback = (e: Error) => {
-    //TODO: check if its really a permission error
-    // if(e.message.includes("Permission denied")){
-
-    // }
-
-    request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then((result) => {
-      switch(result){
-        case "denied":
-          setErrorExportingPopupVisible(true)
-          break;
-        case "blocked":
-          setErrorExportingPopupVisible(true)
-          break;
-        case "granted":
-          exportToDownloads(categorys, bookings, genericErrorCallback)
-          break;
-        // case "limited":
-        //   break;
-        // case "unavailable":
-        //   break;
-        default:
-          genericErrorCallback(e)
-      }
-    });
-    //setErrorExportingPopupVisible(true)
+    writeSettings(newSettings, handleFsAccessError, handleGenericError)
   }
 
   /**
@@ -126,7 +107,7 @@ const App = () => {
    * @param newBookings the new bookings to be saved
    */
   const setAndSaveBookingsAndCategorys = (newCategorys: CategoryElement[], newBookings: BookingElement[]): void => {
-    saveToCache(newCategorys, newBookings)
+    saveToCache(newCategorys, newBookings, handleGenericError)
     setBookings(newBookings)
     setCategorys(newCategorys)
   }
@@ -334,10 +315,12 @@ const App = () => {
             content = {
               <ImportScreen
               importData={(fileName: string) => {
-                readDownloadsData(fileName, setAndSaveCategorys, setAndSaveBookings)
+                readDownloadsData(fileName, setAndSaveCategorys, setAndSaveBookings, handleFsAccessError, handleGenericError)
                 //if successfull pop the screen stack and go back to settings
                 popScreenStack()
               }}
+              handleError={handleGenericError}
+              handleAccessError={handleFsAccessError}
             />
             }
           />
@@ -349,9 +332,9 @@ const App = () => {
 
   useEffect(() => {
     //read the initial data
-    readCacheData(setCategorys, setBookings)
+    readCacheData(setCategorys, setBookings, handleGenericError)
 
-    readSettings((newSettings: AppSettings) => setSettings(newSettings))
+    readSettings((newSettings: AppSettings) => setSettings(newSettings), handleFsAccessError, handleGenericError)
   }, []);
 
   useBackHandler(() => {
@@ -363,8 +346,6 @@ const App = () => {
     // let the default thing happen
     return false
   })
-
-  console.log("settings bevore rendering: ", settings)
 
   return (
     <SafeAreaView
@@ -424,13 +405,17 @@ const App = () => {
         visible={reassureExportPopupVisible}
         onCancelPressed={() => setReassureExportPopupVisible(false)}
         onExportPressed={() => {
-          exportToDownloads(categorys, bookings, errorExportingCallback)
+          console.log("export pressed")
+          exportToDownloads(categorys, bookings, handleFsAccessError, handleGenericError)
           setReassureExportPopupVisible(false)
         }}
+        handleError={handleGenericError}
+        handleAccessError={handleFsAccessError}
       />
-      <ErrorExportingPopup
-        visible={errorExportingPopupVisible}
-        onCancelPressed={(() => setErrorExportingPopupVisible(false))}
+      <FSAccessErrorPopup
+        visible={fsAccessErrorPopupVisible}
+        setVisible={(visible: boolean) => setFsAccessErrorPopupVisible(visible)}
+        //TODO: generic error popup
       />
 
 

@@ -1,40 +1,43 @@
 import React from "react"
 import { Text, View } from "react-native"
 import { Overlay } from "react-native-elements"
-import { smallPopupStyles, spacings } from "../Styles/Styles"
+import { defaultViewStyles, smallPopupStyles, spacings } from "../Styles/Styles"
 import { openSettings } from 'react-native-permissions';
 import OrangeButton from "../GenericComponents/GenericButtons/OrangeButton";
 import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton";
 
 interface Props{
     visible: boolean,
-    onCancelPressed: () => void
+    setVisible: (visible: boolean) => void
 }
 
-const ErrorExportingPopup = (props: Props): JSX.Element => {
+const FSAccessErrorPopup = (props: Props): JSX.Element => {
     return (
         <Overlay
             isVisible={props.visible}
-            // onBackdropPress={() => props.setVisible(false)}
+            onBackdropPress={() => props.setVisible(false)}
             overlayStyle={smallPopupStyles.overlay}
             statusBarTranslucent={true}
-            onRequestClose={() => props.onCancelPressed()}
+            onRequestClose={() => props.setVisible(false)}
         >
             <View style={{height: "100%", justifyContent: "space-between"}}>
-                <Text style={smallPopupStyles.errorHeadline}>Error exporting the Data</Text>
+                <Text style={smallPopupStyles.errorHeadline}>Not all neccecary permissions granted</Text>
 
-                <Text style={smallPopupStyles.text}>The data could not be exportet. This app does not have the permissions to write to your devices storage. Please enable the permission for the file acces for this app in the settings.</Text>
+                <Text style={smallPopupStyles.text}>The App has no permission to access the files on your phone. Please check the Settings of this app and grand permission to access "Files and media", otherwise your data can not be exported or imported.</Text>
 
-                <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
+                <View style={defaultViewStyles.bottomButtonRow}>
                     <OrangeButton
-                        onPress={() => openSettings().catch(console.error)}
+                        onPress={() => {
+                            openSettings().catch(console.error)
+
+                        }}
                         title="Open settings"
                     />
 
                     <View style={spacings.defaultVerticalSpacing} />
 
                     <DarkBlueButton
-                        onPress={() => props.onCancelPressed()}
+                        onPress={() => props.setVisible(false)}
                         title="Cancel"
                     />
                 </View>
@@ -43,4 +46,4 @@ const ErrorExportingPopup = (props: Props): JSX.Element => {
     )
 }
 
-export default ErrorExportingPopup
+export default FSAccessErrorPopup

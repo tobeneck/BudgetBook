@@ -1,8 +1,7 @@
 import { BookingElement } from '../BookingScreenComponents/BookingList'
 import { CategoryElement } from '../CategoryScreenComponents/CategoryList'
 import moment from 'moment'
-import RNFetchBlob, { RNFetchBlobWriteStream } from "rn-fetch-blob"
-import { defaultDownloadDir, defaultExportDir, readFile, writeFile } from './ReadAndWriteFiles'
+import { checkReadExternalStorage, checkWriteExternalStorage, defaultDownloadDir, defaultExportDir, getFilesInPath, readFile, writeFile } from './ReadAndWriteFiles'
 
 const defaultSeparator: string = ";"
 const defaultSeparatorReplacement: string = ","
@@ -52,26 +51,41 @@ const replaceAllIllegalCharacters = (input: string): string => {
     return out
 }
 
-export const getCsvFilesInDownloads = (): Promise<string[]> => {
-    const exportDir: string = defaultDownloadDir
 
-    return (
-        RNFetchBlob.fs.ls(exportDir)
-        .then<string[]>((filenames: string[]) => {
-            const filteredFilenames: string[] = []
-            filenames.forEach(element => {
-                if(element.includes(".csv"))
-                    filteredFilenames.push(element+"")
-            });
-            return filteredFilenames
+export const getCsvFilesInDownloads = (accessError: () => void): Promise<string[]> => {
+    const downloadDir: string = defaultDownloadDir
+    //TODO: check access rights
+
+    return(
+        checkReadExternalStorage()
+        .then((hasReadAccess: boolean) => {
+            if(hasReadAccess){
+                return (
+                    getFilesInPath(downloadDir)
+                    .then((filenames: string[]) => {
+                        const filteredFilenames: string[] = []
+                        filenames.forEach(element => {
+                            if(element.includes(".csv"))
+                                filteredFilenames.push(element+"")
+                        });
+                        return filteredFilenames
+                    })
+                )
+            }
+            else{
+                accessError()
+                return []
+            }
         })
     )
+
 }
 
 /**
  * returns the next free filename in the downloads directory
  */
-export const getFreeFilePath = (): Promise<string> => {
+ export const getFreeFilePath = (accessError: () => void): Promise<string> => {
+     //TODO: check acces rights
     const exportDir: string = defaultDownloadDir
     var filePathIterator: number = 0
 
@@ -83,13 +97,13 @@ export const getFreeFilePath = (): Promise<string> => {
     }
 
     return (
-        getCsvFilesInDownloads()
+        getCsvFilesInDownloads(accessError)
         .then<string>((filenames: string[]) => {
             while(filenames.includes(getCurrentIterationFilename())){
                 filePathIterator += 1
             }
             return exportDir+"/"+getCurrentIterationFilename()
-        })
+        }) //handle the error in the "parent" method
     )
 }
 
@@ -136,48 +150,79 @@ const dataToString = (categorys: CategoryElement[], bookings: BookingElement[]):
  * exports the current data to the downloads folder. If the default filename already exists it adds a "_n" to the filename
  * @param categorys the categorys to be saved
  * @param bookings the bookings to be saved
+ * @param accessError callback for an file access error
+ * @param otherError callback for a other generic error
  */
-export const exportToDownloads = (categorys: CategoryElement[], bookings: BookingElement[], errorCallback: (e: Error) => void): void => {
-    getFreeFilePath()
-    .then((filepath: string) => {
-        const data: string = dataToString(categorys, bookings)
-        writeFile(data, filepath, errorCallback)
+export const exportToDownloads = (categorys: CategoryElement[], bookings: BookingElement[], accessError: () => void, otherError: (message: string) => void): void => {
+
+    checkWriteExternalStorage()
+    .then((hasWriteAccess: boolean) => {
+
+        if(hasWriteAccess){
+            getFreeFilePath(accessError)
+            .then((filepath: string) => {
+                const data: string = dataToString(categorys, bookings)
+                writeFile(data, filepath, otherError)
+            })
+            .catch((e: Error) => otherError("An error occured checking a file existence! Got the error: \n"+e.message))
+        } else {
+            accessError()
+        }
+
     })
-    .catch(console.error)
+    .catch((e: Error) => otherError("An error occured checking the external write permissions! Got the message: \n"+e.message))
 }
 
 /**
  * saves the data to the cahce folder
  * @param categorys the categorys to be saved
  * @param bookings the bookings to be saved
+ * @param accessError callback for an file access error
+ * @param otherError callback for a other generic error
  */
-export const saveToCache = (categorys: CategoryElement[], bookings: BookingElement[]): void => {
+export const saveToCache = (categorys: CategoryElement[], bookings: BookingElement[], otherError: (message: string) => void): void => {
     const filepath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding;
 
     const data: string = dataToString(categorys, bookings)
-    writeFile(data, filepath)
+
+    //no need to check!
+    writeFile(data, filepath, otherError)
 }
 
 /**
  * reads the data from the default downloads directory. Used for importing.
  * @param setCategorys the callback method for categorys
  * @param setBookings the callback method for bookings
+ * @param accessError callback for an file access error
+ * @param otherError callback for a other generic error
  */
-export const readDownloadsData = (fileName: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+export const readDownloadsData = (fileName: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, accessError: () => void, otherError: (message: string) => void): void => {
     const filePath: string = defaultDownloadDir + "/" + fileName
-    readData(filePath, setCategorys, setBookings)
+
+    checkReadExternalStorage()
+    .then((hasReadAccess: boolean) => {
+        if(hasReadAccess){
+            readData(filePath, setCategorys, setBookings, otherError)
+        } else {
+            accessError()
+        }
+    })
+    .catch((e: Error) => otherError("An error occured checking the external read permissions! Got the message: \n"+e.message))
 }
 
 /**
  * reads the data from the default cache. Used when starting the app.
  * @param setCategorys the callback method for categorys
  * @param setBookings the callback method for bookings
+ * @param accessError callback for an file access error
+ * @param otherError callback for a other generic error
  */
-export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
+export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, otherError: (message: string) => void): void => {
     const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
-    readData(filePath, setCategorys, setBookings)
-}
 
+    //no need to check!
+    readData(filePath, setCategorys, setBookings, otherError)
+}
 
 
 
@@ -185,14 +230,18 @@ export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => vo
  * reads the in filepath. After decrypting the data, the two setter methods are called
  * @param setCategorys callback method to set the read categorys
  * @param setBookings callback method to set the read bookings
+ * @param accessError callback for an file access error
+ * @param otherError callback for a other generic error
  */
-const readData = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void): void => {
-    
+const readData = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, otherError: (message: string) => void): void => {
+
     readFile(filePath)
     .then((data: string) => {
+
+        //read and convert the data here
         const categorys: CategoryElement[] = []
         const bookings: BookingElement[] = []
-    
+
         const dataFormatVersion: string = data.split(defaultStringDivider)[0].replace(defaultLineEnd, "")
         switch(dataFormatVersion){
             case currentDataFormatVersion: //TODO: check for other file versions and read them accodringly in the future!
@@ -201,10 +250,10 @@ const readData = (filePath: string, setCategorys: (categorys: CategoryElement[])
             default:
                 console.error("Error reading the file! The data format version \"", dataFormatVersion, "\" is not supportet in this version of the app.") //TODO: throw error!
         }
-    
+
         const categorysString: string[] = data.split(defaultStringDivider)[1].split(defaultLineEnd)
         const bookingsString: string[] = data.split(defaultStringDivider)[2].split(defaultLineEnd)
-    
+
         for(let i: number = 1; i < categorysString.length; i++){//read the categorys. Start at 1 to skit the header row
             if(categorysString[i] !== ""){ //the last element always is "", avoid this!
                 const currentRow: string[] = categorysString[i].split(defaultSeparator)
@@ -220,7 +269,7 @@ const readData = (filePath: string, setCategorys: (categorys: CategoryElement[])
                 )
             }
         }
-    
+
         for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
             if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
                 const currentRow: string[] = bookingsString[i].split(defaultSeparator)
@@ -234,11 +283,12 @@ const readData = (filePath: string, setCategorys: (categorys: CategoryElement[])
                 } as BookingElement)
             }
         }
-    
+
         setCategorys(categorys)
         setBookings(bookings)
+
     })
-    .catch(console.error)
+    .catch((e: Error) => otherError("An error occured when reading the app data! Got the message: \n"+ e.message))
 }
 
 

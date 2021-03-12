@@ -1,4 +1,4 @@
-import { defaultExportDir, readFile, writeFile } from "./ReadAndWriteFiles"
+import { checkReadExternalStorage, checkWriteExternalStorage, defaultExportDir, readFile, writeFile } from "./ReadAndWriteFiles"
 
 const settingsFileName: string = "settings.csv"
 
@@ -41,30 +41,25 @@ export const defaultSettingsValue: AppSettings = {
     style: "lightMode"
 } as AppSettings
 
-export const readSettings = (setSettings: (newSettings: AppSettings) => void): void => {
+export const readSettings = (setSettings: (newSettings: AppSettings) => void, accessError: () => void, otherError: (message: string) => void): void => {
+    //no need to check read acces for cache
     readFile(defaultExportDir+"/"+settingsFileName)
     .then((data: string) => {
-        console.log("the read data:", data)
         const newSettings: AppSettings = JSON.parse(data)
-
-        console.log("the new Settings:", newSettings)
-        console.log("test the new Settings:", newSettings.currencySymbol.post)
-        console.log("test the new Settings:", newSettings.language)
-        console.log("test the new Settings:", newSettings.style)
 
         setSettings(newSettings)
     })
-    .catch(console.error)
+    .catch((e: Error) => otherError("An error occured when reading the settings! Got message: \n"+ e.message))
 }
 
 /**
  * writes the new data into the settings file
  * @param settings the new settings to be saved
  */
-export const writeSettings = (settings: AppSettings): void => {
-
+export const writeSettings = (settings: AppSettings, accessError: () => void, otherError: (message: string) => void): void => {
+    //no need to check write access for cache
     const outString: string = JSON.stringify(settings)
-    writeFile(outString, defaultExportDir+"/"+settingsFileName)
+    writeFile(outString, defaultExportDir+"/"+settingsFileName, otherError)
 }
 
 

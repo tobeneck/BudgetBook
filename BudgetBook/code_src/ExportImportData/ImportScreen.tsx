@@ -6,22 +6,25 @@ import { getCsvFilesInDownloads } from "./CSVHandler"
 import ReassureImportPopup from "./ReassureImportPopup"
 
 interface Props{
-    importData: (filename: string) => void
+    importData: (filename: string) => void,
+    handleError: (message: string) => void,
+    handleAccessError: () => void
 }
 
 const ImportScreen = (props: Props): JSX.Element => {
-    const [availableFiles, setAvailableFiles] = useState<string[]>(["hello", "this is a test.csv"])
-
-    const [reassureImportPopupVisible, setReassureImportPopupVisible] = useState<boolean>(false)
+    const [availableFiles, setAvailableFiles] = useState<string[]>([])
     const [selectedFilename, setSelectedFilename] = useState<string>("")
 
     useEffect(() => {
-        getCsvFilesInDownloads()
+        console.log("try reading an external filepath import screen")
+        getCsvFilesInDownloads(props.handleAccessError)
         .then((filenames: string[]) => {
             setAvailableFiles(filenames)
         })
+        .catch((e: Error) => props.handleError('An error occured reading the files in the "Download" directory. Got the message: \n'+e.message))
     }, [])
 
+     //TODO: in the import screen, show a message if the app has no permission to read!
 
     return(
         <>

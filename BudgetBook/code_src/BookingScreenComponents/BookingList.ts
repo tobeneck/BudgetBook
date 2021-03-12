@@ -37,8 +37,6 @@ export const sortBookings = (bookings: BookingElement[]): BookingElement[] => {
         const dateA: number = beA.date.getTime()
         const dateB: number = beB.date.getTime()
 
-        console.log(dateA, dateB)
-
         if(dateA > dateB)
             return -1
         if(dateA < dateB)

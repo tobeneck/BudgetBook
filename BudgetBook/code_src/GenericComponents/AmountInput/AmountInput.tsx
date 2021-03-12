@@ -102,7 +102,6 @@ const AmountInput = (props: Props): JSX.Element =>  {
      * @param newPos the new pos to be set
      */
     const savelySetCursorPos = (newPos: CursorPos, saveCursorPos: number = amount.length): void => {
-        console.log(newPos, saveCursorPos)
         if(newPos.start > saveCursorPos
             || (!!newPos.end && newPos.end > saveCursorPos)
             || newPos.start < 0){ //do not allow unvalid cursor positions!
@@ -162,7 +161,6 @@ const AmountInput = (props: Props): JSX.Element =>  {
                 break
             default:
                 newAmount = left+key+right
-                console.log(cursorPos.start)
                 savelySetCursorPos({start: cursorPos.start+1, end: undefined} as CursorPos, amount.length + 1) //as we remove one the save length is longer
         }
         setAmount(newAmount)

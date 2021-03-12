@@ -11,19 +11,23 @@ import DarkBlueButton from "../GenericComponents/GenericButtons/DarkBlueButton"
 interface Props{
     visible: boolean,
     onCancelPressed: () => void,
-    onExportPressed: () => void
+    onExportPressed: () => void,
+    handleError: (message: string) => void,
+    handleAccessError: () => void
 }
 
 const ReassureExportPopup = (props: Props): JSX.Element => {
     const [filename, setFilename] = useState<string>(defaultFilename+currentDateAppendix()+defaultFileEnding)
 
     useEffect(() => {
-        getFreeFilePath()
+        console.log("try reading an external filepath export popup")
+        getFreeFilePath(props.handleAccessError)
         .then((filepath: string) => {
             const splitFilepath: string[] = filepath.split("/")
             setFilename(splitFilepath[splitFilepath.length - 1])
         })
-    })
+        .catch((e: Error) => props.handleError("An error occured checking a file existence! Got the error: \n"+e.message))
+    }, [])
 
     return (
         <Overlay
