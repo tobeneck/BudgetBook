@@ -4,7 +4,7 @@ import { BookingElement, defaultBookingElement, getCurrentTotal, sortBookings, u
 import { CategoryElement, defaultCategoryElement, getActiveCategorys, getCategorysWithoud, getTimesUsed, valueCopyCategorys } from './code_src/CategoryScreenComponents/CategoryList'
 import BookingListScreen from "./code_src/BookingScreenComponents/BookingListScreen"
 import CategoryListScreen from "./code_src/CategoryScreenComponents/CategoryListScreen"
-import { saveToCache, exportToDownloads, readCacheData, readDownloadsData } from './code_src/ExportImportData/CSVHandler'
+import { saveToCache, exportToDownloads, readCacheData, readDownloadsData, initializeCategorysAndBookings } from './code_src/ExportImportData/CategorysAndBookingsManager'
 import ReassureExportPopup from "./code_src/ExportImportData/ReassureExportPopup"
 import FSAccessErrorPopup from "./code_src/ExportImportData/FSAccessErrorPopup"
 import HomeScreen from "./code_src/HomeScreenComponents/HomeScreen"
@@ -18,7 +18,8 @@ import { AddCategoryScreen } from './code_src/CategoryScreenComponents/AddCatego
 import EditCategoryScreen from './code_src/CategoryScreenComponents/EditCategoryScreen'
 import ReassureDeleteCategoryPopup from './code_src/CategoryScreenComponents/ReassureDeleteCategoryPopup'
 import SettingsScreen from './code_src/SettingsScreenComponents/SettingsScreen'
-import { AppSettings, defaultSettingsValue, readSettings, writeSettings } from './code_src/ExportImportData/SettingsManager'
+import { AppSettings, defaultSettingsValue, initializeSettings, writeSettings } from './code_src/ExportImportData/SettingsManager'
+import ErrorPopup from './code_src/GenericComponents/ErrorPopup'
 
 export enum eScreens{
   CATEGORY_LIST_SCREEN = 0,
@@ -63,7 +64,6 @@ const App = () => {
    * handles an error when the file system access is not right
    */
   const handleFsAccessError = () => {
-    console.log("error!!!")
     setFsAccessErrorPopupVisible(true)
   }
 
@@ -88,17 +88,9 @@ const App = () => {
    * @param newCategorys the new categorys to be saved
    */
   const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
+    console.log("setting new categorys: ", newCategorys)
     saveToCache(newCategorys, bookings, handleGenericError)
     setCategorys(newCategorys)
-  }
-
-  /**
-   * sets the new settings and saves it into a file
-   * @param newSettings the new settings
-   */
-  const setAndSaveSettings = (newSettings: AppSettings): void => {
-    setSettings(newSettings)
-    writeSettings(newSettings, handleFsAccessError, handleGenericError)
   }
 
   /**
@@ -110,6 +102,15 @@ const App = () => {
     saveToCache(newCategorys, newBookings, handleGenericError)
     setBookings(newBookings)
     setCategorys(newCategorys)
+  }
+
+  /**
+   * sets the new settings and saves it into a file
+   * @param newSettings the new settings
+   */
+  const setAndSaveSettings = (newSettings: AppSettings): void => {
+    setSettings(newSettings)
+    writeSettings(newSettings, handleGenericError)
   }
 
 
@@ -315,7 +316,7 @@ const App = () => {
             content = {
               <ImportScreen
               importData={(fileName: string) => {
-                readDownloadsData(fileName, setAndSaveCategorys, setAndSaveBookings, handleFsAccessError, handleGenericError)
+                readDownloadsData(fileName, setAndSaveBookingsAndCategorys, handleFsAccessError, handleGenericError)
                 //if successfull pop the screen stack and go back to settings
                 popScreenStack()
               }}
@@ -332,9 +333,11 @@ const App = () => {
 
   useEffect(() => {
     //read the initial data
-    readCacheData(setCategorys, setBookings, handleGenericError)
+    initializeCategorysAndBookings((newCategorys: CategoryElement[], newBookings: BookingElement[]) => {setCategorys(newCategorys); setBookings(newBookings)}, handleGenericError)
+    //readCacheData(setCategorys, setBookings, handleGenericError)
 
-    readSettings((newSettings: AppSettings) => setSettings(newSettings), handleFsAccessError, handleGenericError)
+    initializeSettings((newSettings: AppSettings) => setSettings(newSettings), handleGenericError)
+    //readSettings((newSettings: AppSettings) => setSettings(newSettings), handleFsAccessError, handleGenericError)
   }, []);
 
   useBackHandler(() => {
@@ -405,7 +408,6 @@ const App = () => {
         visible={reassureExportPopupVisible}
         onCancelPressed={() => setReassureExportPopupVisible(false)}
         onExportPressed={() => {
-          console.log("export pressed")
           exportToDownloads(categorys, bookings, handleFsAccessError, handleGenericError)
           setReassureExportPopupVisible(false)
         }}
@@ -416,6 +418,14 @@ const App = () => {
         visible={fsAccessErrorPopupVisible}
         setVisible={(visible: boolean) => setFsAccessErrorPopupVisible(visible)}
         //TODO: generic error popup
+      />
+      <ErrorPopup
+        visible={genericErrorPopupVisible}
+        errorText={genericErrorPopupText}
+        closePopup={() => {
+          setGenericErrorPopupVisible(false)
+          setGenericErrorPopupText("")
+        }}
       />
 
 

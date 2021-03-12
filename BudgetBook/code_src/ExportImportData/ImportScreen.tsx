@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Text, ScrollView, TouchableOpacity } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { defaultColors, tableStyles } from "../Styles/Styles"
-import { getCsvFilesInDownloads } from "./CSVHandler"
+import { getCsvFilesInDownloads } from "./CategorysAndBookingsManager"
 import ReassureImportPopup from "./ReassureImportPopup"
 
 interface Props{
@@ -16,7 +16,6 @@ const ImportScreen = (props: Props): JSX.Element => {
     const [selectedFilename, setSelectedFilename] = useState<string>("")
 
     useEffect(() => {
-        console.log("try reading an external filepath import screen")
         getCsvFilesInDownloads(props.handleAccessError)
         .then((filenames: string[]) => {
             setAvailableFiles(filenames)

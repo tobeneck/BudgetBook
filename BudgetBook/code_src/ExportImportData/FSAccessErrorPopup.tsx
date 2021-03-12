@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, View } from "react-native"
+import { ScrollView, Text, View } from "react-native"
 import { Overlay } from "react-native-elements"
 import { defaultViewStyles, smallPopupStyles, spacings } from "../Styles/Styles"
 import { openSettings } from 'react-native-permissions';
@@ -20,28 +20,28 @@ const FSAccessErrorPopup = (props: Props): JSX.Element => {
             statusBarTranslucent={true}
             onRequestClose={() => props.setVisible(false)}
         >
-            <View style={{height: "100%", justifyContent: "space-between"}}>
-                <Text style={smallPopupStyles.errorHeadline}>Not all neccecary permissions granted</Text>
+                <View style={{height: "100%", justifyContent: "space-between"}}>
+                    <Text style={smallPopupStyles.errorHeadline}>Not all neccecary permissions granted</Text>
 
-                <Text style={smallPopupStyles.text}>The App has no permission to access the files on your phone. Please check the Settings of this app and grand permission to access "Files and media", otherwise your data can not be exported or imported.</Text>
+                    <Text style={smallPopupStyles.text}>The App has no permission to access the files on your phone. Please check the Settings of this app and grand permission to access "Files and media", otherwise your data can not be exported or imported.</Text>
 
-                <View style={defaultViewStyles.bottomButtonRow}>
-                    <OrangeButton
-                        onPress={() => {
-                            openSettings().catch(console.error)
+                    <View style={defaultViewStyles.bottomButtonRow}>
+                        <OrangeButton
+                            onPress={() => {
+                                openSettings().catch(console.error)
 
-                        }}
-                        title="Open settings"
-                    />
+                            }}
+                            title="Open settings"
+                        />
 
-                    <View style={spacings.defaultVerticalSpacing} />
+                        <View style={spacings.defaultVerticalSpacing} />
 
-                    <DarkBlueButton
-                        onPress={() => props.setVisible(false)}
-                        title="Cancel"
-                    />
+                        <DarkBlueButton
+                            onPress={() => props.setVisible(false)}
+                            title="Cancel"
+                        />
+                    </View>
                 </View>
-            </View>
         </Overlay>
     )
 }

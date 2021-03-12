@@ -164,10 +164,11 @@ export const interactionElements = StyleSheet.create({ //for interactions, for e
 })
 
 
-const smallPopupHeightPercentage: number = 30
 export const smallPopupStyles = StyleSheet.create({
   overlay: {
-    height: smallPopupHeightPercentage+"%",
+    height: "30%",
+    minHeight: "30%",
+    maxHeight: "70%",
     width: "70%",
     backgroundColor: colors.nearWhite,
     top: "-6%",

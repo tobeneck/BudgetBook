@@ -1,3 +1,5 @@
+import { isDate } from "moment"
+import RNFetchBlob from "rn-fetch-blob"
 import { checkReadExternalStorage, checkWriteExternalStorage, defaultExportDir, readFile, writeFile } from "./ReadAndWriteFiles"
 
 const settingsFileName: string = "settings.csv"
@@ -41,7 +43,32 @@ export const defaultSettingsValue: AppSettings = {
     style: "lightMode"
 } as AppSettings
 
-export const readSettings = (setSettings: (newSettings: AppSettings) => void, accessError: () => void, otherError: (message: string) => void): void => {
+/**
+ * initializes the Settings. Reads a settings file if it exists and creates one if it does not
+ * @param setSettings callback to set the settings if initial settings exists
+ * @param otherError callback for an error
+ */
+export const initializeSettings = (setSettings: (appSettings: AppSettings) => void, otherError: (message: string) => void): void => {
+    RNFetchBlob.fs.exists(defaultExportDir+"/"+settingsFileName)
+    .then((exists: boolean) => {
+        if(exists){
+            readSettings(setSettings, otherError)
+        } else {
+            writeSettings(defaultSettingsValue, otherError)
+        }
+    })
+    .catch((e: Error) => {
+        otherError("An error occured initializing the settings! Got the message: \n"+e.message)
+    })
+}
+
+
+/**
+ * reads the settings data from the settings file in the cache
+ * @param setSettings callback to set the settings if initial settings exists
+ * @param otherError callback for an error
+ */
+const readSettings = (setSettings: (newSettings: AppSettings) => void, otherError: (message: string) => void): void => {
     //no need to check read acces for cache
     readFile(defaultExportDir+"/"+settingsFileName)
     .then((data: string) => {
@@ -56,7 +83,7 @@ export const readSettings = (setSettings: (newSettings: AppSettings) => void, ac
  * writes the new data into the settings file
  * @param settings the new settings to be saved
  */
-export const writeSettings = (settings: AppSettings, accessError: () => void, otherError: (message: string) => void): void => {
+export const writeSettings = (settings: AppSettings, otherError: (message: string) => void): void => {
     //no need to check write access for cache
     const outString: string = JSON.stringify(settings)
     writeFile(outString, defaultExportDir+"/"+settingsFileName, otherError)

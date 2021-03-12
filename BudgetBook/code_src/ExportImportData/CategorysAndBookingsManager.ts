@@ -1,7 +1,8 @@
-import { BookingElement } from '../BookingScreenComponents/BookingList'
-import { CategoryElement } from '../CategoryScreenComponents/CategoryList'
+import { BookingElement, defaultBookingElement } from '../BookingScreenComponents/BookingList'
+import { CategoryElement, defaultCategoryElement } from '../CategoryScreenComponents/CategoryList'
 import moment from 'moment'
 import { checkReadExternalStorage, checkWriteExternalStorage, defaultDownloadDir, defaultExportDir, getFilesInPath, readFile, writeFile } from './ReadAndWriteFiles'
+import RNFetchBlob from 'rn-fetch-blob'
 
 const defaultSeparator: string = ";"
 const defaultSeparatorReplacement: string = ","
@@ -16,6 +17,31 @@ const currentDataFormatVersion: string = "BudgetBook Data Export Version 1.0"
 export interface CombinedData{
     categorys: CategoryElement[],
     bookings: BookingElement[]
+}
+
+/**
+ * initializes the Categorys and Bookings. Reads them from the BudgetBookData.csv file in the cache
+ * @param setSettings callback to set the settings if initial settings exists
+ * @param otherError callback for an error
+ */
+ export const initializeCategorysAndBookings = (setCategorysAndBookings: (categorys: CategoryElement[], newBookings: BookingElement[])=> void, otherError: (message: string) => void): void => {
+
+    const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
+
+    RNFetchBlob.fs.exists(filePath)
+    .then((exists: boolean) => {
+        if(exists){
+            console.log("initialize by reading the data")
+            readCacheData(setCategorysAndBookings, otherError)
+        } else {
+            setCategorysAndBookings([defaultCategoryElement], [defaultBookingElement])
+            saveToCache([defaultCategoryElement], [defaultBookingElement], otherError)
+        }
+    })
+    .catch((e: Error) => {
+        otherError("An error occured initializing the bookings and categorys! Got the message: \n"+e.message)
+    })
+
 }
 
 /**
@@ -196,13 +222,13 @@ export const saveToCache = (categorys: CategoryElement[], bookings: BookingEleme
  * @param accessError callback for an file access error
  * @param otherError callback for a other generic error
  */
-export const readDownloadsData = (fileName: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, accessError: () => void, otherError: (message: string) => void): void => {
+export const readDownloadsData = (fileName: string, setCategorysAndBookings: (categorys: CategoryElement[], newBookings: BookingElement[])=> void, accessError: () => void, otherError: (message: string) => void): void => {
     const filePath: string = defaultDownloadDir + "/" + fileName
 
     checkReadExternalStorage()
     .then((hasReadAccess: boolean) => {
         if(hasReadAccess){
-            readData(filePath, setCategorys, setBookings, otherError)
+            readData(filePath, setCategorysAndBookings, otherError)
         } else {
             accessError()
         }
@@ -217,11 +243,11 @@ export const readDownloadsData = (fileName: string, setCategorys: (categorys: Ca
  * @param accessError callback for an file access error
  * @param otherError callback for a other generic error
  */
-export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, otherError: (message: string) => void): void => {
+export const readCacheData = (setCategorysAndBookings: (categorys: CategoryElement[], newBookings: BookingElement[])=> void, otherError: (message: string) => void): void => {
     const filePath: string = defaultExportDir + "/" + defaultFilename + defaultFileEnding
 
     //no need to check!
-    readData(filePath, setCategorys, setBookings, otherError)
+    readData(filePath, setCategorysAndBookings, otherError)
 }
 
 
@@ -233,7 +259,7 @@ export const readCacheData = (setCategorys: (categorys: CategoryElement[]) => vo
  * @param accessError callback for an file access error
  * @param otherError callback for a other generic error
  */
-const readData = (filePath: string, setCategorys: (categorys: CategoryElement[]) => void, setBookings: (bookings: BookingElement[]) => void, otherError: (message: string) => void): void => {
+const readData = (filePath: string, setCategorysAndBookings: (categorys: CategoryElement[], newBookings: BookingElement[])=> void, otherError: (message: string) => void): void => {
 
     readFile(filePath)
     .then((data: string) => {
@@ -269,6 +295,7 @@ const readData = (filePath: string, setCategorys: (categorys: CategoryElement[])
                 )
             }
         }
+        console.log("categoryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy<s", categorys)
 
         for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
             if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
@@ -284,8 +311,7 @@ const readData = (filePath: string, setCategorys: (categorys: CategoryElement[])
             }
         }
 
-        setCategorys(categorys)
-        setBookings(bookings)
+        setCategorysAndBookings(categorys, bookings)
 
     })
     .catch((e: Error) => otherError("An error occured when reading the app data! Got the message: \n"+ e.message))
