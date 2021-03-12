@@ -15,7 +15,7 @@ export interface CategoryElement{
 export const defaultCategoryElement: CategoryElement = {
     id: 0,
     name: "uncategorized",
-    description: "For all bookings not fitting in any cateAgory. This category can not be edited or deleted.",
+    description: "For all bookings not fitting in any category. This category can not be edited or deleted.",
     color: defaultColors.tableSeparatorColor,
     activated: true,
     hasBudget: false,

@@ -20,7 +20,6 @@ const ReassureExportPopup = (props: Props): JSX.Element => {
     const [filename, setFilename] = useState<string>(defaultFilename+currentDateAppendix()+defaultFileEnding)
 
     useEffect(() => {
-        console.log("try reading an external filepath export popup")
         getFreeFilePath(props.handleAccessError)
         .then((filepath: string) => {
             const splitFilepath: string[] = filepath.split("/")

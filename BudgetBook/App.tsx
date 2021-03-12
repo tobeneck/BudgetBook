@@ -88,7 +88,6 @@ const App = () => {
    * @param newCategorys the new categorys to be saved
    */
   const setAndSaveCategorys = (newCategorys: CategoryElement[]): void => {
-    console.log("setting new categorys: ", newCategorys)
     saveToCache(newCategorys, bookings, handleGenericError)
     setCategorys(newCategorys)
   }

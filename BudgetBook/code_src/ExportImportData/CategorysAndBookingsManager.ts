@@ -31,7 +31,6 @@ export interface CombinedData{
     RNFetchBlob.fs.exists(filePath)
     .then((exists: boolean) => {
         if(exists){
-            console.log("initialize by reading the data")
             readCacheData(setCategorysAndBookings, otherError)
         } else {
             setCategorysAndBookings([defaultCategoryElement], [defaultBookingElement])
@@ -295,8 +294,7 @@ const readData = (filePath: string, setCategorysAndBookings: (categorys: Categor
                 )
             }
         }
-        console.log("categoryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy<s", categorys)
-
+        
         for(let i: number = 1; i < bookingsString.length; i++){//read the bookings. Start at 1 to skit the header row
             if(bookingsString[i] !== ""){ //the last element always is "", avoid this!
                 const currentRow: string[] = bookingsString[i].split(defaultSeparator)
